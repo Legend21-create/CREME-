@@ -48,7 +48,16 @@
         <label class="block text-sm font-semibold mb-2">Design Notes & Flavors</label>
         <textarea name="message" rows="4" placeholder="Describe your dream cake..." class="w-full p-3 border border-stone-200 rounded-md focus:outline-none focus:ring-1 focus:ring-amber-900"></textarea>
     </div>
-
+<div class="flex items-start mb-6">
+    <div class="flex items-center h-5">
+        <input id="terms" name="terms_agreement" type="checkbox" required class="w-4 h-4 border border-stone-300 rounded bg-stone-50 focus:ring-3 focus:ring-amber-900 accent-amber-900">
+    </div>
+    <div class="ml-3 text-sm">
+        <label for="terms" class="font-medium text-stone-700">
+            I agree to the <a href="terms.html" class="text-amber-900 hover:underline">Terms of Service</a> and understand that payment is via <strong>Bank Transfer</strong>.
+        </label>
+    </div>
+</div>
     <button type="submit" class="w-full bg-amber-900 text-white font-bold py-4 rounded-md hover:bg-amber-800 transition shadow-lg">
         Submit Request
     </button>
@@ -101,6 +110,7 @@
 
 </body>
 </html>
+
 
 
 
