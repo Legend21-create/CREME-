@@ -13,23 +13,35 @@
     <meta property="og:image" content="https://legend21-create.github.io/CREME-/storefront.jpg">
 
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3 { font-family: 'Playfair Display', serif; }
+    </style>
 </head>
 <body class="bg-stone-50 text-stone-800">
 
     <nav class="flex justify-between items-center p-6 max-w-7xl mx-auto">
         <a href="index.html" class="text-2xl font-bold tracking-tighter text-amber-900">CREME THEORY</a>
-        <div class="hidden md:flex space-x-8 font-medium">
+        
+        <div class="hidden md:flex space-x-8 font-medium items-center">
             <a href="menu.html" class="hover:text-amber-700 transition">Menu</a>
             <a href="story.html" class="hover:text-amber-700 transition">Our Story</a>
             <a href="order.html" class="hover:text-amber-700 transition">Custom Orders</a>
+            
+            <a href="order.html" class="relative cursor-pointer flex items-center hover:opacity-75 transition">
+                <span class="text-xl">🛒</span>
+                <span id="cart-count" class="absolute -top-2 -right-2 bg-amber-900 text-white text-[10px] rounded-full px-1.5 py-0.5 font-bold">0</span>
+            </a>
         </div>
+        
         <a href="coming-soon.html" class="bg-amber-900 text-white px-5 py-2 rounded-full hover:bg-amber-800 transition">Opening Soon</a>
     </nav>
 
     <header class="relative h-[80vh] flex items-center justify-center text-center px-4">
         <div class="z-10">
             <span class="uppercase tracking-widest text-sm mb-4 block text-amber-800 font-semibold">Handcrafted Daily</span>
-            <h1 class="text-5xl md:text-7xl mb-6">Refined Sweets. <br> Elevated Flavors.</h1>
+            <h1 class="text-5xl md:text-7xl mb-6 text-amber-950">Refined Sweets. <br> Elevated Flavors.</h1>
             <p class="max-w-md mx-auto text-lg text-stone-600 mb-8">Experience the science of sweetness at Creme Theory, where every pastry is a masterpiece.</p>
             <div class="flex flex-col md:flex-row gap-4 justify-center">
                 <a href="menu.html" class="bg-amber-900 text-white px-8 py-3 rounded-md shadow-lg hover:bg-amber-800 transition">View Menu</a>
@@ -39,7 +51,7 @@
     </header>
 
     <section class="py-20 max-w-7xl mx-auto px-6">
-        <div class="grid md:grid-cols-3 gap-12">
+        <div class="grid md:grid-cols-3 gap-12 text-center">
             <div class="group cursor-pointer">
                 <div class="h-80 bg-stone-200 rounded-lg mb-4 overflow-hidden">
                     <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&q=80&w=800" alt="Cake" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
@@ -63,90 +75,14 @@
             </div>
         </div>
     </section>
-<section class="py-20 bg-stone-100">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="grid md:grid-cols-2 gap-12 items-center">
-                <div>
-                    <h2 class="text-4xl text-amber-950 mb-6">Visit the Boutique</h2>
-                    <p class="text-stone-600 mb-8 leading-relaxed">
-                        Located in the heart of the Bakery District, our boutique is designed to be a sensory experience. Come watch our chefs at work and enjoy the aroma of fresh bakes.
-                    </p>
-                    <div class="space-y-4">
-                        <div class="flex items-start space-x-4">
-                            <span class="text-amber-900 font-bold">Address:</span>
-                            <span class="text-stone-600">123 Pastry Lane, Suite 100, NY 10001</span>
-                        </div>
-                        <div class="flex items-start space-x-4">
-                            <span class="text-amber-900 font-bold">Phone:</span>
-                            <span class="text-stone-600">+1 (555) 123-4567</span>
-                        </div>
-                    </div>
-                </div>
 
-                <div class="h-96 bg-stone-300 rounded-xl overflow-hidden shadow-inner relative group">
-                    <iframe 
-                        class="w-full h-full grayscale contrast-125 opacity-80"
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.617549014917!2d-73.985428!3d40.748441!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c259a9b3117469%3A0xd134e199a405a163!2sEmpire%20State%20Building!5e0!3m2!1sen!2sus!4v1625123456789!5m2!1sen!2sus" 
-                        allowfullscreen="" 
-                        loading="lazy">
-                    </iframe>
-                    <div class="absolute inset-0 pointer-events-none border-4 border-white/20 rounded-xl"></div>
-                </div>
-            </div>
-        </div>
-    </section>
-    
-
-  <footer class="bg-stone-900 text-stone-400 py-16 px-6 mt-20">
+    <footer class="bg-stone-900 text-stone-400 py-16 px-6">
         <div class="max-w-7xl mx-auto grid md:grid-cols-3 gap-12 border-b border-stone-800 pb-12 mb-12">
-            
             <div>
                 <h2 class="text-white text-2xl font-bold tracking-tighter mb-4">CREME THEORY</h2>
-                <p class="text-sm leading-relaxed max-w-xs">
-                    Crafting artisanal experiences through the science of baking. Visit our flagship boutique for daily fresh batches.
-                </p>
+                <p class="text-sm leading-relaxed max-w-xs">Crafting artisanal experiences through the science of baking. Visit our flagship boutique for daily fresh batches.</p>
             </div>
-
             <div>
                 <h4 class="text-white font-semibold mb-4 uppercase tracking-widest text-xs">Contact & Visit</h4>
-<ul class="text-sm space-y-2">
-    <li>123 Pastry Lane, Suite 100</li>
-    <li>Bakery District, NY 10001</li>
-    <li class="pt-2 text-amber-500 font-medium">
-        <a href="tel:8765398891" class="hover:underline">+1 (876) 539-8891</a>
-    </li>
-    <li>
-        <a href="mailto:cremetheory@gmail.com" class="hover:underline">cremetheory@gmail.com</a>
-    </li>
-</ul>
-            </div>
-
-            <div>
-                <h4 class="text-white font-semibold mb-4 uppercase tracking-widest text-xs">Bakery Hours</h4>
                 <ul class="text-sm space-y-2">
-                    <li class="flex justify-between"><span>Mon - Fri</span> <span>7:00 AM - 6:00 PM</span></li>
-                    <li class="flex justify-between"><span>Sat - Sun</span> <span>8:00 AM - 2:00 PM</span></li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center text-xs uppercase tracking-widest">
-            <p>© 2026 Creme Theory Bakery.</p>
-            <div class="flex space-x-6 mt-4 md:mt-0">
-                <a href="#" class="hover:text-white transition">Instagram</a>
-                <a href="#" class="hover:text-white transition">Pinterest</a>
-                <a href="order.html" class="hover:text-white transition">Inquiries</a>
-            </div>
-        </div>
-    </footer>
-</body>
-</html>
-
-
-
-
-
-
-
-
-
+                    <li class="pt-2 text-amber-5
