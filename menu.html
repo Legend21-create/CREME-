@@ -16,10 +16,15 @@
 
     <nav class="flex justify-between items-center p-6 max-w-7xl mx-auto">
         <a href="index.html" class="text-2xl font-bold tracking-tighter text-amber-900">CREME THEORY</a>
-        <div class="hidden md:flex space-x-8 font-medium">
+        <div class="hidden md:flex space-x-8 font-medium items-center">
             <a href="menu.html" class="font-bold text-amber-900">Menu</a>
             <a href="story.html" class="hover:text-amber-700 transition">Our Story</a>
             <a href="order.html" class="hover:text-amber-700 transition">Custom Orders</a>
+            
+            <a href="order.html" class="relative cursor-pointer flex items-center hover:opacity-75 transition">
+                <span class="text-xl">🛒</span>
+                <span id="cart-count" class="absolute -top-2 -right-2 bg-amber-900 text-white text-[10px] rounded-full px-1.5 py-0.5 font-bold">0</span>
+            </a>
         </div>
         <a href="coming-soon.html" class="bg-amber-900 text-white px-5 py-2 rounded-full hover:bg-amber-800 transition">Opening Soon</a>
     </nav>
@@ -31,39 +36,4 @@
 
     <main class="max-w-5xl mx-auto px-6 pb-24">
         <section class="mb-20">
-            <h2 class="text-3xl border-b border-stone-200 pb-4 mb-8 text-amber-950">Signature Cakes</h2>
-            <div class="grid md:grid-cols-2 gap-x-12 gap-y-8">
-                <div class="flex justify-between items-start">
-                    <div>
-                        <h3 class="text-xl font-semibold">Velvet Theory</h3>
-                        <p class="text-sm text-stone-500 mt-1">Cocoa-infused sponge with Madagascar vanilla bean frosting.</p>
-                    </div>
-                    <span class="font-medium text-amber-900">$48</span>
-                </div>
-                <div class="flex justify-between items-start">
-                    <div>
-                        <h3 class="text-xl font-semibold">Salted Caramel Cloud</h3>
-                        <p class="text-sm text-stone-500 mt-1">Burnt sugar layers, sea salt flakes, and silk meringue.</p>
-                    </div>
-                    <span class="font-medium text-amber-900">$52</span>
-                </div>
-            </div>
-        </section>
-
-        <section>
-            <h2 class="text-3xl border-b border-stone-200 pb-4 mb-8 text-amber-950">Daily Pastries</h2>
-            <div class="grid md:grid-cols-2 gap-x-12 gap-y-8">
-                <div class="flex justify-between items-start">
-                    <div>
-                        <h3 class="text-xl font-semibold">Heritage Croissant</h3>
-                        <p class="text-sm text-stone-500 mt-1">Baked fresh with high-fat French butter.</p>
-                    </div>
-                    <span class="font-medium text-amber-900">$5.50</span>
-                </div>
-            </div>
-        </section>
-    </main>
-
-</body>
-</html>
-
+            <h2 class="text-3xl border-b border-stone-
