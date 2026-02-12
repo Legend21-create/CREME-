@@ -20,8 +20,7 @@
             <a href="menu.html" class="font-bold text-amber-900">Menu</a>
             <a href="story.html" class="hover:text-amber-700 transition">Our Story</a>
             <a href="order.html" class="hover:text-amber-700 transition">Custom Orders</a>
-            
-            <a href="order.html" class="relative cursor-pointer flex items-center hover:opacity-75 transition">
+            <a href="order.html" class="relative cursor-pointer flex items-center">
                 <span class="text-xl">🛒</span>
                 <span id="cart-count" class="absolute -top-2 -right-2 bg-amber-900 text-white text-[10px] rounded-full px-1.5 py-0.5 font-bold">0</span>
             </a>
@@ -35,5 +34,76 @@
     </header>
 
     <main class="max-w-5xl mx-auto px-6 pb-24">
+        
         <section class="mb-20">
-            <h2 class="text-3xl border-b border-stone-
+            <h2 class="text-3xl border-b border-stone-200 pb-4 mb-8 text-amber-950">Signature Cakes</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                
+                <div class="bg-white border border-stone-100 p-6 rounded-xl shadow-sm hover:shadow-md transition">
+                    <h3 class="text-xl font-bold mb-1">Signature 6" Cake</h3>
+                    <p class="text-stone-500 text-sm mb-4">Serves 8-10. Perfect for intimate celebrations.</p>
+                    <div class="flex items-center justify-between mt-auto">
+                        <span class="font-semibold text-amber-900">$6,500 JMD</span>
+                        <button 
+                            onclick="addToCart('6 inch Signature Cake', 6500)"
+                            class="bg-stone-800 text-white px-4 py-2 rounded text-sm hover:bg-amber-900 transition">
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-white border border-stone-100 p-6 rounded-xl shadow-sm hover:shadow-md transition">
+                    <h3 class="text-xl font-bold mb-1">Velvet Theory</h3>
+                    <p class="text-stone-500 text-sm mb-4">Cocoa-infused sponge with vanilla bean frosting.</p>
+                    <div class="flex items-center justify-between mt-auto">
+                        <span class="font-semibold text-amber-900">$7,200 JMD</span>
+                        <button 
+                            onclick="addToCart('Velvet Theory Cake', 7200)"
+                            class="bg-stone-800 text-white px-4 py-2 rounded text-sm hover:bg-amber-900 transition">
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section>
+            <h2 class="text-3xl border-b border-stone-200 pb-4 mb-8 text-amber-950">Daily Pastries</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                
+                <div class="bg-white border border-stone-100 p-6 rounded-xl shadow-sm hover:shadow-md transition">
+                    <h3 class="text-xl font-bold mb-1">Heritage Croissant</h3>
+                    <p class="text-stone-500 text-sm mb-4">Flaky layers made with French butter.</p>
+                    <div class="flex items-center justify-between mt-auto">
+                        <span class="font-semibold text-amber-900">$850 JMD</span>
+                        <button 
+                            onclick="addToCart('Heritage Croissant', 850)"
+                            class="bg-stone-800 text-white px-4 py-2 rounded text-sm hover:bg-amber-900 transition">
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <script>
+        let cart = JSON.parse(localStorage.getItem('creme_cart')) || [];
+
+        function addToCart(name, price) {
+            cart.push({ name, price });
+            localStorage.setItem('creme_cart', JSON.stringify(cart));
+            updateCartCount();
+            alert(name + " added to cart!");
+        }
+
+        function updateCartCount() {
+            document.getElementById('cart-count').innerText = cart.length;
+        }
+
+        updateCartCount();
+    </script>
+</body>
+</html>
