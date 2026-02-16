@@ -23,17 +23,37 @@
         <div class="flex flex-col md:flex-row justify-between items-center mb-10 gap-4">
             <div>
                 <h1 class="text-4xl font-bold text-amber-950">Creme Control</h1>
-                <p class="text-stone-500">Manage your menu, prices, and stock.</p>
+                <p class="text-stone-500">Manage your menu, prices, and global settings.</p>
             </div>
             <button onclick="exportData()" class="bg-amber-900 text-white px-8 py-4 rounded-2xl font-bold shadow-xl hover:scale-105 transition transform">
                 🚀 Export Changes to GitHub
             </button>
         </div>
 
+        <div class="bg-white p-8 rounded-3xl shadow-sm border border-stone-200 mb-8">
+            <h2 class="text-lg font-bold text-amber-950 mb-4 flex items-center gap-2">
+                ⚙️ Global Settings
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-bold mb-2 text-stone-700">Homepage Announcement Bar</label>
+                    <input type="text" id="set-announcement" onchange="updateSetting('announcement', this.value)" 
+                        placeholder="e.g. Valentines Pre-orders are Open!"
+                        class="w-full p-3 bg-stone-50 border rounded-xl outline-none focus:ring-2 focus:ring-amber-900">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold mb-2 text-stone-700">Shop Status</label>
+                    <button id="shop-toggle" onclick="toggleShop()" class="w-full py-3 rounded-xl font-bold transition">
+                        Loading...
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <div class="bg-white p-8 rounded-3xl shadow-sm border border-stone-200 mb-12">
-            <h2 class="text-lg font-bold text-amber-950 mb-4 italic">Add New Creation</h2>
+            <h2 class="text-lg font-bold text-amber-950 mb-4 italic text-stone-400">Add New Creation</h2>
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <input type="text" id="new-name" placeholder="Item Name (e.g. Rum Cake)" class="p-3 border rounded-xl outline-none focus:ring-1 focus:ring-amber-900">
+                <input type="text" id="new-name" placeholder="Item Name" class="p-3 border rounded-xl outline-none focus:ring-1 focus:ring-amber-900">
                 <select id="new-category" class="p-3 border rounded-xl outline-none">
                     <option value="Signature Cakes">Signature Cakes</option>
                     <option value="Daily Pastries">Daily Pastries</option>
@@ -41,7 +61,7 @@
                 <input type="number" id="new-price" placeholder="Price (JMD)" class="p-3 border rounded-xl outline-none">
                 <button onclick="addNewItem()" class="bg-stone-800 text-white rounded-xl font-bold hover:bg-stone-900 transition">Add to Inventory</button>
             </div>
-            <input type="text" id="new-image" placeholder="Image URL (Unsplash link)" class="w-full mt-4 p-3 border rounded-xl outline-none">
+            <input type="text" id="new-image" placeholder="Image URL" class="w-full mt-4 p-3 border rounded-xl outline-none">
             <textarea id="new-desc" placeholder="Brief description..." class="w-full mt-4 p-3 border rounded-xl outline-none resize-none"></textarea>
         </div>
 
@@ -63,17 +83,39 @@
     <script src="inventory.js"></script>
     <script>
         const CREME_PASSWORD = "creme_admin_2026"; 
-        let inventory = window.CremeInventory;
+        let inventory = window.CremeInventory || {};
+        let settings = window.CremeSettings || { announcement: "", shopOpen: true };
 
         function checkPass() {
             if (document.getElementById('pass-input').value === CREME_PASSWORD) {
                 document.getElementById('login-screen').classList.add('hidden');
                 document.getElementById('admin-content').classList.remove('hidden');
+                initSettings();
                 renderAdmin();
             } else {
                 document.getElementById('error-msg').classList.remove('hidden');
             }
         }
+
+        function initSettings() {
+            document.getElementById('set-announcement').value = settings.announcement;
+            updateShopBtn();
+        }
+
+        function toggleShop() {
+            settings.shopOpen = !settings.shopOpen;
+            updateShopBtn();
+        }
+
+        function updateShopBtn() {
+            const btn = document.getElementById('shop-toggle');
+            btn.innerText = settings.shopOpen ? "SHOP IS LIVE" : "SHOP IS CLOSED";
+            btn.className = settings.shopOpen 
+                ? "w-full py-3 rounded-xl font-bold bg-green-100 text-green-700 border border-green-200"
+                : "w-full py-3 rounded-xl font-bold bg-red-100 text-red-700 border border-red-200";
+        }
+
+        function updateSetting(field, val) { settings[field] = val; }
 
         function renderAdmin() {
             const grid = document.getElementById('admin-grid');
@@ -131,7 +173,6 @@
                 dateAdded: new Date().toISOString().split('T')[0]
             };
             
-            // Clear fields
             document.getElementById('new-name').value = '';
             document.getElementById('new-price').value = '';
             document.getElementById('new-desc').value = '';
@@ -144,16 +185,10 @@
         function closeModal() { document.getElementById('export-modal').classList.add('hidden'); }
         
         function exportData() {
-            const dataStr = "const InventoryData = " + JSON.stringify(inventory, null, 4) + ";\n\nwindow.CremeInventory = InventoryData;";
-            document.getElementById('export-area').value = dataStr;
-            document.getElementById('export-modal').classList.remove('hidden');
-        }
-
-        function copyCode() {
-            document.getElementById('export-area').select();
-            document.execCommand('copy');
-            alert("Code copied! Update inventory.js on GitHub now.");
-        }
-    </script>
-</body>
-</html>
+            // Exports BOTH inventory and settings
+            const dataStr = "const InventoryData = " + JSON.stringify(inventory, null, 4) + ";\n\n" +
+                            "const SiteSettings = " + JSON.stringify(settings, null, 4) + ";\n\n" +
+                            "window.CremeInventory = InventoryData;\n" +
+                            "window.CremeSettings = SiteSettings;";
+            
+            document.getElementById('export-
