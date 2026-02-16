@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Cart | Creme Theory</title>
+    <title>Your Selection | Creme Theory</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
@@ -55,6 +55,12 @@
     <script>
         let cart = JSON.parse(localStorage.getItem('creme_cart')) || [];
 
+        // Helper to turn "$6,500" into 6500
+        function parsePrice(priceVal) {
+            if (typeof priceVal === 'number') return priceVal;
+            return parseFloat(priceVal.replace(/[^0-9.]/g, '')) || 0;
+        }
+
         function renderCheckout() {
             const container = document.getElementById('cart-items');
             const totalDisplay = document.getElementById('total-price');
@@ -69,7 +75,9 @@
             container.innerHTML = '';
 
             cart.forEach((item, index) => {
-                total += item.price;
+                const numericPrice = parsePrice(item.price);
+                total += numericPrice;
+                
                 const row = document.createElement('div');
                 row.className = "flex justify-between items-center p-6 border-b border-stone-100 last:border-0 hover:bg-stone-50 transition";
                 row.innerHTML = `
@@ -78,7 +86,7 @@
                         <p class="text-[10px] text-stone-400 uppercase tracking-tighter">Freshly Prepared</p>
                     </div>
                     <div class="flex items-center gap-6">
-                        <span class="font-semibold text-amber-900">$${item.price.toLocaleString()}</span>
+                        <span class="font-semibold text-amber-900">$${numericPrice.toLocaleString()}</span>
                         <button onclick="removeItem(${index})" class="text-stone-300 hover:text-red-500 transition text-lg">&times;</button>
                     </div>
                 `;
@@ -119,11 +127,11 @@
             let total = 0;
             let itemList = "";
             cart.forEach(item => {
-                itemList += `%0A• ${item.name} ($${item.price.toLocaleString()})`;
-                total += item.price;
+                const nPrice = parsePrice(item.price);
+                itemList += `%0A• ${item.name} ($${nPrice.toLocaleString()})`;
+                total += nPrice;
             });
 
-            // Build WhatsApp Message
             let message = `*NEW ORDER - CREME THEORY*%0A`;
             message += `*Name:* ${name}%0A`;
             message += `*Items:* ${itemList}%0A%0A`;
