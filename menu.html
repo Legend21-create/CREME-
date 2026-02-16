@@ -7,15 +7,23 @@
     <title>Menu | Creme Theory</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3 { font-family: 'Playfair Display', serif; }
+        .sold-out { filter: grayscale(1); opacity: 0.6; pointer-events: none; }
+    </style>
 </head>
 <body class="bg-stone-50 text-stone-800 border-t-4 border-amber-900">
+
     <nav class="flex justify-between items-center p-6 max-w-7xl mx-auto">
         <a href="index.html" class="text-2xl font-bold tracking-tighter text-amber-900 uppercase">Creme Theory</a>
+        
         <div class="hidden md:flex space-x-8 font-medium items-center">
             <a href="menu.html" class="font-bold text-amber-900 underline decoration-2 underline-offset-8">Menu</a>
             <a href="story.html" class="hover:text-amber-700 transition">Our Story</a>
             <a href="order.html" class="hover:text-amber-700 transition">Custom Orders</a>
         </div>
+        
         <div class="flex items-center gap-4">
             <a href="cart.html" class="relative cursor-pointer flex items-center hover:opacity-75 transition mr-1">
                 <span class="text-xl">🛒</span>
@@ -24,5 +32,65 @@
             <a href="index.html#newsletter" class="bg-amber-900 text-white px-4 py-2 rounded-full hover:bg-amber-800 transition text-xs font-semibold">Join Now</a>
         </div>
     </nav>
-    </body>
+
+    <main class="max-w-7xl mx-auto px-6 py-12">
+        <header class="text-center mb-16">
+            <h1 class="text-5xl text-amber-950 mb-4">The Collection</h1>
+            <p class="text-stone-500 italic">Seasonal flavors, meticulously crafted.</p>
+        </header>
+
+        <div id="menu-grid" class="grid md:grid-cols-3 gap-12">
+            </div>
+    </main>
+
+    <script src="inventory.js"></script>
+    <script>
+        function renderMenu() {
+            const grid = document.getElementById('menu-grid');
+            const inventory = window.CremeInventory || {};
+            grid.innerHTML = '';
+
+            Object.keys(inventory).forEach(key => {
+                const item = inventory[key];
+                const isSoldOut = !item.inStock;
+                
+                grid.innerHTML += `
+                    <div class="group ${isSoldOut ? 'sold-out' : ''}">
+                        <div class="relative overflow-hidden rounded-2xl aspect-square bg-stone-200 mb-6">
+                            <img src="${item.image}" alt="${item.name}" class="object-cover w-full h-full group-hover:scale-105 transition duration-500">
+                            ${isSoldOut ? '<div class="absolute inset-0 flex items-center justify-center bg-black/20"><span class="bg-white text-stone-800 px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest">Sold Out</span></div>' : ''}
+                        </div>
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-xl text-amber-950">${item.name}</h3>
+                            <span class="font-semibold text-stone-600">$${item.price.toLocaleString()}</span>
+                        </div>
+                        <p class="text-sm text-stone-500 mb-6 leading-relaxed">${item.description}</p>
+                        <button onclick="addToCart('${item.name}', ${item.price})" 
+                            class="w-full border border-amber-900 text-amber-900 py-3 rounded-xl hover:bg-amber-900 hover:text-white transition uppercase tracking-widest text-[10px] font-bold">
+                            Add to Selection
+                        </button>
+                    </div>
+                `;
+            });
+        }
+
+        function addToCart(name, price) {
+            let cart = JSON.parse(localStorage.getItem('creme_cart')) || [];
+            cart.push({ name, price });
+            localStorage.setItem('creme_cart', JSON.stringify(cart));
+            updateCartCount();
+            alert(`${name} added to your selection.`);
+        }
+
+        function updateCartCount() {
+            const cart = JSON.parse(localStorage.getItem('creme_cart')) || [];
+            document.getElementById('cart-count').innerText = cart.length;
+        }
+
+        window.onload = () => {
+            renderMenu();
+            updateCartCount();
+        };
+    </script>
+</body>
 </html>
