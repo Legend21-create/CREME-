@@ -15,6 +15,13 @@
             color: white; 
             border-color: #78350f; 
         }
+        #back-to-top {
+            display: none; /* Hidden by default */
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 50;
+        }
     </style>
 </head>
 <body class="bg-stone-50 text-stone-800 border-t-4 border-amber-900">
@@ -45,10 +52,26 @@
         </div>
     </nav>
 
+    <button id="back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="bg-amber-950 text-white p-3 rounded-full shadow-lg hover:bg-amber-800 transition transform hover:scale-110">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="18 15 12 9 6 15"></polyline>
+        </svg>
+    </button>
+
     <header class="pt-12 pb-6 text-center">
         <h1 class="text-5xl md:text-6xl text-amber-900 mb-4">The Menu</h1>
         <p class="text-stone-500 italic uppercase tracking-widest text-xs font-semibold mb-8">Baked in small batches, every single day.</p>
         
+        <div class="max-w-md mx-auto px-6 mb-6">
+            <input 
+                type="text" 
+                id="menu-search" 
+                onkeyup="handleSearch()" 
+                placeholder="Search for cakes, pastries..." 
+                class="w-full p-3 rounded-full border border-stone-200 focus:ring-2 focus:ring-amber-900 outline-none text-sm transition shadow-sm"
+            >
+        </div>
+
         <div id="filter-bar" class="flex flex-wrap justify-center gap-3 px-6 mb-8">
             </div>
     </header>
@@ -77,6 +100,17 @@
 
     <script>
         let cart = JSON.parse(localStorage.getItem('creme_cart')) || [];
+        let currentFilter = 'all';
+
+        // Visibility Logic for Top Button
+        window.onscroll = function() {
+            const btn = document.getElementById("back-to-top");
+            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+                btn.style.display = "block";
+            } else {
+                btn.style.display = "none";
+            }
+        };
 
         function renderMenu() {
             const container = document.getElementById('menu-container');
@@ -85,7 +119,6 @@
             
             if (!inventory || !container) return;
 
-            // 1. Group items by category
             const categories = {};
             for (const [name, data] of Object.entries(inventory)) {
                 const cat = data.category || "Our Selection";
@@ -93,23 +126,12 @@
                 categories[cat].push({ name, ...data });
             }
 
-            // 2. Setup Filter Bar
             filterBar.innerHTML = '';
-            const allBtn = document.createElement('button');
-            allBtn.innerText = 'All';
-            allBtn.className = "filter-btn active px-5 py-2 rounded-full border border-stone-300 text-sm font-medium hover:border-amber-900 transition";
-            allBtn.onclick = () => applyFilter('all', allBtn);
-            filterBar.appendChild(allBtn);
-
+            filterBar.appendChild(createFilterBtn('All', 'all'));
             Object.keys(categories).forEach(catName => {
-                const btn = document.createElement('button');
-                btn.innerText = catName;
-                btn.className = "filter-btn px-5 py-2 rounded-full border border-stone-300 text-sm font-medium hover:border-amber-900 transition";
-                btn.onclick = () => applyFilter(catName, btn);
-                filterBar.appendChild(btn);
+                filterBar.appendChild(createFilterBtn(catName, catName));
             });
 
-            // 3. Render Sections
             container.innerHTML = ''; 
             for (const [catName, items] of Object.entries(categories)) {
                 const section = document.createElement('section');
@@ -149,18 +171,41 @@
             }
         }
 
-        function applyFilter(category, clickedBtn) {
-            // Update buttons
-            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-            clickedBtn.classList.add('active');
+        function createFilterBtn(label, value) {
+            const btn = document.createElement('button');
+            btn.innerText = label;
+            btn.className = `filter-btn px-5 py-2 rounded-full border border-stone-300 text-sm font-medium hover:border-amber-900 transition ${value === currentFilter ? 'active' : ''}`;
+            btn.onclick = () => {
+                currentFilter = value;
+                handleSearch();
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            };
+            return btn;
+        }
 
-            // Filter sections
-            document.querySelectorAll('.menu-section').forEach(section => {
-                if (category === 'all' || section.getAttribute('data-category') === category) {
-                    section.style.display = 'block';
-                } else {
-                    section.style.display = 'none';
-                }
+        function handleSearch() {
+            const query = document.getElementById('menu-search').value.toLowerCase();
+            const sections = document.querySelectorAll('.menu-section');
+
+            sections.forEach(section => {
+                const category = section.getAttribute('data-category');
+                const items = section.querySelectorAll('.menu-item');
+                let hasVisibleItems = false;
+                const categoryMatch = (currentFilter === 'all' || currentFilter === category);
+
+                items.forEach(item => {
+                    const itemName = item.querySelector('.item-name').innerText.toLowerCase();
+                    const matchesSearch = itemName.includes(query);
+
+                    if (categoryMatch && matchesSearch) {
+                        item.style.display = 'flex';
+                        hasVisibleItems = true;
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+                section.style.display = hasVisibleItems ? 'block' : 'none';
             });
         }
 
