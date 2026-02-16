@@ -1,161 +1,49 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <link rel="icon" href="https://fav.farm/🥐">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Menu | Creme Theory</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Inter', sans-serif; }
-        h1, h2, h3 { font-family: 'Playfair Display', serif; }
-        .sold-out { filter: grayscale(1); opacity: 0.6; }
-        .filter-btn.active { background-color: #78350f; color: white; }
-    </style>
-</head>
-<body class="bg-stone-50 text-stone-800 border-t-4 border-amber-900">
+<footer class="bg-stone-900 text-stone-400 py-20 px-6 mt-20">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 border-b border-stone-800 pb-16 mb-12">
+                
+                <div class="col-span-1 md:col-span-1 text-center md:text-left">
+                    <h2 class="text-white text-2xl font-bold tracking-tighter mb-4 uppercase">Creme Theory</h2>
+                    <p class="text-sm leading-relaxed">Artisanal excellence in every bite. Handcrafted pastries and signature cakes delivered from our heart to your home.</p>
+                    <div class="flex gap-4 mt-6 justify-center md:justify-start">
+                        <a href="https://instagram.com/creme.theory" target="_blank" class="flex items-center gap-2 text-stone-300 hover:text-white transition-all duration-300 group">
+                            <span class="text-xl group-hover:scale-110 transition-transform">📸</span>
+                            <span class="text-xs font-bold tracking-widest border-b border-transparent group-hover:border-white">@creme.theory</span>
+                        </a>
+                    </div>
+                </div>
 
-    <nav class="flex justify-between items-center p-6 max-w-7xl mx-auto">
-        <a href="index.html" class="text-2xl font-bold tracking-tighter text-amber-900 uppercase">Creme Theory</a>
-        <div class="hidden md:flex space-x-8 font-medium items-center">
-            <a href="menu.html" class="font-bold text-amber-900 underline decoration-2 underline-offset-8">Menu</a>
-            <a href="story.html" class="hover:text-amber-700 transition">Our Story</a>
-            <a href="order.html" class="hover:text-amber-700 transition">Custom Orders</a>
-        </div>
-        <div class="flex items-center gap-4">
-            <a href="cart.html" class="relative cursor-pointer flex items-center hover:opacity-75 transition mr-1">
-                <span class="text-xl">🛒</span>
-                <span id="cart-count" class="absolute -top-2 -right-2 bg-amber-900 text-white text-[10px] rounded-full px-1.5 py-0.5 font-bold">0</span>
-            </a>
-            <a href="index.html#newsletter" class="bg-amber-900 text-white px-4 py-2 rounded-full hover:bg-amber-800 transition text-xs font-semibold">Join Now</a>
-        </div>
-    </nav>
+                <div class="text-center md:text-left">
+                    <h4 class="text-white font-bold uppercase tracking-widest text-[10px] mb-6">Shop</h4>
+                    <ul class="space-y-4 text-sm">
+                        <li><a href="menu.html" class="hover:text-white transition">Full Menu</a></li>
+                        <li><button onclick="updateCategory('Daily Pastries')" class="hover:text-white transition">Daily Pastries</button></li>
+                        <li><button onclick="updateCategory('Signature Cakes')" class="hover:text-white transition">Signature Cakes</button></li>
+                        <li><a href="order.html" class="hover:text-white transition">Custom Requests</a></li>
+                    </ul>
+                </div>
 
-    <main class="max-w-7xl mx-auto px-6 py-12">
-        <header class="text-center mb-8">
-            <h1 class="text-5xl text-amber-950 mb-4">The Collection</h1>
-            <p class="text-stone-500 italic">Seasonal flavors, meticulously crafted in Jamaica.</p>
-        </header>
+                <div class="text-center md:text-left">
+                    <h4 class="text-white font-bold uppercase tracking-widest text-[10px] mb-6">Support</h4>
+                    <ul class="space-y-4 text-sm">
+                        <li><a href="terms.html" class="hover:text-white transition">Terms of Service</a></li>
+                        <li><a href="story.html" class="hover:text-white transition">Our Story</a></li>
+                        <li><a href="mailto:cremetheory@gmail.com" class="hover:text-white transition">Contact Us</a></li>
+                    </ul>
+                </div>
 
-        <div class="max-w-2xl mx-auto mb-12 space-y-6">
-            <div class="relative">
-                <input type="text" id="menu-search" onkeyup="filterMenu()" placeholder="Search for your favorites..." 
-                    class="w-full p-4 pl-12 bg-white border border-stone-200 rounded-2xl shadow-sm focus:ring-1 focus:ring-amber-900 outline-none transition">
-                <span class="absolute left-4 top-4 opacity-30">🔍</span>
+                <div class="text-center md:text-left">
+                    <h4 class="text-white font-bold uppercase tracking-widest text-[10px] mb-6">Delivery</h4>
+                    <p class="text-sm italic mb-2 text-stone-300">Jamaica's Finest Confections</p>
+                    <p class="text-xs leading-relaxed">Serving Papine, Half Way Tree, Spanish Town & May Pen.</p>
+                </div>
             </div>
-            
-            <div class="flex justify-center gap-4">
-                <button onclick="updateCategory('all')" class="filter-btn active px-6 py-2 rounded-full border border-amber-900 text-amber-900 text-xs font-bold uppercase tracking-widest transition" id="btn-all">All</button>
-                <button onclick="updateCategory('Signature Cakes')" class="filter-btn px-6 py-2 rounded-full border border-amber-900 text-amber-900 text-xs font-bold uppercase tracking-widest transition" id="btn-cake">Cakes</button>
-                <button onclick="updateCategory('Daily Pastries')" class="filter-btn px-6 py-2 rounded-full border border-amber-900 text-amber-900 text-xs font-bold uppercase tracking-widest transition" id="btn-pastry">Pastries</button>
+
+            <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+                <p class="text-[10px] uppercase tracking-widest">© 2026 Creme Theory. All Rights Reserved.</p>
+                <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="text-[10px] font-bold hover:text-white transition flex items-center gap-2 uppercase tracking-widest">
+                    Back to Top <span class="text-lg">↑</span>
+                </button>
             </div>
         </div>
-
-        <div id="menu-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12"></div>
-    </main>
-
-    <script src="inventory.js"></script>
-
-    <script>
-        let currentCategory = 'all';
-
-        function filterMenu() {
-            const inventory = window.CremeInventory || {};
-            const searchTerm = document.getElementById('menu-search').value.toLowerCase();
-            const grid = document.getElementById('menu-grid');
-            
-            grid.innerHTML = '';
-
-            Object.keys(inventory).forEach(key => {
-                const item = inventory[key];
-                const isSoldOut = !item.inStock;
-                const matchesSearch = (item.name || key).toLowerCase().includes(searchTerm);
-                const matchesCategory = currentCategory === 'all' || item.category === currentCategory;
-
-                if (matchesSearch && matchesCategory) {
-                    const displayName = item.name || key;
-                    const displayImage = item.image || "https://images.unsplash.com/photo-1555507036-ab1f4038808a?q=80&w=800";
-
-                    let isNew = false;
-                    if (item.dateAdded) {
-                        const addedDate = new Date(item.dateAdded);
-                        const today = new Date();
-                        const diffTime = Math.abs(today - addedDate);
-                        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                        if (diffDays <= 7) isNew = true;
-                    }
-
-                    grid.innerHTML += `
-                        <div class="bg-white p-4 rounded-3xl shadow-sm border border-stone-100 transition duration-300 ${isSoldOut ? 'opacity-75' : 'hover:shadow-md'}">
-                            <div class="relative overflow-hidden rounded-2xl aspect-square mb-6">
-                                <img src="${displayImage}" alt="${displayName}" class="object-cover w-full h-full ${isSoldOut ? 'filter grayscale' : ''}">
-                                
-                                <div class="absolute top-4 left-4 flex flex-col gap-2">
-                                    ${isNew ? '<span class="bg-amber-900 text-white px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest shadow-lg">New Arrival</span>' : ''}
-                                </div>
-
-                                <div class="absolute top-4 right-4">
-                                    <span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest shadow-sm ${isSoldOut ? 'bg-red-100 text-red-600' : 'bg-green-100 text-green-600'}">
-                                        ${isSoldOut ? 'Sold Out' : 'In Stock'}
-                                    </span>
-                                </div>
-                            </div>
-
-                            <div class="flex justify-between items-start mb-2 px-2">
-                                <div>
-                                    <h3 class="text-xl text-amber-950 font-semibold">${displayName}</h3>
-                                    <span class="text-[10px] uppercase tracking-tighter text-stone-400">${item.category}</span>
-                                </div>
-                                <span class="font-bold text-amber-900">$${item.price.toLocaleString()}</span>
-                            </div>
-                            <p class="text-sm text-stone-500 mb-6 px-2 leading-relaxed h-12 overflow-hidden">${item.description}</p>
-                            <button onclick="addToCart('${displayName}', ${item.price})" 
-                                ${isSoldOut ? 'disabled' : ''}
-                                class="w-full border border-amber-900 text-amber-900 py-3 rounded-xl transition uppercase tracking-widest text-[10px] font-bold ${isSoldOut ? 'opacity-20 cursor-not-allowed' : 'hover:bg-amber-900 hover:text-white'}">
-                                ${isSoldOut ? 'Currently Finished' : 'Add to Selection'}
-                            </button>
-                        </div>
-                    `;
-                }
-            });
-
-            if (grid.innerHTML === '') {
-                grid.innerHTML = '<p class="col-span-full text-center text-stone-400 py-12">No treats found matching that name...</p>';
-            }
-        }
-
-        function updateCategory(cat) {
-            currentCategory = cat;
-            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-            if (cat === 'all') document.getElementById('btn-all').classList.add('active');
-            else if (cat === 'Signature Cakes') document.getElementById('btn-cake').classList.add('active');
-            else if (cat === 'Daily Pastries') document.getElementById('btn-pastry').classList.add('active');
-            filterMenu();
-        }
-
-        function addToCart(name, price) {
-            let cart = JSON.parse(localStorage.getItem('creme_cart')) || [];
-            cart.push({ name, price });
-            localStorage.setItem('creme_cart', JSON.stringify(cart));
-            updateCartCount();
-            
-            const btn = event.target;
-            const originalText = btn.innerText;
-            btn.innerText = "Added ✓";
-            setTimeout(() => { btn.innerText = originalText; }, 1500);
-        }
-
-        function updateCartCount() {
-            const cart = JSON.parse(localStorage.getItem('creme_cart')) || [];
-            const countDisplay = document.getElementById('cart-count');
-            if (countDisplay) countDisplay.innerText = cart.length;
-        }
-
-        window.onload = () => {
-            filterMenu();
-            updateCartCount();
-        };
-    </script>
-</body>
-</html>
+    </footer>
