@@ -3,37 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Login | Creme Theory</title>
+    <title>Admin Dashboard | Creme Theory</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-stone-100 min-h-screen flex items-center justify-center p-6">
+<body class="bg-stone-100 min-h-screen p-4 md:p-12">
 
-    <div id="login-screen" class="bg-white p-8 rounded-3xl shadow-xl w-full max-w-md border border-stone-200">
-        <h1 class="text-2xl font-bold text-amber-950 mb-6 text-center">Creme Admin Access</h1>
+    <div id="login-screen" class="bg-white p-8 rounded-3xl shadow-xl w-full max-w-md mx-auto border border-stone-200 mt-20">
+        <h1 class="text-2xl font-bold text-amber-950 mb-6 text-center uppercase tracking-widest">Admin Access</h1>
         <input type="password" id="pass-input" placeholder="Enter Password" 
             class="w-full p-4 border rounded-xl mb-4 focus:ring-2 focus:ring-amber-900 outline-none">
         <button onclick="checkPass()" 
             class="w-full bg-amber-900 text-white py-4 rounded-xl font-bold hover:bg-amber-800 transition">
-            Access Dashboard
+            Login
         </button>
-        <p id="error-msg" class="text-red-500 text-sm mt-4 text-center hidden">Incorrect password. Please try again.</p>
+        <p id="error-msg" class="text-red-500 text-sm mt-4 text-center hidden">Incorrect password.</p>
     </div>
 
-    <div id="admin-content" class="hidden w-full max-w-4xl mx-auto py-12">
-        <div class="flex justify-between items-center mb-8">
-            <h1 class="text-3xl font-bold text-amber-950 text-center md:text-left">Inventory Manager</h1>
-            <button onclick="exportData()" class="bg-amber-900 text-white px-6 py-2 rounded-lg font-bold shadow-lg hover:bg-amber-800 transition">Save & Export Changes</button>
+    <div id="admin-content" class="hidden w-full max-w-5xl mx-auto">
+        <div class="flex flex-col md:flex-row justify-between items-center mb-10 gap-4">
+            <div>
+                <h1 class="text-4xl font-bold text-amber-950">Creme Control</h1>
+                <p class="text-stone-500">Manage your menu, prices, and stock.</p>
+            </div>
+            <button onclick="exportData()" class="bg-amber-900 text-white px-8 py-4 rounded-2xl font-bold shadow-xl hover:scale-105 transition transform">
+                🚀 Export to inventory.js
+            </button>
         </div>
 
-        <div id="admin-grid" class="grid gap-4"></div>
+        <div id="admin-grid" class="grid gap-6"></div>
 
-        <div id="export-modal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-            <div class="bg-white p-6 rounded-2xl w-full max-w-2xl shadow-2xl">
-                <h2 class="text-xl font-bold mb-4">Copy this code to inventory.js</h2>
-                <textarea id="export-area" class="w-full h-64 p-4 font-mono text-sm border rounded-lg bg-stone-50 mb-4"></textarea>
-                <div class="flex gap-2">
-                    <button onclick="copyCode()" class="flex-1 bg-amber-900 text-white py-3 rounded-xl font-bold">Copy to Clipboard</button>
-                    <button onclick="closeModal()" class="flex-1 bg-stone-200 py-3 rounded-xl font-bold">Close</button>
+        <div id="export-modal" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50 backdrop-blur-sm">
+            <div class="bg-white p-8 rounded-3xl w-full max-w-2xl shadow-2xl">
+                <h2 class="text-2xl font-bold mb-2">Update Live Site</h2>
+                <p class="text-stone-500 mb-6 text-sm">Copy the code below and paste it into your <strong>inventory.js</strong> on GitHub.</p>
+                <textarea id="export-area" class="w-full h-64 p-4 font-mono text-xs border rounded-2xl bg-stone-50 mb-6 ring-1 ring-stone-200"></textarea>
+                <div class="flex gap-3">
+                    <button onclick="copyCode()" class="flex-1 bg-amber-900 text-white py-4 rounded-xl font-bold">Copy Code</button>
+                    <button onclick="closeModal()" class="flex-1 bg-stone-200 py-4 rounded-xl font-bold text-stone-600">Close</button>
                 </div>
             </div>
         </div>
@@ -41,12 +47,11 @@
 
     <script src="inventory.js"></script>
     <script>
-        // Set your password here
         const CREME_PASSWORD = "creme_admin_2026"; 
+        let inventory = window.CremeInventory;
 
         function checkPass() {
-            const input = document.getElementById('pass-input').value;
-            if (input === CREME_PASSWORD) {
+            if (document.getElementById('pass-input').value === CREME_PASSWORD) {
                 document.getElementById('login-screen').classList.add('hidden');
                 document.getElementById('admin-content').classList.remove('hidden');
                 renderAdmin();
@@ -55,35 +60,69 @@
             }
         }
 
-        const inventory = window.CremeInventory;
-
         function renderAdmin() {
             const grid = document.getElementById('admin-grid');
             grid.innerHTML = '';
             Object.keys(inventory).forEach(key => {
                 const item = inventory[key];
                 grid.innerHTML += `
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-stone-200 flex flex-wrap items-center justify-between gap-4">
-                        <div class="flex items-center gap-4">
-                            <img src="${item.image}" class="w-16 h-16 rounded-lg object-cover">
+                    <div class="bg-white p-6 rounded-3xl shadow-sm border border-stone-200 grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+                        <div class="md:col-span-2 flex flex-col items-center gap-3">
+                            <img src="${item.image}" class="w-20 h-20 rounded-2xl object-cover shadow-sm">
+                            <button onclick="toggleStock('${key}')" 
+                                class="w-full py-2 rounded-lg text-[10px] font-bold uppercase tracking-wider transition ${item.inStock ? 'bg-green-100 text-green-700 border border-green-200' : 'bg-red-100 text-red-700 border border-red-200'}">
+                                ${item.inStock ? 'In Stock' : 'Sold Out'}
+                            </button>
+                        </div>
+
+                        <div class="md:col-span-5 space-y-3">
                             <div>
-                                <h3 class="font-bold text-lg">${key}</h3>
-                                <p class="text-sm text-stone-400">${item.category}</p>
+                                <label class="text-[10px] font-bold text-stone-400 uppercase">Product Name</label>
+                                <input type="text" value="${key}" disabled class="w-full bg-stone-50 border-none font-bold text-amber-950 p-1">
+                            </div>
+                            <div>
+                                <label class="text-[10px] font-bold text-stone-400 uppercase">Description</label>
+                                <textarea onchange="updateValue('${key}', 'description', this.value)" 
+                                    class="w-full text-sm border-b border-stone-100 focus:border-amber-900 outline-none resize-none">${item.description}</textarea>
                             </div>
                         </div>
-                        <div class="flex items-center gap-6">
-                            <button onclick="toggleStock('${key}')" 
-                                class="px-4 py-2 rounded-full text-xs font-bold transition ${item.inStock ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}">
-                                ${item.inStock ? '● In Stock' : '○ Sold Out'}
+
+                        <div class="md:col-span-4 grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="text-[10px] font-bold text-stone-400 uppercase">Price ($)</label>
+                                <input type="number" value="${item.price}" onchange="updateValue('${key}', 'price', Number(this.value))" 
+                                    class="w-full p-2 border rounded-lg focus:ring-1 focus:ring-amber-900 outline-none">
+                            </div>
+                            <div>
+                                <label class="text-[10px] font-bold text-stone-400 uppercase">Date Added</label>
+                                <input type="date" value="${item.dateAdded || ''}" onchange="updateValue('${key}', 'dateAdded', this.value)" 
+                                    class="w-full p-2 border rounded-lg focus:ring-1 focus:ring-amber-900 outline-none text-xs">
+                            </div>
+                        </div>
+
+                        <div class="md:col-span-1 flex justify-center">
+                            <button onclick="deleteItem('${key}')" class="text-stone-300 hover:text-red-500 transition text-xl p-2" title="Delete Item">
+                                🗑️
                             </button>
-                            <input type="date" value="${item.dateAdded || ''}" onchange="updateDate('${key}', this.value)" class="border rounded px-2 py-1 text-xs">
                         </div>
                     </div>`;
             });
         }
 
-        function toggleStock(key) { inventory[key].inStock = !inventory[key].inStock; renderAdmin(); }
-        function updateDate(key, newDate) { inventory[key].dateAdded = newDate; }
+        function updateValue(key, field, value) { inventory[key][field] = value; }
+        
+        function toggleStock(key) { 
+            inventory[key].inStock = !inventory[key].inStock; 
+            renderAdmin(); 
+        }
+
+        function deleteItem(key) {
+            if (confirm(`Are you sure you want to remove "${key}" from your inventory? This cannot be undone until you refresh without saving.`)) {
+                delete inventory[key];
+                renderAdmin();
+            }
+        }
+
         function closeModal() { document.getElementById('export-modal').classList.add('hidden'); }
         
         function exportData() {
@@ -96,7 +135,7 @@
             const area = document.getElementById('export-area');
             area.select();
             document.execCommand('copy');
-            alert("Code copied! Now paste it into your inventory.js on GitHub.");
+            alert("Copied! Now update inventory.js on GitHub.");
         }
     </script>
 </body>
