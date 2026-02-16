@@ -63,8 +63,18 @@
                 </select>
             </div>
 
+            <div>
+                <label class="block text-xs uppercase tracking-widest font-bold mb-1">Payment Method</label>
+                <select name="payment_method" required class="w-full p-3 border border-stone-200 rounded-md outline-none focus:ring-1 focus:ring-amber-900">
+                    <option value="Bank Transfer">Bank Transfer</option>
+                    <option value="Cash">Cash (Pickup Only)</option>
+                </select>
+            </div>
+
             <div class="pt-4 border-t border-stone-100">
-                <p class="text-xs text-stone-500 mb-4">By clicking "Place Order", you agree to send a 50% deposit via <strong>Bank Transfer</strong> to confirm.</p>
+                <p id="payment-instruction" class="text-xs text-stone-500 mb-4 italic">
+                    For Store Pickup: Please send 100% via Bank Transfer or pay Cash at the time of pickup.
+                </p>
                 <button type="submit" class="w-full bg-amber-900 text-white font-bold py-4 rounded-md hover:bg-amber-800 transition shadow-lg">
                     Place Order
                 </button>
@@ -102,17 +112,18 @@
 
             subtotalEl.innerText = `$${subtotal.toLocaleString()} JMD`;
             hiddenInput.value = summaryArray.join(", ");
-            calculateTotal(); // Run this to set initial total
+            calculateTotal(); 
         }
 
         function calculateTotal() {
             const select = document.getElementById('delivery-select');
             const feeDisplay = document.getElementById('delivery-fee-display');
             const totalEl = document.getElementById('cart-total');
+            const instructionEl = document.getElementById('payment-instruction');
             const hiddenFeeInput = document.getElementById('hidden-fee-input');
             const hiddenTotalInput = document.getElementById('hidden-total-input');
 
-            // Get fee from the data-fee attribute of the selected option
+            const location = select.value;
             const deliveryFee = parseInt(select.options[select.selectedIndex].getAttribute('data-fee'));
             const finalTotal = subtotal + deliveryFee;
 
@@ -120,7 +131,14 @@
             totalEl.innerText = `$${finalTotal.toLocaleString()} JMD`;
             
             hiddenFeeInput.value = `$${deliveryFee} JMD`;
-            hiddenTotalInput.value = `$${finalTotal} JMD`;
+            hiddenTotalInput.value = `$${finalTotal.toLocaleString()} JMD`;
+
+            // Update text based on selection
+            if (location === "Store Pickup") {
+                instructionEl.innerHTML = `By clicking "Place Order", you agree to send <strong>100% via Bank Transfer</strong> or pay <strong>Cash</strong> at the boutique.`;
+            } else {
+                instructionEl.innerHTML = `By clicking "Place Order", you agree to send a <strong>50% deposit via Bank Transfer</strong> to confirm delivery.`;
+            }
         }
 
         window.onload = loadCheckout;
