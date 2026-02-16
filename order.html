@@ -7,219 +7,29 @@
     <title>Custom Orders | Creme Theory</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
-        h1, h2 { font-family: 'Playfair Display', serif; }
-        /* Custom styling for the date/select inputs to match the brand */
-        input[type="date"]::-webkit-calendar-picker-indicator {
-            filter: invert(21%) sepia(90%) saturate(1251%) hue-rotate(18deg) brightness(92%) contrast(101%);
-        }
-    </style>
 </head>
 <body class="bg-stone-50 text-stone-800 border-t-4 border-amber-900">
-
     <nav class="flex justify-between items-center p-6 max-w-7xl mx-auto">
         <a href="index.html" class="text-2xl font-bold tracking-tighter text-amber-900 uppercase">Creme Theory</a>
-        
         <div class="hidden md:flex space-x-8 font-medium items-center">
             <a href="menu.html" class="hover:text-amber-700 transition">Menu</a>
             <a href="story.html" class="hover:text-amber-700 transition">Our Story</a>
             <a href="order.html" class="font-bold text-amber-900 underline decoration-2 underline-offset-8">Custom Orders</a>
-            
-            <a href="cart.html" class="relative cursor-pointer flex items-center hover:opacity-75 transition">
+        </div>
+        <div class="flex items-center gap-4">
+            <a href="cart.html" class="relative cursor-pointer flex items-center hover:opacity-75 transition mr-1">
                 <span class="text-xl">🛒</span>
                 <span id="cart-count" class="absolute -top-2 -right-2 bg-amber-900 text-white text-[10px] rounded-full px-1.5 py-0.5 font-bold">0</span>
             </a>
-        </div>
-        
-        <div class="flex items-center gap-4">
-            <a href="https://instagram.com/creme.theory" target="_blank" class="text-amber-900 hover:text-amber-700 transition">
-                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
-            </a>
-            <a href="index.html#newsletter" class="bg-amber-900 text-white px-5 py-2 rounded-full hover:bg-amber-800 transition text-sm font-semibold">Join Now</a>
+            <a href="index.html#newsletter" class="bg-amber-900 text-white px-4 py-2 rounded-full hover:bg-amber-800 transition text-xs font-semibold">Join Now</a>
         </div>
     </nav>
 
     <main class="max-w-3xl mx-auto px-6 py-12">
-        <div class="text-center mb-12">
-            <h1 class="text-5xl text-amber-950 mb-4">Custom Inquiry</h1>
-            <p class="text-stone-500 italic">Handcrafted designs for your most significant moments.</p>
-        </div>
-
-        <form action="https://formspree.io/f/mvzbzywl" method="POST" id="order-form" class="space-y-8 bg-white p-10 rounded-2xl shadow-sm border border-stone-100">
+        <form action="https://formspree.io/f/mvzbzywl" method="POST" class="bg-white p-8 rounded-2xl shadow-sm">
             <input type="hidden" name="_next" value="https://legend21-create.github.io/CREME-/success.html">
-
-            <div id="cart-display" class="hidden bg-stone-50 p-6 rounded-xl border border-amber-100 mb-8">
-                <h2 class="text-sm uppercase tracking-widest font-bold text-amber-900 mb-4">Included from Menu</h2>
-                <div id="cart-items-list" class="space-y-3 text-sm text-stone-600"></div>
-                
-                <div id="stock-warning" class="hidden mt-4 p-3 bg-red-50 text-red-700 text-[10px] rounded-md font-bold uppercase tracking-wider">
-                    ⚠️ Sold out items detected. Please update your selection.
-                </div>
-
-                <div class="mt-6 flex justify-between items-center border-t border-stone-200 pt-4">
-                    <button type="button" onclick="clearCart()" class="text-[10px] uppercase tracking-widest font-bold text-stone-400 hover:text-red-600 transition">Clear Selection</button>
-                    <span class="font-bold text-amber-950">Subtotal: <span id="cart-total-price">$0</span></span>
-                </div>
-            </div>
-
-            <div class="grid md:grid-cols-2 gap-6">
-                <div>
-                    <label class="block text-[10px] uppercase tracking-widest font-bold mb-2">Full Name</label>
-                    <input type="text" id="cust-name" name="name" required placeholder="Jane Doe" class="w-full p-4 bg-stone-50 border border-stone-200 rounded-lg focus:ring-1 focus:ring-amber-900 outline-none">
-                </div>
-                <div>
-                    <label class="block text-[10px] uppercase tracking-widest font-bold mb-2">Email Address</label>
-                    <input type="email" name="email" required placeholder="email@example.com" class="w-full p-4 bg-stone-50 border border-stone-200 rounded-lg focus:ring-1 focus:ring-amber-900 outline-none">
-                </div>
-            </div>
-
-            <div class="grid md:grid-cols-2 gap-6">
-                <div>
-                    <label class="block text-[10px] uppercase tracking-widest font-bold mb-2">Event Date</label>
-                    <input type="date" id="event-date" name="date" required class="w-full p-4 bg-stone-50 border border-stone-200 rounded-lg focus:ring-1 focus:ring-amber-900 outline-none">
-                </div>
-                <div>
-                    <label class="block text-[10px] uppercase tracking-widest font-bold mb-2">Guest Count</label>
-                    <input type="number" id="guest-count" name="guests" placeholder="e.g. 25" class="w-full p-4 bg-stone-50 border border-stone-200 rounded-lg focus:ring-1 focus:ring-amber-900 outline-none">
-                </div>
-            </div>
-
-            <div class="grid md:grid-cols-2 gap-6">
-                <div>
-                    <label class="block text-[10px] uppercase tracking-widest font-bold mb-2">Cake Style</label>
-                    <select name="style" id="style-select" class="w-full p-4 bg-stone-50 border border-stone-200 rounded-lg focus:ring-1 focus:ring-amber-900 outline-none appearance-none">
-                        <option value="wedding">Wedding Cake</option>
-                        <option value="birthday">Birthday Celebration</option>
-                        <option value="corporate">Corporate Event</option>
-                        <option value="other">Other Celebration</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-[10px] uppercase tracking-widest font-bold mb-2">Payment Preference</label>
-                    <select name="payment_method" required class="w-full p-4 bg-stone-50 border border-stone-200 rounded-lg focus:ring-1 focus:ring-amber-900 outline-none appearance-none">
-                        <option value="bank_transfer">Bank Transfer</option>
-                        <option value="cash">Cash on Delivery/Pickup</option>
-                    </select>
-                </div>
-            </div>
-
-            <div>
-                <label class="block text-[10px] uppercase tracking-widest font-bold mb-2">Design Notes & Flavors</label>
-                <textarea id="order-notes" name="message" rows="5" placeholder="Include your preferred flavors, colors, and any inspiration ideas..." class="w-full p-4 bg-stone-50 border border-stone-200 rounded-lg focus:ring-1 focus:ring-amber-900 outline-none resize-none"></textarea>
-            </div>
-
-            <div class="flex items-start bg-amber-50/50 p-4 rounded-lg">
-                <input id="terms" name="terms_agreement" type="checkbox" required class="mt-1 w-4 h-4 accent-amber-900">
-                <label for="terms" class="ml-3 text-xs text-stone-600 leading-relaxed">
-                    I agree to the <a href="terms.html" class="text-amber-900 font-bold underline">Terms of Service</a> and understand that a deposit may be required to secure my date.
-                </label>
-            </div>
-
-            <div class="grid gap-4">
-                <button type="submit" id="submit-btn" class="w-full bg-amber-900 text-white font-bold py-5 rounded-xl hover:bg-amber-800 transition shadow-lg uppercase tracking-widest text-sm">
-                    Send Email Inquiry
-                </button>
-                <button type="button" onclick="sendWhatsAppOrder()" class="w-full border-2 border-amber-900 text-amber-900 font-bold py-4 rounded-xl hover:bg-amber-50 transition uppercase tracking-widest text-xs flex justify-center items-center gap-2">
-                    Discuss via WhatsApp
-                </button>
-            </div>
+            <button type="submit" class="w-full bg-amber-900 text-white font-bold py-4 rounded-xl uppercase tracking-widest text-sm">Send Inquiry</button>
         </form>
     </main>
-
-    <footer class="bg-stone-900 text-stone-400 py-16 px-6">
-        <div class="max-w-7xl mx-auto text-center md:text-left grid md:grid-cols-3 gap-12 border-b border-stone-800 pb-12 mb-12">
-            <div>
-                <h2 class="text-white text-2xl font-bold tracking-tighter mb-4 uppercase">Creme Theory</h2>
-                <p class="text-sm">Artisanal excellence in every bite.</p>
-            </div>
-            <div>
-                <h4 class="text-white font-semibold mb-4 uppercase tracking-widest text-[10px]">Contact</h4>
-                <p class="text-sm">+1 (876) 539-8891</p>
-                <p class="text-sm">cremetheory@gmail.com</p>
-            </div>
-            <div class="text-[10px] uppercase tracking-widest">
-                <p>© 2026 Creme Theory Bakery. Jamaica.</p>
-            </div>
-        </div>
-    </footer>
-
-    <script src="inventory.js"></script>
-    <script>
-        function loadCart() {
-            let cart = JSON.parse(localStorage.getItem('creme_cart')) || [];
-            let list = document.getElementById('cart-items-list');
-            let displaySection = document.getElementById('cart-display');
-            let totalEl = document.getElementById('cart-total-price');
-            let countEl = document.getElementById('cart-count');
-            let warning = document.getElementById('stock-warning');
-            let submitBtn = document.getElementById('submit-btn');
-            const inventory = window.CremeInventory || {};
-
-            if (countEl) countEl.innerText = cart.length;
-
-            if (cart.length > 0) {
-                displaySection.classList.remove('hidden');
-                list.innerHTML = '';
-                let total = 0;
-                let hasOutOfStock = false;
-
-                cart.forEach((item) => {
-                    const isSoldOut = inventory[item.name] && !inventory[item.name].inStock;
-                    if (isSoldOut) hasOutOfStock = true;
-
-                    list.innerHTML += `
-                        <div class="flex justify-between items-center ${isSoldOut ? 'text-red-400 line-through italic' : ''}">
-                            <span>${item.name}</span>
-                            <span class="font-semibold">$${item.price.toLocaleString()}</span>
-                        </div>`;
-                    total += item.price;
-                });
-
-                totalEl.innerText = `$${total.toLocaleString()} JMD`;
-
-                if (hasOutOfStock) {
-                    warning.classList.remove('hidden');
-                    submitBtn.disabled = true;
-                    submitBtn.classList.replace('bg-amber-900', 'bg-stone-300');
-                    submitBtn.innerText = "Please remove sold out items";
-                }
-            } else {
-                displaySection.classList.add('hidden');
-            }
-        }
-
-        function sendWhatsAppOrder() {
-            const name = document.getElementById('cust-name').value;
-            const date = document.getElementById('event-date').value;
-            const guests = document.getElementById('guest-count').value;
-            const notes = document.getElementById('order-notes').value;
-            
-            if(!name || !date) {
-                alert("Please at least provide your name and event date!");
-                return;
-            }
-
-            let cart = JSON.parse(localStorage.getItem('creme_cart')) || [];
-            let itemsText = cart.map(i => `• ${i.name}`).join('%0A');
-
-            let message = `*CUSTOM INQUIRY - CREME THEORY*%0A%0A`;
-            message += `*Name:* ${name}%0A`;
-            message += `*Date:* ${date}%0A`;
-            message += `*Guests:* ${guests}%0A`;
-            if(cart.length > 0) message += `%0A*Menu Selection:*%0A${itemsText}%0A`;
-            message += `%0A*Notes:* ${notes}`;
-
-            window.open(`https://wa.me/18765398891?text=${message}`, '_blank');
-        }
-
-        function clearCart() {
-            localStorage.removeItem('creme_cart');
-            location.reload();
-        }
-
-        window.onload = loadCart;
-    </script>
 </body>
 </html>
-
