@@ -77,7 +77,6 @@
                     const displayName = item.name || key;
                     const displayImage = item.image || "https://images.unsplash.com/photo-1555507036-ab1f4038808a?q=80&w=800";
 
-                    // New Badge Logic
                     let isNew = false;
                     if (item.dateAdded) {
                         const addedDate = new Date(item.dateAdded);
@@ -123,3 +122,40 @@
 
             if (grid.innerHTML === '') {
                 grid.innerHTML = '<p class="col-span-full text-center text-stone-400 py-12">No treats found matching that name...</p>';
+            }
+        }
+
+        function updateCategory(cat) {
+            currentCategory = cat;
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            if (cat === 'all') document.getElementById('btn-all').classList.add('active');
+            else if (cat === 'Signature Cakes') document.getElementById('btn-cake').classList.add('active');
+            else if (cat === 'Daily Pastries') document.getElementById('btn-pastry').classList.add('active');
+            filterMenu();
+        }
+
+        function addToCart(name, price) {
+            let cart = JSON.parse(localStorage.getItem('creme_cart')) || [];
+            cart.push({ name, price });
+            localStorage.setItem('creme_cart', JSON.stringify(cart));
+            updateCartCount();
+            
+            const btn = event.target;
+            const originalText = btn.innerText;
+            btn.innerText = "Added ✓";
+            setTimeout(() => { btn.innerText = originalText; }, 1500);
+        }
+
+        function updateCartCount() {
+            const cart = JSON.parse(localStorage.getItem('creme_cart')) || [];
+            const countDisplay = document.getElementById('cart-count');
+            if (countDisplay) countDisplay.innerText = cart.length;
+        }
+
+        window.onload = () => {
+            filterMenu();
+            updateCartCount();
+        };
+    </script>
+</body>
+</html>
