@@ -6,20 +6,24 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-stone-100 p-4 md:p-8 font-sans">
-    <div class="max-w-2xl mx-auto bg-white p-6 md:p-8 rounded-2xl shadow-xl border border-stone-200">
+    <div class="max-w-3xl mx-auto bg-white p-6 md:p-8 rounded-2xl shadow-xl border border-stone-200">
         
         <div class="flex justify-between items-center mb-6">
             <h1 class="text-3xl font-bold text-amber-900 uppercase tracking-tighter">Inventory Manager</h1>
             <span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-1 rounded">MASTER CONTROL</span>
         </div>
 
-        <div class="mb-8 p-4 bg-amber-50 rounded-xl border border-amber-100">
-            <h2 class="text-xs font-bold uppercase tracking-widest text-amber-800 mb-3">Add New Menu Item</h2>
-            <div class="flex flex-col md:flex-row gap-3">
-                <input type="text" id="new-name" placeholder="Item Name (e.g. Lemon Tart)" class="flex-1 p-2 text-sm border rounded focus:ring-1 focus:ring-amber-900 outline-none">
-                <input type="number" id="new-price" placeholder="Price" class="w-full md:w-24 p-2 text-sm border rounded focus:ring-1 focus:ring-amber-900 outline-none">
-                <button onclick="addNewItem()" class="bg-amber-900 text-white px-4 py-2 rounded text-sm font-bold hover:bg-amber-800 transition">Add Item</button>
+        <div class="mb-8 p-6 bg-amber-50 rounded-xl border border-amber-100">
+            <h2 class="text-xs font-bold uppercase tracking-widest text-amber-800 mb-4">Add New Menu Item</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <input type="text" id="new-name" placeholder="Item Name (e.g. Lemon Tart)" class="p-2 text-sm border rounded outline-none focus:ring-1 focus:ring-amber-900">
+                <input type="number" id="new-price" placeholder="Price (JMD)" class="p-2 text-sm border rounded outline-none focus:ring-1 focus:ring-amber-900">
+                <input type="text" id="new-category" placeholder="Category (e.g. Signature Cakes)" class="p-2 text-sm border rounded outline-none focus:ring-1 focus:ring-amber-900">
+                <input type="text" id="new-desc" placeholder="Brief Description" class="p-2 text-sm border rounded outline-none focus:ring-1 focus:ring-amber-900">
             </div>
+            <button onclick="addNewItem()" class="w-full bg-amber-900 text-white py-2 rounded text-sm font-bold hover:bg-amber-800 transition">
+                Add to Inventory List
+            </button>
         </div>
         
         <div id="admin-list" class="space-y-3 mb-8">
@@ -27,8 +31,11 @@
 
         <div class="border-t border-stone-200 pt-6">
             <div class="flex justify-between items-end mb-4">
-                <h2 class="text-xs font-bold uppercase tracking-widest text-stone-400">Export Configuration</h2>
-                <button onclick="copyCode()" class="text-xs bg-stone-800 text-white px-3 py-1.5 rounded-md hover:bg-black transition">
+                <div>
+                    <h2 class="text-xs font-bold uppercase tracking-widest text-stone-400">Export Configuration</h2>
+                    <p class="text-[10px] text-stone-400">Paste this entire block into your inventory.js</p>
+                </div>
+                <button onclick="copyCode()" class="text-xs bg-stone-800 text-white px-4 py-2 rounded-md hover:bg-black transition font-bold">
                     Copy to Clipboard
                 </button>
             </div>
@@ -39,21 +46,29 @@
     <script src="inventory.js"></script>
 
     <script>
-        // Use local copy of inventory to allow additions
         let inventory = window.CremeInventory || {};
 
         function render() {
             const listContainer = document.getElementById('admin-list');
             listContainer.innerHTML = '';
             
-            for (const [name, data] of Object.entries(inventory)) {
+            // Sort by category for easier management
+            const sortedItems = Object.entries(inventory).sort((a, b) => 
+                (a[1].category || "").localeCompare(b[1].category || "")
+            );
+
+            for (const [name, data] of sortedItems) {
                 const row = document.createElement('div');
                 row.className = `flex flex-col md:flex-row md:items-center justify-between p-4 rounded-xl border transition ${data.inStock ? 'bg-white border-stone-200 shadow-sm' : 'bg-stone-50 border-stone-100'}`;
                 
                 row.innerHTML = `
-                    <div class="mb-3 md:mb-0">
-                        <div class="font-bold text-stone-800">${name}</div>
-                        <button onclick="removeItem('${name}')" class="text-[9px] text-red-400 hover:text-red-600 uppercase font-bold tracking-tighter">Remove Item</button>
+                    <div class="mb-3 md:mb-0 flex-1">
+                        <div class="flex items-center gap-2">
+                            <span class="font-bold text-stone-800">${name}</span>
+                            <span class="text-[9px] bg-stone-100 text-stone-500 px-1.5 py-0.5 rounded uppercase">${data.category || 'No Category'}</span>
+                        </div>
+                        <div class="text-[10px] text-stone-400 truncate max-w-xs">${data.description || 'No description'}</div>
+                        <button onclick="removeItem('${name}')" class="text-[9px] text-red-400 hover:text-red-600 uppercase font-bold mt-1">Remove</button>
                     </div>
                     
                     <div class="flex items-center gap-4">
@@ -75,19 +90,28 @@
         function addNewItem() {
             const name = document.getElementById('new-name').value.trim();
             const price = parseInt(document.getElementById('new-price').value);
+            const category = document.getElementById('new-category').value.trim() || "Daily Pastries";
+            const desc = document.getElementById('new-desc').value.trim() || "Artisanal creation handcrafted daily.";
 
             if (name && price) {
-                inventory[name] = { inStock: true, price: price };
+                inventory[name] = { 
+                    inStock: true, 
+                    price: price,
+                    category: category,
+                    description: desc
+                };
+                // Clear inputs
                 document.getElementById('new-name').value = '';
                 document.getElementById('new-price').value = '';
+                document.getElementById('new-desc').value = '';
                 render();
             } else {
-                alert("Please enter both a name and a price.");
+                alert("Please enter at least a name and a price.");
             }
         }
 
         function removeItem(name) {
-            if(confirm(`Are you sure you want to remove ${name}?`)) {
+            if(confirm(`Remove "${name}" from inventory?`)) {
                 delete inventory[name];
                 render();
             }
@@ -112,7 +136,7 @@
             const output = document.getElementById('output-code');
             output.select();
             document.execCommand('copy');
-            alert("Success! Now paste this into your inventory.js file.");
+            alert("Code copied! Paste it into inventory.js to update the live menu.");
         }
 
         window.onload = render;
