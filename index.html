@@ -16,7 +16,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; }
+        body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
         h1, h2, h3 { font-family: 'Playfair Display', serif; }
     </style>
 </head>
@@ -36,7 +36,7 @@
             </a>
         </div>
         
-        <a href="coming-soon.html" class="bg-amber-900 text-white px-5 py-2 rounded-full hover:bg-amber-800 transition">Opening Soon</a>
+        <a href="#newsletter" class="bg-amber-900 text-white px-5 py-2 rounded-full hover:bg-amber-800 transition">Join Now</a>
     </nav>
 
     <header class="relative h-[80vh] flex items-center justify-center text-center px-4">
@@ -54,6 +54,83 @@
     <section class="py-20 max-w-7xl mx-auto px-6">
         <div class="grid md:grid-cols-3 gap-12 text-center">
             <div class="group cursor-pointer">
-                <div class="h-80 bg-stone-200 rounded-
+                <div class="h-80 bg-stone-200 rounded-lg mb-4 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&q=80&w=800" alt="Cake" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                </div>
+                <h3 class="text-xl font-semibold mb-2">Signature Cakes</h3>
+                <p class="text-stone-500">Multi-layered wonders for your most special occasions.</p>
+            </div>
+            <div class="group cursor-pointer">
+                <div class="h-80 bg-stone-200 rounded-lg mb-4 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&q=80&w=800" alt="Pastries" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                </div>
+                <h3 class="text-xl font-semibold mb-2">Daily Pastries</h3>
+                <p class="text-stone-500">Flaky, buttery, and baked fresh every single morning.</p>
+            </div>
+            <div class="group cursor-pointer">
+                <div class="h-80 bg-stone-200 rounded-lg mb-4 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1481391243133-f96216dcb5d2?auto=format&fit=crop&q=80&w=800" alt="Macarons" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                </div>
+                <h3 class="text-xl font-semibold mb-2">Artisan Macarons</h3>
+                <p class="text-stone-500">A delicate balance of texture and vibrant seasonal flavors.</p>
+            </div>
+        </div>
+    </section>
 
+    <section id="newsletter" class="py-20 bg-amber-50 text-center px-6 border-t border-amber-100">
+        <div class="max-w-xl mx-auto">
+            <h2 class="text-3xl text-amber-950 mb-2">Be the First to Know</h2>
+            <p class="text-stone-600 mb-8">Join the inner circle for exclusive launch updates and tasting invites.</p>
+            
+            <form action="https://formspree.io/f/YOUR_NEW_ID" method="POST" class="flex flex-col md:flex-row gap-3">
+                <input 
+                    type="email" 
+                    name="email" 
+                    required 
+                    placeholder="Enter your email address" 
+                    class="flex-1 p-4 rounded-md border border-stone-200 focus:outline-none focus:ring-1 focus:ring-amber-900"
+                >
+                <button type="submit" class="bg-amber-900 text-white px-8 py-4 rounded-md hover:bg-amber-800 transition font-bold shadow-md">
+                    Join Now
+                </button>
+            </form>
+        </div>
+    </section>
 
+    <footer class="bg-stone-900 text-stone-400 py-16 px-6">
+        <div class="max-w-7xl mx-auto grid md:grid-cols-3 gap-12 border-b border-stone-800 pb-12 mb-12">
+            <div>
+                <h2 class="text-white text-2xl font-bold tracking-tighter mb-4 text-white">CREME THEORY</h2>
+                <p class="text-sm leading-relaxed max-w-xs">Crafting artisanal experiences through the science of baking. Visit our flagship boutique for daily fresh batches.</p>
+            </div>
+            <div>
+                <h4 class="text-white font-semibold mb-4 uppercase tracking-widest text-xs">Contact & Visit</h4>
+                <ul class="text-sm space-y-2">
+                    <li class="text-white">Jamaica</li>
+                    <li class="pt-2 text-amber-500 font-medium">+1 (876) 539-8891</li>
+                    <li>cremetheory@gmail.com</li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-white font-semibold mb-4 uppercase tracking-widest text-xs">Bakery Hours</h4>
+                <ul class="text-sm space-y-2">
+                    <li class="flex justify-between"><span>Mon - Fri</span> <span>7:00 AM - 6:00 PM</span></li>
+                    <li class="flex justify-between"><span>Sat - Sun</span> <span>8:00 AM - 2:00 PM</span></li>
+                </ul>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto text-xs uppercase tracking-widest">
+            <p>© 2026 Creme Theory Bakery.</p>
+        </div>
+    </footer>
+
+    <script>
+        function updateCartUI() {
+            let cart = JSON.parse(localStorage.getItem('creme_cart')) || [];
+            const countDisplay = document.getElementById('cart-count');
+            if (countDisplay) countDisplay.innerText = cart.length;
+        }
+        window.onload = updateCartUI;
+    </script>
+</body>
+</html>
