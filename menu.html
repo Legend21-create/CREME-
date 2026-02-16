@@ -16,7 +16,7 @@
             border-color: #78350f; 
         }
         #back-to-top {
-            display: none; /* Hidden by default */
+            display: none; 
             position: fixed;
             bottom: 30px;
             right: 30px;
@@ -34,7 +34,7 @@
             <a href="story.html" class="hover:text-amber-700 transition text-stone-600">Our Story</a>
             <a href="order.html" class="hover:text-amber-700 transition text-stone-600">Custom Orders</a>
             
-            <a href="checkout.html" class="relative cursor-pointer flex items-center hover:opacity-75 transition">
+            <a href="cart.html" class="relative cursor-pointer flex items-center hover:opacity-75 transition">
                 <span class="text-xl">🛒</span>
                 <span id="cart-count" class="absolute -top-2 -right-2 bg-amber-900 text-white text-[10px] rounded-full px-1.5 py-0.5 font-bold">0</span>
             </a>
@@ -72,12 +72,10 @@
             >
         </div>
 
-        <div id="filter-bar" class="flex flex-wrap justify-center gap-3 px-6 mb-8">
-            </div>
+        <div id="filter-bar" class="flex flex-wrap justify-center gap-3 px-6 mb-8"></div>
     </header>
 
-    <main id="menu-container" class="max-w-5xl mx-auto px-6 pb-24 space-y-16">
-        </main>
+    <main id="menu-container" class="max-w-5xl mx-auto px-6 pb-24 space-y-16"></main>
 
     <footer class="bg-stone-900 text-stone-400 py-16 px-6 mt-auto">
         <div class="max-w-7xl mx-auto grid md:grid-cols-3 gap-12 border-b border-stone-800 pb-12 mb-12 text-center md:text-left">
@@ -102,7 +100,6 @@
         let cart = JSON.parse(localStorage.getItem('creme_cart')) || [];
         let currentFilter = 'all';
 
-        // Visibility Logic for Top Button
         window.onscroll = function() {
             const btn = document.getElementById("back-to-top");
             if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
@@ -204,27 +201,3 @@
                     } else {
                         item.style.display = 'none';
                     }
-                });
-                section.style.display = hasVisibleItems ? 'block' : 'none';
-            });
-        }
-
-        function addToCart(name, price) {
-            cart.push({ name, price });
-            localStorage.setItem('creme_cart', JSON.stringify(cart));
-            updateCartCount();
-            alert(name + " added to your selection!");
-        }
-
-        function updateCartCount() {
-            const countDisplay = document.getElementById('cart-count');
-            if (countDisplay) countDisplay.innerText = cart.length;
-        }
-
-        window.onload = () => {
-            renderMenu();
-            updateCartCount();
-        };
-    </script>
-</body>
-</html>
