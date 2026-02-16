@@ -88,13 +88,7 @@
             <div class="grid grid-cols-1 md:grid-cols-4 gap-12 border-b border-stone-800 pb-16 mb-12">
                 <div class="col-span-1 md:col-span-1 text-center md:text-left">
                     <h2 class="text-white text-2xl font-bold tracking-tighter mb-4 uppercase">Creme Theory</h2>
-                    <p class="text-sm leading-relaxed">Artisanal excellence in every bite. Handcrafted pastries and signature cakes delivered from our heart to your home.</p>
-                    <div class="flex gap-4 mt-6 justify-center md:justify-start">
-                        <a href="https://instagram.com/creme.theory" target="_blank" class="flex items-center gap-2 text-stone-300 hover:text-white transition-all duration-300 group">
-                            <span class="text-xl group-hover:scale-110 transition-transform">📸</span>
-                            <span class="text-xs font-bold tracking-widest border-b border-transparent group-hover:border-white">@creme.theory</span>
-                        </a>
-                    </div>
+                    <p class="text-sm leading-relaxed">Artisanal excellence in every bite.</p>
                 </div>
                 <div class="text-center md:text-left">
                     <h4 class="text-white font-bold uppercase tracking-widest text-[10px] mb-6">Shop</h4>
@@ -106,34 +100,67 @@
                 <div class="text-center md:text-left">
                     <h4 class="text-white font-bold uppercase tracking-widest text-[10px] mb-6">Support</h4>
                     <ul class="space-y-4 text-sm">
-                        <li><a href="terms.html" class="hover:text-white transition">Terms of Service</a></li>
+                        <li><a href="terms.html" class="hover:text-white transition font-bold text-amber-500 underline">Terms of Service</a></li>
                         <li><a href="story.html" class="hover:text-white transition">Our Story</a></li>
                     </ul>
                 </div>
                 <div class="text-center md:text-left">
-                    <h4 class="text-white font-bold uppercase tracking-widest text-[10px] mb-6">Bakery Hours</h4>
-                    <p class="text-xs mb-2">Mon - Fri: 7:00 AM - 6:00 PM</p>
-                    <p class="text-xs">Sat - Sun: 8:00 AM - 2:00 PM</p>
+                    <h4 class="text-white font-bold uppercase tracking-widest text-[10px] mb-6">Delivery</h4>
+                    <p class="text-xs">Serving St. Catherine & Kingston, Jamaica.</p>
                 </div>
             </div>
-            <div class="flex justify-between items-center">
-                <p class="text-[10px] uppercase tracking-widest">© 2026 Creme Theory. Jamaica.</p>
-            </div>
+            <p class="text-[10px] uppercase tracking-widest">© 2026 Creme Theory.</p>
         </div>
     </footer>
 
     <script>
+        // Helper to turn "$6,500" or "6500" into a clean number
+        function parsePrice(priceVal) {
+            if (typeof priceVal === 'number') return priceVal;
+            return parseFloat(priceVal.replace(/[^0-9.]/g, '')) || 0;
+        }
+
         function updateOrderDisplay() {
             const cart = JSON.parse(localStorage.getItem('creme_cart')) || [];
             const cartDisplay = document.getElementById('cart-display');
             const cartItemsList = document.getElementById('cart-items-list');
             const cartTotalPrice = document.getElementById('cart-total-price');
             const cartSummaryHidden = document.getElementById('cart-summary-hidden');
-            const cartCount = document.getElementById('cart-count');
+            const cartCountLabel = document.getElementById('cart-count');
 
-            cartCount.innerText = cart.length;
+            cartCountLabel.innerText = cart.length;
 
             if (cart.length > 0) {
                 cartDisplay.classList.remove('hidden');
                 let total = 0;
+                let listHtml = "";
                 let summaryText = "Items Selected: \n";
+
+                cart.forEach(item => {
+                    const price = parsePrice(item.price);
+                    total += price;
+                    listHtml += `<div class="flex justify-between"><span>${item.name}</span> <span class="font-bold text-amber-900">$${price.toLocaleString()}</span></div>`;
+                    summaryText += `- ${item.name} ($${price.toLocaleString()})\n`;
+                });
+
+                cartItemsList.innerHTML = listHtml;
+                cartTotalPrice.innerText = `$${total.toLocaleString()}`;
+                cartSummaryHidden.value = summaryText + `\nTotal: $${total.toLocaleString()}`;
+            } else {
+                cartDisplay.classList.add('hidden');
+                cartSummaryHidden.value = "";
+            }
+        }
+
+        function clearCart() {
+            if(confirm("Clear your menu selections?")) {
+                localStorage.removeItem('creme_cart');
+                updateOrderDisplay();
+            }
+        }
+
+        // Initialize on page load
+        window.onload = updateOrderDisplay;
+    </script>
+</body>
+</html>
