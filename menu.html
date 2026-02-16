@@ -47,46 +47,8 @@
 
     <main class="max-w-5xl mx-auto px-6 pb-24">
         <section class="mb-20">
-            <h2 class="text-3xl border-b border-stone-200 pb-4 mb-8 text-amber-950">Signature Cakes</h2>
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div class="menu-item bg-white border border-stone-100 p-6 rounded-xl shadow-sm hover:shadow-md transition flex flex-col">
-                    <h3 class="item-name text-xl font-bold mb-1">Signature 6" Cake</h3>
-                    <p class="text-stone-500 text-sm mb-4">Serves 8-10. Perfect for intimate celebrations.</p>
-                    <div class="flex items-center justify-between mt-auto">
-                        <span class="font-semibold text-amber-900">$6,500 JMD</span>
-                        <button onclick="addToCart('Signature 6&quot; Cake', 6500)" class="add-button bg-stone-800 text-white px-4 py-2 rounded text-sm hover:bg-amber-900 transition">
-                            Add to Cart
-                        </button>
-                    </div>
-                </div>
-
-                <div class="menu-item bg-white border border-stone-100 p-6 rounded-xl shadow-sm hover:shadow-md transition flex flex-col">
-                    <h3 class="item-name text-xl font-bold mb-1">Velvet Theory</h3>
-                    <p class="text-stone-500 text-sm mb-4">Cocoa-infused sponge with vanilla bean frosting.</p>
-                    <div class="flex items-center justify-between mt-auto">
-                        <span class="font-semibold text-amber-900">$7,200 JMD</span>
-                        <button onclick="addToCart('Velvet Theory', 7200)" class="add-button bg-stone-800 text-white px-4 py-2 rounded text-sm hover:bg-amber-900 transition">
-                            Add to Cart
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section>
-            <h2 class="text-3xl border-b border-stone-200 pb-4 mb-8 text-amber-950">Daily Pastries</h2>
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div class="menu-item bg-white border border-stone-100 p-6 rounded-xl shadow-sm hover:shadow-md transition flex flex-col">
-                    <h3 class="item-name text-xl font-bold mb-1">Heritage Croissant</h3>
-                    <p class="text-stone-500 text-sm mb-4">Flaky layers made with French butter.</p>
-                    <div class="flex items-center justify-between mt-auto">
-                        <span class="font-semibold text-amber-900">$850 JMD</span>
-                        <button onclick="addToCart('Heritage Croissant', 850)" class="add-button bg-stone-800 text-white px-4 py-2 rounded text-sm hover:bg-amber-900 transition">
-                            Add to Cart
-                        </button>
-                    </div>
-                </div>
-            </div>
+            <h2 class="text-3xl border-b border-stone-200 pb-4 mb-8 text-amber-950">Current Selection</h2>
+            <div id="dynamic-menu-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
         </section>
     </main>
 
@@ -112,33 +74,37 @@
     <script>
         let cart = JSON.parse(localStorage.getItem('creme_cart')) || [];
 
-        function updateMenuAvailability() {
-            // Use the data from our central inventory file
-            const Inventory = window.CremeInventory;
-            if (!Inventory) return; // Guard in case file is missing
-
-            const items = document.querySelectorAll('.menu-item');
+        function renderMenu() {
+            const menuGrid = document.getElementById('dynamic-menu-grid');
+            const inventory = window.CremeInventory;
             
-            items.forEach(item => {
-                const name = item.querySelector('.item-name').innerText.trim();
+            if (!inventory || !menuGrid) return;
+
+            menuGrid.innerHTML = ''; // Clear current grid
+
+            for (const [name, data] of Object.entries(inventory)) {
+                const isSoldOut = !data.inStock;
                 
-                if (Inventory[name] && !Inventory[name].inStock) {
-                    item.classList.add('opacity-60', 'grayscale-[0.5]');
-                    const btn = item.querySelector('.add-button');
-                    btn.innerText = "Sold Out";
-                    btn.disabled = true;
-                    btn.classList.replace('bg-stone-800', 'bg-stone-300');
-                    btn.classList.add('cursor-not-allowed');
-                    
-                    // Add "Out of Stock" Badge if it doesn't exist
-                    if (!item.querySelector('.stock-badge')) {
-                        const badge = document.createElement('span');
-                        badge.className = "stock-badge text-[10px] bg-red-100 text-red-600 px-2 py-1 rounded-full uppercase font-bold ml-2 inline-block align-middle";
-                        badge.innerText = "Out of Stock";
-                        item.querySelector('.item-name').appendChild(badge);
-                    }
-                }
-            });
+                const itemHTML = `
+                    <div class="menu-item bg-white border border-stone-100 p-6 rounded-xl shadow-sm hover:shadow-md transition flex flex-col ${isSoldOut ? 'opacity-60 grayscale-[0.5]' : ''}">
+                        <div class="flex justify-between items-start mb-1">
+                            <h3 class="item-name text-xl font-bold text-stone-800">${name}</h3>
+                            ${isSoldOut ? '<span class="text-[10px] bg-red-100 text-red-600 px-2 py-1 rounded-full uppercase font-bold">Sold Out</span>' : ''}
+                        </div>
+                        <p class="text-stone-500 text-sm mb-4">${data.description || 'Artisanal creation handcrafted daily.'}</p>
+                        <div class="flex items-center justify-between mt-auto">
+                            <span class="font-semibold text-amber-900">$${data.price.toLocaleString()} JMD</span>
+                            <button 
+                                onclick="addToCart('${name.replace(/'/g, "\\'")}', ${data.price})" 
+                                class="add-button px-4 py-2 rounded text-sm font-semibold transition ${isSoldOut ? 'bg-stone-300 text-stone-600 cursor-not-allowed' : 'bg-stone-800 text-white hover:bg-amber-900'}"
+                                ${isSoldOut ? 'disabled' : ''}>
+                                ${isSoldOut ? 'Out of Stock' : 'Add to Cart'}
+                            </button>
+                        </div>
+                    </div>
+                `;
+                menuGrid.insertAdjacentHTML('beforeend', itemHTML);
+            }
         }
 
         function addToCart(name, price) {
@@ -153,9 +119,10 @@
             if (countDisplay) countDisplay.innerText = cart.length;
         }
 
+        // Initialize page
         window.onload = () => {
+            renderMenu();
             updateCartCount();
-            updateMenuAvailability();
         };
     </script>
 </body>
