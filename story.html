@@ -82,28 +82,20 @@
         </div>
     </main>
 
-    <footer class="bg-stone-900 text-stone-400 py-16 px-6">
-        <div class="max-w-7xl mx-auto text-center md:text-left grid md:grid-cols-3 gap-12 border-b border-stone-800 pb-12 mb-12">
-            <div>
-                <h2 class="text-white text-2xl font-bold tracking-tighter mb-4 uppercase">Creme Theory</h2>
-                <p class="text-sm">Artisanal excellence in every bite.</p>
-            </div>
-            <div>
-                <h4 class="text-white font-semibold mb-4 uppercase tracking-widest text-[10px]">Contact</h4>
-                <p class="text-sm">+1 (876) 539-8891</p>
-                <p class="text-sm">cremetheory@gmail.com</p>
-            </div>
-            <div class="text-[10px] uppercase tracking-widest">
-                <p>© 2026 Creme Theory Bakery. Jamaica.</p>
-            </div>
-        </div>
-    </footer>
+    <footer class="bg-stone-900 text-stone-400 py-20 px-6 mt-20">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 border-b border-stone-800 pb-16 mb-12">
+                
+                <div class="col-span-1 md:col-span-1 text-center md:text-left">
+                    <h2 class="text-white text-2xl font-bold tracking-tighter mb-4 uppercase">Creme Theory</h2>
+                    <p class="text-sm leading-relaxed">Artisanal excellence in every bite. Handcrafted pastries and signature cakes delivered from our heart to your home.</p>
+                    <div class="flex gap-4 mt-6 justify-center md:justify-start">
+                        <a href="https://instagram.com/creme.theory" target="_blank" class="flex items-center gap-2 text-stone-300 hover:text-white transition-all duration-300 group">
+                            <span class="text-xl group-hover:scale-110 transition-transform">📸</span>
+                            <span class="text-xs font-bold tracking-widest border-b border-transparent group-hover:border-white">@creme.theory</span>
+                        </a>
+                    </div>
+                </div>
 
-    <script>
-        window.onload = () => {
-            const cart = JSON.parse(localStorage.getItem('creme_cart')) || [];
-            document.getElementById('cart-count').innerText = cart.length;
-        };
-    </script>
-</body>
-</html>
+                <div class="text-center md:text-left">
+                    <h4 class="text-white font-bold uppercase tracking-widest text-[10px] mb-6">Shop</h4>
