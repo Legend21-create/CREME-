@@ -79,7 +79,6 @@
     <script src="inventory.js"></script>
     <script>
         const CREME_PASSWORD = "creme_admin_2026"; 
-        
         let inventory = window.CremeInventory || {};
         let settings = window.CremeSettings || { announcement: "", shopOpen: true };
 
@@ -146,5 +145,51 @@
         }
 
         function toggleStock(key) { inventory[key].inStock = !inventory[key].inStock; renderAdmin(); }
-        function deleteItem(key) { if(confirm('Delete this item?')) { delete inventory[key]; renderAdmin(); } }
-        function closeModal() { document.getElementById('export
+        
+        function deleteItem(key) { 
+            if(confirm('Delete this item?')) { 
+                delete inventory[key]; 
+                renderAdmin(); 
+            } 
+        }
+
+        function addNewItem() {
+            const name = document.getElementById('new-name').value;
+            const price = document.getElementById('new-price').value;
+            if(!name || !price) return alert("Name and Price required!");
+            
+            inventory[name] = { 
+                inStock: true, 
+                price: Number(price), 
+                category: document.getElementById('new-category').value,
+                description: document.getElementById('new-desc').value,
+                image: document.getElementById('new-image').value || "https://images.unsplash.com/photo-1555507036-ab1f4038808a",
+                dateAdded: new Date().toISOString().split('T')[0]
+            };
+            
+            document.getElementById('new-name').value = "";
+            document.getElementById('new-price').value = "";
+            document.getElementById('new-desc').value = "";
+            document.getElementById('new-image').value = "";
+            renderAdmin();
+        }
+
+        function exportData() {
+            const dataStr = "const InventoryData = " + JSON.stringify(inventory, null, 4) + ";\n\n" +
+                            "const SiteSettings = " + JSON.stringify(settings, null, 4) + ";\n\n" +
+                            "window.CremeInventory = InventoryData;\n" +
+                            "window.CremeSettings = SiteSettings;";
+            document.getElementById('export-area').value = dataStr;
+            document.getElementById('export-modal').classList.remove('hidden');
+        }
+
+        function closeModal() { document.getElementById('export-modal').classList.add('hidden'); }
+
+        function copyCode() {
+            document.getElementById('export-area').select();
+            document.execCommand('copy');
+            alert("Copied! Paste this into inventory.js");
+        }
+    </script>
+</body>
+</html>
