@@ -6,9 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Our Story | Creme Theory</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; }
+        body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
         h1, h2 { font-family: 'Playfair Display', serif; }
     </style>
 </head>
@@ -16,61 +16,91 @@
 
     <nav class="flex justify-between items-center p-6 max-w-7xl mx-auto">
         <a href="index.html" class="text-2xl font-bold tracking-tighter text-amber-900">CREME THEORY</a>
-        <div class="hidden md:flex space-x-8 font-medium">
+        
+        <div class="hidden md:flex space-x-8 font-medium items-center">
             <a href="menu.html" class="hover:text-amber-700 transition">Menu</a>
             <a href="story.html" class="font-bold text-amber-900">Our Story</a>
             <a href="order.html" class="hover:text-amber-700 transition">Custom Orders</a>
+            
+            <a href="checkout.html" class="relative cursor-pointer flex items-center hover:opacity-75 transition">
+                <span class="text-xl">🛒</span>
+                <span id="cart-count" class="absolute -top-2 -right-2 bg-amber-900 text-white text-[10px] rounded-full px-1.5 py-0.5 font-bold">0</span>
+            </a>
         </div>
-        <a href="coming-soon.html" class="bg-amber-900 text-white px-5 py-2 rounded-full hover:bg-amber-800 transition">Opening Soon</a>
+        
+        <div class="flex items-center gap-4">
+            <a href="https://instagram.com/creme.theory" target="_blank" class="text-amber-900 hover:text-amber-700 transition" aria-label="Follow us on Instagram">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                </svg>
+            </a>
+            
+            <a href="index.html#newsletter" class="bg-amber-900 text-white px-5 py-2 rounded-full hover:bg-amber-800 transition text-sm font-semibold">
+                Join Now
+            </a>
+        </div>
     </nav>
 
-    <main class="max-w-4xl mx-auto px-6 py-16">
+    <main class="max-w-4xl mx-auto px-6 py-24">
         <div class="grid md:grid-cols-2 gap-12 items-center">
             <div>
-                <h1 class="text-5xl text-amber-950 mb-6">The Science of Sweetness</h1>
-                <p class="text-stone-600 leading-relaxed mb-4">
-                    Founded in 2026, **Creme Theory** began with a simple hypothesis: that baking is as much a precise science as it is a fine art.
+                <h1 class="text-5xl text-amber-950 mb-6 leading-tight">The Science of Sweetness</h1>
+                <p class="text-stone-600 leading-relaxed mb-4 text-lg">
+                    Founded in 2026, <strong class="text-amber-900">Creme Theory</strong> began with a simple hypothesis: that baking is as much a precise science as it is a fine art.
                 </p>
-                <p class="text-stone-600 leading-relaxed">
-                    Every pastry is an experiment in flavor, texture, and refined craftsmanship.
+                <p class="text-stone-600 leading-relaxed text-lg">
+                    Every pastry is an experiment in flavor, texture, and refined craftsmanship. We believe in elevating local Jamaican ingredients through classic French techniques.
                 </p>
             </div>
-            <div class="bg-stone-200 h-96 rounded-lg overflow-hidden shadow-xl">
-                <img src="https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&q=80&w=800" alt="Baking" class="w-full h-full object-cover">
+            <div class="bg-stone-200 h-[500px] rounded-lg overflow-hidden shadow-2xl rotate-2 hover:rotate-0 transition duration-500">
+                <img src="https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&q=80&w=800" alt="Baking Process" class="w-full h-full object-cover">
             </div>
         </div>
     </main>
-<script>
-let cart = JSON.parse(localStorage.getItem('creme_cart')) || [];
 
-function addToCart(name, price) {
-    cart.push({ name, price });
-    updateCart();
-    alert(name + " added to your selection!");
-}
+    <footer class="bg-stone-900 text-stone-400 py-16 px-6">
+        <div class="max-w-7xl mx-auto grid md:grid-cols-3 gap-12 border-b border-stone-800 pb-12 mb-12">
+            <div>
+                <h2 class="text-white text-2xl font-bold tracking-tighter mb-4 uppercase">Creme Theory</h2>
+                <p class="text-sm leading-relaxed max-w-xs">Crafting artisanal experiences through the science of baking. Specializing in refined sweets and elevated flavors.</p>
+            </div>
+            <div>
+                <h4 class="text-white font-semibold mb-4 uppercase tracking-widest text-xs">Contact & Visit</h4>
+                <ul class="text-sm space-y-2">
+                    <li class="text-white">Jamaica</li>
+                    <li class="pt-2 text-amber-500 font-medium">+1 (876) 539-8891</li>
+                    <li>cremetheory@gmail.com</li>
+                    <li class="pt-2 flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-amber-500"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                        <a href="https://instagram.com/creme.theory" target="_blank" class="hover:text-white transition">@creme.theory</a>
+                    </li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-white font-semibold mb-4 uppercase tracking-widest text-xs">Bakery Hours</h4>
+                <ul class="text-sm space-y-2">
+                    <li class="flex justify-between"><span>Mon - Fri</span> <span>7:00 AM - 6:00 PM</span></li>
+                    <li class="flex justify-between"><span>Sat - Sun</span> <span>8:00 AM - 2:00 PM</span></li>
+                </ul>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto text-xs uppercase tracking-widest">
+            <p>© 2026 Creme Theory Bakery.</p>
+        </div>
+    </footer>
 
-function updateCart() {
-    localStorage.setItem('creme_cart', JSON.stringify(cart));
-    document.getElementById('cart-count').innerText = cart.length;
-    
-    // If on the order page, fill the text box automatically
-    const noteBox = document.querySelector('textarea[name="message"]');
-    if (noteBox) {
-        let orderSummary = "ORDERED ITEMS:\n";
-        let total = 0;
-        cart.forEach(item => {
-            orderSummary += `- ${item.name}: $${item.price} JMD\n`;
-            total += item.price;
-        });
-        orderSummary += `\nESTIMATED TOTAL: $${total} JMD\n\nDESIGN NOTES: `;
-        noteBox.value = orderSummary;
-    }
-}
+    <script>
+        let cart = JSON.parse(localStorage.getItem('creme_cart')) || [];
 
-// Run on page load
-updateCart();
-</script>
+        function updateCart() {
+            localStorage.setItem('creme_cart', JSON.stringify(cart));
+            const countDisplay = document.getElementById('cart-count');
+            if (countDisplay) countDisplay.innerText = cart.length;
+        }
+
+        window.onload = updateCart;
+    </script>
 </body>
 </html>
-
-
