@@ -57,4 +57,76 @@
                     <option value="Signature Cakes">Signature Cakes</option>
                     <option value="Daily Pastries">Daily Pastries</option>
                 </select>
-                <input type
+                <input type="number" id="new-price" placeholder="Price (JMD)" class="p-3 border rounded-xl outline-none text-sm">
+                <button onclick="addNewItem()" class="bg-stone-800 text-white rounded-xl font-bold hover:bg-stone-900 transition text-sm">Add to Inventory</button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                <input type="text" id="new-image" placeholder="Image URL" class="p-3 border rounded-xl outline-none text-sm">
+                <input type="text" id="new-desc" placeholder="Brief description..." class="p-3 border rounded-xl outline-none text-sm">
+            </div>
+        </div>
+
+        <h2 class="text-sm font-bold text-amber-950 mb-4 uppercase tracking-widest ml-2">Current Inventory</h2>
+        <div id="admin-grid" class="grid gap-4 pb-20"></div>
+
+        <div id="export-modal" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50 backdrop-blur-sm">
+            <div class="bg-white p-8 rounded-3xl w-full max-w-2xl shadow-2xl">
+                <h2 class="text-2xl font-bold mb-2 font-['Playfair_Display']">Backup Export</h2>
+                <p class="text-stone-500 mb-6 text-xs">Sync failed. Use this code to update <strong>inventory.js</strong> manually.</p>
+                <textarea id="export-area" class="w-full h-64 p-4 font-mono text-[10px] border rounded-2xl bg-stone-50 mb-6"></textarea>
+                <div class="flex gap-3">
+                    <button onclick="copyCode()" class="flex-1 bg-amber-900 text-white py-4 rounded-xl font-bold">Copy Code</button>
+                    <button onclick="closeModal()" class="flex-1 bg-stone-200 py-4 rounded-xl font-bold text-stone-600">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="inventory.js"></script>
+    <script>
+        const CREME_PASSWORD = "creme_admin_2026"; 
+        const GITHUB_CONFIG = {
+            token: "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",
+            owner: "Legend21-create",
+            repo: "CREME-",
+            path: "inventory.js"
+        };
+
+        let inventory = window.CremeInventory || [];
+        let settings = window.CremeSettings || { 
+            announcement: "", shopOpen: true, 
+            deliveryFees: { "Spanish Town": 1000, "Half Way Tree": 1200, "Papine": 1500, "May Pen": 2500 }
+        };
+
+        function checkPass() {
+            if (document.getElementById('pass-input').value.trim() === CREME_PASSWORD) {
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('admin-content').classList.remove('hidden');
+                initSettings(); renderFees(); renderAdmin();
+            } else {
+                document.getElementById('error-msg').classList.remove('hidden');
+            }
+        }
+
+        document.getElementById("pass-input").addEventListener("keyup", (e) => { if (e.key === "Enter") checkPass(); });
+
+        function initSettings() {
+            document.getElementById('set-announcement').value = settings.announcement || "";
+            updateShopBtn();
+        }
+
+        function renderFees() {
+            const container = document.getElementById('fees-container');
+            if (!container) return;
+            container.innerHTML = '';
+            for (const [loc, fee] of Object.entries(settings.deliveryFees)) {
+                container.innerHTML += `<div><label class="block text-[9px] font-bold text-stone-400 mb-1">${loc}</label>
+                    <input type="number" value="${fee}" onchange="settings.deliveryFees['${loc}'] = Number(this.value)" 
+                    class="w-full p-2 border rounded-lg text-sm outline-none"></div>`;
+            }
+        }
+
+        function updateShopBtn() {
+            const btn = document.getElementById('shop-toggle');
+            btn.innerText = settings.shopOpen ? "SHOP IS LIVE" : "SHOP IS CLOSED";
+            btn.className = `w-full py-3 rounded-xl font-bold border ${settings.shopOpen ? 'bg-green-50 text-green-700 border-green-200' : 'bg-red-
