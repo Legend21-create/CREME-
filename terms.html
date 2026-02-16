@@ -16,13 +16,11 @@
 
     <nav class="flex justify-between items-center p-6 max-w-7xl mx-auto">
         <a href="index.html" class="text-2xl font-bold tracking-tighter text-amber-900 uppercase">Creme Theory</a>
-        
         <div class="hidden md:flex space-x-8 font-medium items-center">
             <a href="menu.html" class="hover:text-amber-700 transition">Menu</a>
             <a href="story.html" class="hover:text-amber-700 transition">Our Story</a>
             <a href="order.html" class="hover:text-amber-700 transition">Custom Orders</a>
         </div>
-        
         <div class="flex items-center gap-4">
             <a href="cart.html" class="relative cursor-pointer flex items-center hover:opacity-75 transition mr-1">
                 <span class="text-xl">🛒</span>
@@ -33,95 +31,83 @@
     </nav>
 
     <main class="max-w-3xl mx-auto px-6 py-16">
-        <header class="text-center mb-12">
-            <h1 class="text-4xl md:text-5xl text-amber-950 mb-4">Terms of Service</h1>
-            <p class="text-stone-500 italic">Effective February 2026</p>
+        <header class="text-center mb-16">
+            <h1 class="text-4xl md:text-5xl text-amber-950 mb-4">Terms & Conditions</h1>
+            <div class="w-16 h-1 bg-amber-900 mx-auto mb-6"></div>
+            <p class="text-stone-500 italic text-sm">Last Updated: February 2026</p>
         </header>
 
-        <div class="prose prose-stone max-w-none space-y-8 text-stone-600 leading-relaxed">
+        <div class="space-y-12 text-stone-600 leading-relaxed">
+            
             <section>
-                <h2 class="text-2xl text-amber-900 mb-4">1. Custom Orders & Deposits</h2>
-                <p>All custom orders require a <strong>50% non-refundable deposit</strong> to secure your date. Your order is not confirmed until the deposit has been received and acknowledged by Creme Theory.</p>
-            </section>
-
-            <section>
-                <h2 class="text-2xl text-amber-900 mb-4">2. Final Payments</h2>
-                <p>Remaining balances for wedding cakes and large events are due <strong>7 days prior</strong> to the event date.</p>
-                <div class="bg-amber-50 p-4 rounded-lg border-l-4 border-amber-900 mt-4">
-                    <p class="text-amber-950 font-medium">For Store Pickups:</p>
-                    <p>Customers must either send <strong>100% of the payment via Bank Transfer</strong> prior to arrival or <strong>pay the remaining balance in Cash</strong> at the time of pickup.</p>
+                <h2 class="text-2xl text-amber-900 mb-6 flex items-center gap-3">
+                    <span class="text-sm bg-amber-100 text-amber-900 w-8 h-8 rounded-full flex items-center justify-center font-serif italic">1</span>
+                    Payment & Deposits
+                </h2>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-white p-6 rounded-2xl border border-stone-200 shadow-sm">
+                        <h3 class="font-bold text-amber-950 mb-2 uppercase text-xs tracking-widest">Store Pickup</h3>
+                        <p class="text-sm">Online orders for pickup require <strong>100% payment</strong>. Your items will be reserved and prepared only after payment is confirmed.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl border border-stone-200 shadow-sm">
+                        <h3 class="font-bold text-amber-950 mb-2 uppercase text-xs tracking-widest">Delivery</h3>
+                        <p class="text-sm">Delivery orders require a <strong>50% non-refundable deposit</strong> to secure your slot. The balance is due upon delivery.</p>
+                    </div>
                 </div>
+                <p class="mt-6 text-sm">Payments are accepted via <strong>Bank Transfer (NCB)</strong> or <strong>Cash</strong>. Proof of transfer must be sent for order processing.</p>
+            </section>
+
+            <section class="bg-amber-900 text-white p-8 rounded-3xl shadow-xl">
+                <h2 class="text-2xl mb-4 flex items-center gap-3">
+                    <span class="text-sm bg-white/20 text-white w-8 h-8 rounded-full flex items-center justify-center font-serif italic">2</span>
+                    Identity Verification
+                </h2>
+                <p class="text-sm leading-relaxed opacity-90">
+                    To prevent fraud and ensure order accuracy, <strong>valid government-issued identification</strong> (Driver's License, Passport, or National ID) is required for:
+                </p>
+                <ul class="mt-4 space-y-2 text-sm">
+                    <li class="flex items-center gap-2">✔ All Store Pickups</li>
+                    <li class="flex items-center gap-2">✔ All Deliveries</li>
+                </ul>
+                <p class="mt-4 text-[11px] italic opacity-70">The name on the ID must match the name provided during the online checkout process.</p>
             </section>
 
             <section>
-                <h2 class="text-2xl text-amber-900 mb-4">3. Changes & Cancellations</h2>
-                <p>Changes to design or flavor must be requested at least 14 days before your event. While we strive to accommodate changes, additional fees may apply. Cancellations made within 48 hours of the event will be charged the full order amount.</p>
+                <h2 class="text-2xl text-amber-900 mb-6 flex items-center gap-3">
+                    <span class="text-sm bg-amber-100 text-amber-900 w-8 h-8 rounded-full flex items-center justify-center font-serif italic">3</span>
+                    Delivery Zones
+                </h2>
+                <p class="mb-4 text-sm">We provide delivery to the following locations. Fees are calculated at checkout:</p>
+                <ul class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                    <li class="bg-stone-100 p-3 rounded-xl text-[10px] font-bold uppercase tracking-widest">Spanish Town</li>
+                    <li class="bg-stone-100 p-3 rounded-xl text-[10px] font-bold uppercase tracking-widest">Papine</li>
+                    <li class="bg-stone-100 p-3 rounded-xl text-[10px] font-bold uppercase tracking-widest">Half Way Tree</li>
+                    <li class="bg-stone-100 p-3 rounded-xl text-[10px] font-bold uppercase tracking-widest">May Pen</li>
+                </ul>
             </section>
 
             <section>
-                <h2 class="text-2xl text-amber-900 mb-4">4. Delivery & Pickups</h2>
-                <p>Once an order has been picked up or delivered and signed for, Creme Theory is no longer responsible for any damage caused by improper transport or storage. We recommend keeping all cream-based products refrigerated until 1 hour before serving.</p>
+                <h2 class="text-2xl text-amber-900 mb-6 flex items-center gap-3">
+                    <span class="text-sm bg-amber-100 text-amber-900 w-8 h-8 rounded-full flex items-center justify-center font-serif italic">4</span>
+                    Cancellations
+                </h2>
+                <p class="text-sm">
+                    Deposits are <strong>non-refundable</strong>. Once an order has been verified and handed over (via pickup or delivery), Creme Theory is no longer liable for damage caused by improper transport or storage.
+                </p>
             </section>
 
-            <section>
-                <h2 class="text-2xl text-amber-900 mb-4">5. Dietary Information</h2>
-                <p>Our kitchen handles nuts, gluten, and dairy. While we offer "friendly" options (e.g., gluten-free), we cannot guarantee a 100% allergen-free environment due to the nature of our artisanal process.</p>
-            </section>
         </div>
 
-        <div class="mt-16 text-center border-t border-stone-200 pt-12">
-            <p class="text-sm text-stone-400 mb-6">Questions regarding these terms?</p>
+        <div class="mt-20 p-8 border border-stone-200 rounded-3xl text-center">
+            <h4 class="font-serif text-xl mb-2 text-amber-950">Questions?</h4>
+            <p class="text-stone-500 text-sm mb-6">We're here to help with your artisanal experience.</p>
             <a href="mailto:cremetheory@gmail.com" class="text-amber-900 font-bold hover:underline">cremetheory@gmail.com</a>
         </div>
     </main>
 
     <footer class="bg-stone-900 text-stone-400 py-20 px-6 mt-20">
-        <div class="max-w-7xl mx-auto">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 border-b border-stone-800 pb-16 mb-12">
-                
-                <div class="col-span-1 md:col-span-1 text-center md:text-left">
-                    <h2 class="text-white text-2xl font-bold tracking-tighter mb-4 uppercase">Creme Theory</h2>
-                    <p class="text-sm leading-relaxed">Artisanal excellence in every bite. Handcrafted pastries and signature cakes delivered from our heart to your home.</p>
-                    <div class="flex gap-4 mt-6 justify-center md:justify-start">
-                        <a href="https://instagram.com/creme.theory" target="_blank" class="flex items-center gap-2 text-stone-300 hover:text-white transition-all duration-300 group">
-                            <span class="text-xl group-hover:scale-110 transition-transform">📸</span>
-                            <span class="text-xs font-bold tracking-widest border-b border-transparent group-hover:border-white">@creme.theory</span>
-                        </a>
-                    </div>
-                </div>
-
-                <div class="text-center md:text-left">
-                    <h4 class="text-white font-bold uppercase tracking-widest text-[10px] mb-6">Shop</h4>
-                    <ul class="space-y-4 text-sm">
-                        <li><a href="menu.html" class="hover:text-white transition">Full Menu</a></li>
-                        <li><a href="menu.html" class="hover:text-white transition">Daily Pastries</a></li>
-                        <li><a href="menu.html" class="hover:text-white transition">Signature Cakes</a></li>
-                        <li><a href="order.html" class="hover:text-white transition">Custom Requests</a></li>
-                    </ul>
-                </div>
-
-                <div class="text-center md:text-left">
-                    <h4 class="text-white font-bold uppercase tracking-widest text-[10px] mb-6">Support</h4>
-                    <ul class="space-y-4 text-sm">
-                        <li><a href="terms.html" class="hover:text-white transition font-bold text-white underline decoration-amber-500">Terms of Service</a></li>
-                        <li><a href="story.html" class="hover:text-white transition">Our Story</a></li>
-                        <li><a href="mailto:cremetheory@gmail.com" class="hover:text-white transition">Contact Us</a></li>
-                    </ul>
-                </div>
-
-                <div class="text-center md:text-left">
-                    <h4 class="text-white font-bold uppercase tracking-widest text-[10px] mb-6">Delivery</h4>
-                    <p class="text-sm italic mb-2 text-stone-300">Jamaica's Finest Confections</p>
-                    <p class="text-xs leading-relaxed">Serving Papine, Half Way Tree, Spanish Town & May Pen.</p>
-                </div>
-            </div>
-
-            <div class="flex flex-col md:flex-row justify-between items-center gap-6">
-                <p class="text-[10px] uppercase tracking-widest">© 2026 Creme Theory. All Rights Reserved.</p>
-                <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="text-[10px] font-bold hover:text-white transition flex items-center gap-2 uppercase tracking-widest">
-                    Back to Top <span class="text-lg">↑</span>
-                </button>
-            </div>
+        <div class="max-w-7xl mx-auto text-center md:text-left">
+            <p class="text-[10px] uppercase tracking-widest">© 2026 Creme Theory. All Rights Reserved.</p>
         </div>
     </footer>
 
