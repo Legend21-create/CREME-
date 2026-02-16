@@ -15,7 +15,7 @@
 <body class="bg-stone-50 text-stone-800">
 
     <nav class="flex justify-between items-center p-6 max-w-7xl mx-auto">
-        <a href="index.html" class="text-2xl font-bold tracking-tighter text-amber-900">CREME THEORY</a>
+        <a href="index.html" class="text-2xl font-bold tracking-tighter text-amber-900 uppercase">Creme Theory</a>
         
         <div class="hidden md:flex space-x-8 font-medium items-center">
             <a href="menu.html" class="hover:text-amber-700 transition">Menu</a>
@@ -29,17 +29,14 @@
         </div>
         
         <div class="flex items-center gap-4">
-            <a href="https://instagram.com/creme.theory" target="_blank" class="text-amber-900 hover:text-amber-700 transition" aria-label="Follow us on Instagram">
+            <a href="https://instagram.com/creme.theory" target="_blank" class="text-amber-900 hover:text-amber-700 transition">
                 <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
                     <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
                     <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
                 </svg>
             </a>
-            
-            <a href="index.html#newsletter" class="bg-amber-900 text-white px-5 py-2 rounded-full hover:bg-amber-800 transition text-sm font-semibold">
-                Join Now
-            </a>
+            <a href="index.html#newsletter" class="bg-amber-900 text-white px-5 py-2 rounded-full hover:bg-amber-800 transition text-sm font-semibold">Join Now</a>
         </div>
     </nav>
 
@@ -49,12 +46,15 @@
             <p class="text-stone-500">Tell us about your event, and we'll bring your vision to life.</p>
         </div>
 
-        <form action="https://formspree.io/f/mvzbzywl" method="POST" class="space-y-6 bg-white p-8 rounded-xl shadow-sm border border-stone-100">
+        <form action="https://formspree.io/f/mvzbzywl" method="POST" id="order-form" class="space-y-6 bg-white p-8 rounded-xl shadow-sm border border-stone-100">
             <input type="hidden" name="_next" value="https://legend21-create.github.io/CREME-/success.html">
 
             <div id="cart-display" class="hidden border-b border-stone-100 pb-6 mb-6">
                 <h2 class="text-lg font-semibold text-amber-950 mb-3">Your Selection</h2>
                 <div id="cart-items-list" class="space-y-2 text-sm text-stone-600"></div>
+                <div id="stock-warning" class="hidden mt-3 p-3 bg-red-50 text-red-700 text-xs rounded-md font-medium">
+                    ⚠️ Some items in your selection are currently out of stock. Please clear selection to proceed.
+                </div>
                 <div class="mt-4 flex justify-between items-center border-t border-stone-100 pt-4">
                     <button type="button" onclick="clearCart()" class="text-xs text-stone-400 hover:text-red-500 underline">Clear Selection</button>
                     <span class="font-bold text-stone-900">Total: <span id="cart-total-price">$0</span></span>
@@ -86,7 +86,7 @@
             <div class="grid md:grid-cols-2 gap-6">
                 <div>
                     <label class="block text-sm font-semibold mb-2">Cake Style</label>
-                    <select name="style" class="w-full p-3 border border-stone-200 rounded-md focus:outline-none focus:ring-1 focus:ring-amber-900">
+                    <select name="style" id="style-select" class="w-full p-3 border border-stone-200 rounded-md focus:outline-none focus:ring-1 focus:ring-amber-900">
                         <option value="wedding">Wedding Cake</option>
                         <option value="birthday">Birthday Celebration</option>
                         <option value="corporate">Corporate Event</option>
@@ -119,42 +119,30 @@
                 </div>
             </div>
 
-            <button type="submit" class="w-full bg-amber-900 text-white font-bold py-4 rounded-md hover:bg-amber-800 transition shadow-lg">
+            <button type="submit" id="submit-btn" class="w-full bg-amber-900 text-white font-bold py-4 rounded-md hover:bg-amber-800 transition shadow-lg">
                 Submit Request
             </button>
         </form>
     </main>
 
     <footer class="bg-stone-900 text-stone-400 py-16 px-6">
-        <div class="max-w-7xl mx-auto grid md:grid-cols-3 gap-12 border-b border-stone-800 pb-12 mb-12">
+        <div class="max-w-7xl mx-auto text-center md:text-left grid md:grid-cols-3 gap-12 border-b border-stone-800 pb-12 mb-12">
             <div>
                 <h2 class="text-white text-2xl font-bold tracking-tighter mb-4 uppercase">Creme Theory</h2>
-                <p class="text-sm leading-relaxed max-w-xs">Crafting artisanal experiences through the science of baking. Specializing in refined sweets and elevated flavors.</p>
+                <p class="text-sm leading-relaxed max-w-xs mx-auto md:mx-0">Crafting artisanal experiences through the science of baking.</p>
             </div>
             <div>
-                <h4 class="text-white font-semibold mb-4 uppercase tracking-widest text-xs">Contact & Visit</h4>
-                <ul class="text-sm space-y-2">
-                    <li class="text-white">Jamaica</li>
-                    <li class="pt-2 text-amber-500 font-medium">+1 (876) 539-8891</li>
-                    <li>cremetheory@gmail.com</li>
-                    <li class="pt-2 flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-amber-500"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
-                        <a href="https://instagram.com/creme.theory" target="_blank" class="hover:text-white transition">@creme.theory</a>
-                    </li>
-                </ul>
+                <h4 class="text-white font-semibold mb-4 uppercase tracking-widest text-xs">Contact</h4>
+                <p class="text-sm">+1 (876) 539-8891</p>
+                <p class="text-sm">cremetheory@gmail.com</p>
             </div>
-            <div>
-                <h4 class="text-white font-semibold mb-4 uppercase tracking-widest text-xs">Bakery Hours</h4>
-                <ul class="text-sm space-y-2">
-                    <li class="flex justify-between"><span>Mon - Fri</span> <span>7:00 AM - 6:00 PM</span></li>
-                    <li class="flex justify-between"><span>Sat - Sun</span> <span>8:00 AM - 2:00 PM</span></li>
-                </ul>
+            <div class="text-xs uppercase tracking-widest">
+                <p>© 2026 Creme Theory Bakery. Jamaica.</p>
             </div>
-        </div>
-        <div class="max-w-7xl mx-auto text-xs uppercase tracking-widest">
-            <p>© 2026 Creme Theory Bakery.</p>
         </div>
     </footer>
+
+    <script src="inventory.js"></script>
 
     <script>
         function loadCart() {
@@ -164,6 +152,10 @@
             let notes = document.getElementById('order-notes');
             let totalEl = document.getElementById('cart-total-price');
             let countEl = document.getElementById('cart-count');
+            let warning = document.getElementById('stock-warning');
+            let submitBtn = document.getElementById('submit-btn');
+
+            const inventory = window.CremeInventory || {};
 
             if (countEl) countEl.innerText = cart.length;
 
@@ -172,20 +164,59 @@
                 list.innerHTML = '';
                 let total = 0;
                 let textSummary = "SELECTED ITEMS FROM MENU:\n";
+                let hasOutOfStock = false;
 
                 cart.forEach((item) => {
-                    list.innerHTML += `<div class="flex justify-between"><span>${item.name}</span><span>$${item.price} JMD</span></div>`;
+                    const isSoldOut = inventory[item.name] && !inventory[item.name].inStock;
+                    const itemStyle = isSoldOut ? 'text-red-500 line-through' : '';
+                    if (isSoldOut) hasOutOfStock = true;
+
+                    list.innerHTML += `
+                        <div class="flex justify-between ${itemStyle}">
+                            <span>${item.name} ${isSoldOut ? '(SOLD OUT)' : ''}</span>
+                            <span>$${item.price} JMD</span>
+                        </div>`;
+                    
                     total += item.price;
-                    textSummary += `- ${item.name} ($${item.price} JMD)\n`;
+                    textSummary += `- ${item.name} ($${item.price} JMD)${isSoldOut ? ' [OUT OF STOCK]' : ''}\n`;
                 });
 
                 totalEl.innerText = `$${total} JMD`;
                 textSummary += `\nESTIMATED TOTAL: $${total} JMD\n\nADDITIONAL DESIGN NOTES: `;
                 
                 if (notes) notes.value = textSummary;
+
+                if (hasOutOfStock) {
+                    warning.classList.remove('hidden');
+                    submitBtn.disabled = true;
+                    submitBtn.classList.replace('bg-amber-900', 'bg-stone-300');
+                    submitBtn.innerText = "Please remove sold out items";
+                }
             } else {
                 displaySection.classList.add('hidden');
             }
+
+            // Sync Dropdown with Inventory
+            syncDropdown(inventory);
+        }
+
+        function syncDropdown(inventory) {
+            const styleSelect = document.getElementById('style-select');
+            if (!styleSelect) return;
+
+            // Map select values to Inventory keys if they differ
+            const styleMap = {
+                "wedding": "Signature Wedding Cake", // Example mapping
+                // Add more if your dropdown names match inventory items
+            };
+
+            Array.from(styleSelect.options).forEach(option => {
+                const inventoryName = styleMap[option.value] || option.text;
+                if (inventory[inventoryName] && !inventory[inventoryName].inStock) {
+                    option.disabled = true;
+                    option.text += " (Currently Unavailable)";
+                }
+            });
         }
 
         function clearCart() {
