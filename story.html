@@ -10,11 +10,26 @@
     <style>
         body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
         h1, h2, h3 { font-family: 'Playfair Display', serif; }
+        
         .parallax-bg {
             background-image: url('https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&q=80&w=2000');
-            background-attachment: fixed;
             background-position: center;
             background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: scroll; /* Default for mobile */
+        }
+
+        /* Responsive height and parallax toggle */
+        @media (min-width: 768px) {
+            .parallax-bg {
+                background-attachment: fixed; /* Enable parallax for desktop */
+                height: 500px;
+            }
+        }
+        @media (max-width: 767px) {
+            .parallax-bg {
+                height: 250px; /* Prevent over-zooming on mobile */
+            }
         }
     </style>
 </head>
@@ -49,7 +64,7 @@
         </p>
     </header>
 
-    <div class="h-[400px] parallax-bg w-full my-12 shadow-inner"></div>
+    <div class="parallax-bg w-full my-12 shadow-inner"></div>
 
     <main class="max-w-5xl mx-auto px-6 py-20">
         <div class="grid md:grid-cols-2 gap-16 items-center">
@@ -103,7 +118,6 @@
     </footer>
 
     <script>
-        // Keep the cart count updated
         window.onload = () => {
             const cart = JSON.parse(localStorage.getItem('creme_cart')) || [];
             const countDisplay = document.getElementById('cart-count');
