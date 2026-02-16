@@ -16,7 +16,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        /* scroll-behavior: smooth makes the page slide elegantly when clicking "Join Now" */
         body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
         h1, h2, h3 { font-family: 'Playfair Display', serif; }
     </style>
@@ -37,7 +36,19 @@
             </a>
         </div>
         
-        <a href="#newsletter" class="bg-amber-900 text-white px-5 py-2 rounded-full hover:bg-amber-800 transition">Join Now</a>
+        <div class="flex items-center gap-4">
+            <a href="https://instagram.com/cremetheory" target="_blank" class="text-amber-900 hover:text-amber-700 transition" aria-label="Follow us on Instagram">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                </svg>
+            </a>
+            
+            <a href="#newsletter" class="bg-amber-900 text-white px-5 py-2 rounded-full hover:bg-amber-800 transition text-sm font-semibold">
+                Join Now
+            </a>
+        </div>
     </nav>
 
     <header class="relative h-[80vh] flex items-center justify-center text-center px-4">
@@ -101,7 +112,7 @@
     <footer class="bg-stone-900 text-stone-400 py-16 px-6">
         <div class="max-w-7xl mx-auto grid md:grid-cols-3 gap-12 border-b border-stone-800 pb-12 mb-12">
             <div>
-                <h2 class="text-white text-2xl font-bold tracking-tighter mb-4 text-white">CREME THEORY</h2>
+                <h2 class="text-white text-2xl font-bold tracking-tighter mb-4">CREME THEORY</h2>
                 <p class="text-sm leading-relaxed max-w-xs">Crafting artisanal experiences through the science of baking. Visit our flagship boutique for daily fresh batches.</p>
             </div>
             <div>
