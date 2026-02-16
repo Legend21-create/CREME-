@@ -51,93 +51,75 @@
         <div id="admin-grid" class="grid gap-4 pb-20"></div>
     </div>
 
-    <script>
-        // CRITICAL: Built-in Data (Prevents login failure if inventory.js is missing)
-        const CREME_PASSWORD = "creme_admin_2026";
-        const GITHUB_CONFIG = {
-            token: "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",
-            owner: "Legend21-create",
-            repo: "CREME-",
-            path: "inventory.js"
-        };
+  <script src="inventory.js"></script>
+<script>
+    const CREME_PASSWORD = "creme_admin_2026"; 
+    
+    // GITHUB CONFIGURATION
+    const GITHUB_CONFIG = {
+        token: "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",
+        owner: "Legend21-create",
+        repo: "CREME-",
+        path: "inventory.js"
+    };
+    
+    let inventory = window.CremeInventory || [];
+    let settings = window.CremeSettings || { 
+        announcement: "", 
+        shopOpen: true, 
+        deliveryFees: { "Spanish Town": 1000, "Half Way Tree": 1200, "Papine": 1500, "May Pen": 2500 }
+    };
 
-        let inventory = [
-            { "id": "sc-01", "name": "Signature 6\" Cake", "inStock": true, "price": 6500, "category": "Signature Cakes", "image": "https://images.unsplash.com/photo-1578985545062-69928b1d9587", "dateAdded": "2026-02-12" },
-            { "id": "sc-02", "name": "Velvet Theory", "inStock": false, "price": 7200, "category": "Signature Cakes", "image": "https://images.unsplash.com/photo-1586788680434-30d324671ff6", "dateAdded": "2026-02-01" },
-            { "id": "dp-01", "name": "Heritage Croissant", "inStock": true, "price": 850, "category": "Daily Pastries", "image": "https://images.unsplash.com/photo-1555507036-ab1f4038808a", "dateAdded": "2026-02-14" }
-        ];
+    // ... (Keep your checkPass, renderAdmin, and renderFees functions) ...
 
-        let settings = { 
-            announcement: "We are now accepting orders for the weekend!", 
-            shopOpen: true, 
-            deliveryFees: { "Spanish Town": 1000, "Half Way Tree": 1200, "Papine": 1500, "May Pen": 2500 }
-        };
+    async function exportData() {
+        const btn = event.target;
+        btn.innerText = "⏳ Syncing...";
+        btn.disabled = true;
 
-        function checkPass() {
-            const input = document.getElementById('pass-input').value.trim();
-            if (input === CREME_PASSWORD) {
-                document.getElementById('login-screen').style.display = 'none';
-                document.getElementById('admin-content').classList.remove('hidden');
-                renderAdmin();
-                renderFees();
-                updateShopBtn();
-                document.getElementById('set-announcement').value = settings.announcement;
+        // Prepare the file content
+        const content = `const InventoryData = ${JSON.stringify(inventory, null, 4)};\n` +
+                        `const SiteSettings = ${JSON.stringify(settings, null, 4)};\n` +
+                        `window.CremeInventory = InventoryData;\n` +
+                        `window.CremeSettings = SiteSettings;\n` +
+                        `document.dispatchEvent(new Event('inventoryLoaded'));`;
+
+        try {
+            // 1. Get current file SHA (Security handshake)
+            const res = await fetch(`https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.path}`, {
+                headers: { "Authorization": `token ${GITHUB_CONFIG.token}` }
+            });
+            const data = await res.json();
+
+            // 2. Push the update directly to GitHub
+            const update = await fetch(`https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.path}`, {
+                method: "PUT",
+                headers: {
+                    "Authorization": `token ${GITHUB_CONFIG.token}`,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    message: "Admin Update: " + new Date().toLocaleString(),
+                    content: btoa(unescape(encodeURIComponent(content))), // Base64 encoding
+                    sha: data.sha
+                })
+            });
+
+            if (update.ok) {
+                alert("✅ Success! Your website is updating.");
             } else {
-                document.getElementById('error-msg').classList.remove('hidden');
+                throw new Error("GitHub rejected the update.");
             }
+        } catch (err) {
+            console.error(err);
+            alert("❌ Sync Failed. Opening manual export...");
+            document.getElementById('export-area').value = content;
+            document.getElementById('export-modal').classList.remove('hidden');
+        } finally {
+            btn.innerText = "🚀 Export Changes to GitHub";
+            btn.disabled = false;
         }
-
-        function renderAdmin() {
-            const grid = document.getElementById('admin-grid');
-            grid.innerHTML = inventory.map((item, i) => `
-                <div class="bg-white p-4 rounded-2xl shadow-sm border border-stone-200 flex items-center gap-6">
-                    <img src="${item.image}" class="w-16 h-16 rounded-xl object-cover">
-                    <div class="flex-grow">
-                        <h3 class="font-bold text-amber-950 text-sm">${item.name}</h3>
-                        <p class="text-xs text-stone-400 font-mono">$${item.price} JMD</p>
-                    </div>
-                    <button onclick="inventory[${i}].inStock = !inventory[${i}].inStock; renderAdmin();" 
-                        class="px-4 py-2 rounded-lg text-[10px] font-bold ${item.inStock ? 'bg-stone-100' : 'bg-red-50 text-red-600'}">
-                        ${item.inStock ? 'Active' : 'Sold Out'}
-                    </button>
-                </div>
-            `).join('');
-        }
-
-        function renderFees() {
-            const container = document.getElementById('fees-container');
-            container.innerHTML = Object.entries(settings.deliveryFees).map(([loc, fee]) => `
-                <div>
-                    <label class="block text-[9px] font-bold text-stone-400 mb-1">${loc}</label>
-                    <input type="number" value="${fee}" onchange="settings.deliveryFees['${loc}'] = Number(this.value)" class="w-full p-2 border rounded-lg text-sm">
-                </div>
-            `).join('');
-        }
-
-        function toggleShop() { settings.shopOpen = !settings.shopOpen; updateShopBtn(); }
-        function updateShopBtn() {
-            const btn = document.getElementById('shop-toggle');
-            btn.innerText = settings.shopOpen ? "SHOP IS LIVE" : "SHOP IS CLOSED";
-            btn.className = `w-full py-3 rounded-xl font-bold border ${settings.shopOpen ? 'bg-green-50 text-green-700 border-green-200' : 'bg-red-50 text-red-700 border-red-200'}`;
-        }
-
-        function updateSetting(k, v) { settings[k] = v; }
-
-        async function exportData() {
-            const btn = document.getElementById('sync-btn');
-            btn.innerText = "⏳ Syncing..."; btn.disabled = true;
-            const content = `const InventoryData = ${JSON.stringify(inventory, null, 4)};\nconst SiteSettings = ${JSON.stringify(settings, null, 4)};\nwindow.CremeInventory = InventoryData;\nwindow.CremeSettings = SiteSettings;\ndocument.dispatchEvent(new Event('inventoryLoaded'));`;
-            try {
-                const res = await fetch(`https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.path}`, { headers: { "Authorization": `token ${GITHUB_CONFIG.token}` } });
-                const data = await res.json();
-                await fetch(`https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.path}`, {
-                    method: "PUT", headers: { "Authorization": `token ${GITHUB_CONFIG.token}`, "Content-Type": "application/json" },
-                    body: JSON.stringify({ message: "Admin update", content: btoa(unescape(encodeURIComponent(content))), sha: data.sha })
-                });
-                alert("✅ Success!");
-            } catch (e) { alert("❌ Failed. Check internet or Token."); }
-            finally { btn.innerText = "🚀 Sync to GitHub Live"; btn.disabled = false; }
-        }
-    </script>
+    }
+</script>
 </body>
 </html>
