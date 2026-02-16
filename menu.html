@@ -47,8 +47,8 @@
             
             <div class="flex justify-center gap-4">
                 <button onclick="updateCategory('all')" class="filter-btn active px-6 py-2 rounded-full border border-amber-900 text-amber-900 text-xs font-bold uppercase tracking-widest transition" id="btn-all">All</button>
-                <button onclick="updateCategory('cake')" class="filter-btn px-6 py-2 rounded-full border border-amber-900 text-amber-900 text-xs font-bold uppercase tracking-widest transition" id="btn-cake">Cakes</button>
-                <button onclick="updateCategory('pastry')" class="filter-btn px-6 py-2 rounded-full border border-amber-900 text-amber-900 text-xs font-bold uppercase tracking-widest transition" id="btn-pastry">Pastries</button>
+                <button onclick="updateCategory('Signature Cakes')" class="filter-btn px-6 py-2 rounded-full border border-amber-900 text-amber-900 text-xs font-bold uppercase tracking-widest transition" id="btn-cake">Cakes</button>
+                <button onclick="updateCategory('Daily Pastries')" class="filter-btn px-6 py-2 rounded-full border border-amber-900 text-amber-900 text-xs font-bold uppercase tracking-widest transition" id="btn-pastry">Pastries</button>
             </div>
         </div>
 
@@ -56,52 +56,33 @@
             </div>
     </main>
 
+    <script src="inventory.js"></script>
+
     <script>
         let currentCategory = 'all';
 
-        const CremeInventory = {
-            "signature_cake": {
-                name: "Signature Vanilla Bean",
-                price: 6500,
-                description: "Serves 8-10. Perfect for intimate celebrations.",
-                image: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&q=80&w=800",
-                inStock: true,
-                category: "cake"
-            },
-            "croissant_box": {
-                name: "Artisanal Pastry Box",
-                price: 3500,
-                description: "A selection of our flakiest morning pastries.",
-                image: "https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&q=80&w=800",
-                inStock: true,
-                category: "pastry"
-            },
-            "chocolate_ganache": {
-                name: "Dark Chocolate Ganache",
-                price: 7200,
-                description: "Rich 70% cocoa layers with smooth velvet finish.",
-                image: "https://images.unsplash.com/photo-1571115177098-24ec42ed204d?auto=format&fit=crop&q=80&w=800",
-                inStock: false,
-                category: "cake"
-            }
-        };
-
         function filterMenu() {
+            // Get the data from window.CremeInventory (from inventory.js)
+            const inventory = window.CremeInventory || {};
             const searchTerm = document.getElementById('menu-search').value.toLowerCase();
             const grid = document.getElementById('menu-grid');
+            
             grid.innerHTML = '';
 
-            Object.keys(CremeInventory).forEach(key => {
-                const item = CremeInventory[key];
+            Object.keys(inventory).forEach(key => {
+                const item = inventory[key];
                 const isSoldOut = !item.inStock;
-                const matchesSearch = item.name.toLowerCase().includes(searchTerm);
+                const matchesSearch = item.name ? item.name.toLowerCase().includes(searchTerm) : key.toLowerCase().includes(searchTerm);
                 const matchesCategory = currentCategory === 'all' || item.category === currentCategory;
 
                 if (matchesSearch && matchesCategory) {
+                    const displayName = item.name || key;
+                    const displayImage = item.image || "https://images.unsplash.com/photo-1555507036-ab1f4038808a?q=80&w=800";
+
                     grid.innerHTML += `
                         <div class="bg-white p-4 rounded-3xl shadow-sm border border-stone-100 transition duration-300 ${isSoldOut ? 'opacity-75' : 'hover:shadow-md'}">
                             <div class="relative overflow-hidden rounded-2xl aspect-square mb-6">
-                                <img src="${item.image}" alt="${item.name}" class="object-cover w-full h-full ${isSoldOut ? 'filter grayscale' : ''}">
+                                <img src="${displayImage}" alt="${displayName}" class="object-cover w-full h-full ${isSoldOut ? 'filter grayscale' : ''}">
                                 <div class="absolute top-4 right-4">
                                     <span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest shadow-sm ${isSoldOut ? 'bg-red-100 text-red-600' : 'bg-green-100 text-green-600'}">
                                         ${isSoldOut ? 'Sold Out' : 'In Stock'}
@@ -110,56 +91,13 @@
                             </div>
                             <div class="flex justify-between items-start mb-2 px-2">
                                 <div>
-                                    <h3 class="text-xl text-amber-950 font-semibold">${item.name}</h3>
+                                    <h3 class="text-xl text-amber-950 font-semibold">${displayName}</h3>
                                     <span class="text-[10px] uppercase tracking-tighter text-stone-400">${item.category}</span>
                                 </div>
                                 <span class="font-bold text-amber-900">$${item.price.toLocaleString()}</span>
                             </div>
-                            <p class="text-sm text-stone-500 mb-6 px-2 leading-relaxed">${item.description}</p>
-                            <button onclick="addToCart('${item.name}', ${item.price})" 
+                            <p class="text-sm text-stone-500 mb-6 px-2 leading-relaxed h-12 overflow-hidden">${item.description}</p>
+                            <button onclick="addToCart('${displayName}', ${item.price})" 
                                 ${isSoldOut ? 'disabled' : ''}
                                 class="w-full border border-amber-900 text-amber-900 py-3 rounded-xl transition uppercase tracking-widest text-[10px] font-bold ${isSoldOut ? 'opacity-20 cursor-not-allowed' : 'hover:bg-amber-900 hover:text-white'}">
-                                ${isSoldOut ? 'Currently Finished' : 'Add to Selection'}
-                            </button>
-                        </div>
-                    `;
-                }
-            });
-            
-            if (grid.innerHTML === '') {
-                grid.innerHTML = '<p class="col-span-full text-center text-stone-400 py-12">No treats found matching that name...</p>';
-            }
-        }
-
-        function updateCategory(cat) {
-            currentCategory = cat;
-            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById(`btn-${cat}`).classList.add('active');
-            filterMenu();
-        }
-
-        function addToCart(name, price) {
-            let cart = JSON.parse(localStorage.getItem('creme_cart')) || [];
-            cart.push({ name, price });
-            localStorage.setItem('creme_cart', JSON.stringify(cart));
-            updateCartCount();
-            
-            const btn = event.target;
-            const originalText = btn.innerText;
-            btn.innerText = "Added ✓";
-            setTimeout(() => { btn.innerText = originalText; }, 1500);
-        }
-
-        function updateCartCount() {
-            const cart = JSON.parse(localStorage.getItem('creme_cart')) || [];
-            const countDisplay = document.getElementById('cart-count');
-            if (countDisplay) countDisplay.innerText = cart.length;
-        }
-
-        window.onload = () => {
-            filterMenu();
-            updateCartCount();
-        };
-    </script>
-</body>
-</html>
+                                ${isSoldOut ? 'Currently Finished' : 'Add to
