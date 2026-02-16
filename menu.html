@@ -40,32 +40,23 @@
         </header>
 
         <div id="menu-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
-            <p class="text-center col-span-full text-stone-400">Loading our latest creations...</p>
-        </div>
+            </div>
     </main>
 
     <script>
-        // Data is now inside the file to prevent loading errors
         const CremeInventory = {
-            "classic_croissant": {
-                name: "Classic Butter Croissant",
-                price: 850,
-                description: "Hand-rolled, 3-day fermented dough with premium French butter.",
+            "signature_cake": {
+                name: "Signature Vanilla Bean",
+                price: 6500,
+                description: "Serves 8-10. Perfect for intimate celebrations.",
+                image: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&q=80&w=800",
+                inStock: true
+            },
+            "croissant_box": {
+                name: "Artisanal Pastry Box",
+                price: 3500,
+                description: "A selection of our flakiest morning pastries.",
                 image: "https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&q=80&w=800",
-                inStock: true
-            },
-            "pain_au_chocolat": {
-                name: "Pain au Chocolat",
-                price: 950,
-                description: "Double-folded pastry filled with 70% dark chocolate batons.",
-                image: "https://images.unsplash.com/photo-1530610476181-d83430b64dcd?auto=format&fit=crop&q=80&w=800",
-                inStock: true
-            },
-            "pistachio_tart": {
-                name: "Pistachio Praline Tart",
-                price: 1200,
-                description: "Sicilian pistachio cream with a crunchy praline base.",
-                image: "https://images.unsplash.com/photo-1519915028121-7d3463d20b13?auto=format&fit=crop&q=80&w=800",
                 inStock: true
             }
         };
@@ -79,18 +70,18 @@
                 const isSoldOut = !item.inStock;
                 
                 grid.innerHTML += `
-                    <div class="group bg-white p-4 rounded-3xl shadow-sm border border-stone-100 ${isSoldOut ? 'sold-out' : ''}">
-                        <div class="relative overflow-hidden rounded-2xl aspect-square bg-stone-100 mb-6">
-                            <img src="${item.image}" alt="${item.name}" class="object-cover w-full h-full group-hover:scale-105 transition duration-500">
+                    <div class="bg-white p-4 rounded-3xl shadow-sm border border-stone-100 ${isSoldOut ? 'sold-out' : ''}">
+                        <div class="relative overflow-hidden rounded-2xl aspect-square mb-6">
+                            <img src="${item.image}" alt="${item.name}" class="object-cover w-full h-full">
                             ${isSoldOut ? '<div class="absolute inset-0 flex items-center justify-center bg-black/20"><span class="bg-white text-stone-800 px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest shadow-xl">Sold Out</span></div>' : ''}
                         </div>
                         <div class="flex justify-between items-start mb-2 px-2">
                             <h3 class="text-xl text-amber-950 font-semibold">${item.name}</h3>
                             <span class="font-bold text-amber-900">$${item.price.toLocaleString()}</span>
                         </div>
-                        <p class="text-sm text-stone-500 mb-6 px-2 leading-relaxed h-12 overflow-hidden">${item.description}</p>
+                        <p class="text-sm text-stone-500 mb-6 px-2 leading-relaxed">${item.description}</p>
                         <button onclick="addToCart('${item.name}', ${item.price})" 
-                            class="w-full bg-stone-50 border border-amber-900 text-amber-900 py-3 rounded-xl hover:bg-amber-900 hover:text-white transition uppercase tracking-widest text-[10px] font-bold">
+                            class="w-full border border-amber-900 text-amber-900 py-3 rounded-xl hover:bg-amber-900 hover:text-white transition uppercase tracking-widest text-[10px] font-bold">
                             Add to Selection
                         </button>
                     </div>
@@ -104,7 +95,23 @@
             localStorage.setItem('creme_cart', JSON.stringify(cart));
             updateCartCount();
             
-            // Subtle toast notification instead of annoying alert
+            // Visual feedback
             const btn = event.target;
             const originalText = btn.innerText;
-            btn.innerText = "Added ✓
+            btn.innerText = "Added ✓";
+            setTimeout(() => { btn.innerText = originalText; }, 1500);
+        }
+
+        function updateCartCount() {
+            const cart = JSON.parse(localStorage.getItem('creme_cart')) || [];
+            const countDisplay = document.getElementById('cart-count');
+            if (countDisplay) countDisplay.innerText = cart.length;
+        }
+
+        window.onload = () => {
+            renderMenu();
+            updateCartCount();
+        };
+    </script>
+</body>
+</html>
