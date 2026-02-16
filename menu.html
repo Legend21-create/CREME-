@@ -10,6 +10,11 @@
     <style>
         body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
         h1, h2, h3 { font-family: 'Playfair Display', serif; }
+        .filter-btn.active { 
+            background-color: #78350f; 
+            color: white; 
+            border-color: #78350f; 
+        }
     </style>
 </head>
 <body class="bg-stone-50 text-stone-800 border-t-4 border-amber-900">
@@ -40,13 +45,16 @@
         </div>
     </nav>
 
-    <header class="py-12 text-center">
+    <header class="pt-12 pb-6 text-center">
         <h1 class="text-5xl md:text-6xl text-amber-900 mb-4">The Menu</h1>
-        <p class="text-stone-500 italic uppercase tracking-widest text-xs font-semibold">Baked in small batches, every single day.</p>
+        <p class="text-stone-500 italic uppercase tracking-widest text-xs font-semibold mb-8">Baked in small batches, every single day.</p>
+        
+        <div id="filter-bar" class="flex flex-wrap justify-center gap-3 px-6 mb-8">
+            </div>
     </header>
 
-    <main id="menu-container" class="max-w-5xl mx-auto px-6 pb-24 space-y-20">
-    </main>
+    <main id="menu-container" class="max-w-5xl mx-auto px-6 pb-24 space-y-16">
+        </main>
 
     <footer class="bg-stone-900 text-stone-400 py-16 px-6 mt-auto">
         <div class="max-w-7xl mx-auto grid md:grid-cols-3 gap-12 border-b border-stone-800 pb-12 mb-12 text-center md:text-left">
@@ -72,13 +80,12 @@
 
         function renderMenu() {
             const container = document.getElementById('menu-container');
+            const filterBar = document.getElementById('filter-bar');
             const inventory = window.CremeInventory;
             
             if (!inventory || !container) return;
 
-            container.innerHTML = ''; // Clear existing content
-
-            // 1. Group items by their category
+            // 1. Group items by category
             const categories = {};
             for (const [name, data] of Object.entries(inventory)) {
                 const cat = data.category || "Our Selection";
@@ -86,9 +93,28 @@
                 categories[cat].push({ name, ...data });
             }
 
-            // 2. Create HTML sections for each category
+            // 2. Setup Filter Bar
+            filterBar.innerHTML = '';
+            const allBtn = document.createElement('button');
+            allBtn.innerText = 'All';
+            allBtn.className = "filter-btn active px-5 py-2 rounded-full border border-stone-300 text-sm font-medium hover:border-amber-900 transition";
+            allBtn.onclick = () => applyFilter('all', allBtn);
+            filterBar.appendChild(allBtn);
+
+            Object.keys(categories).forEach(catName => {
+                const btn = document.createElement('button');
+                btn.innerText = catName;
+                btn.className = "filter-btn px-5 py-2 rounded-full border border-stone-300 text-sm font-medium hover:border-amber-900 transition";
+                btn.onclick = () => applyFilter(catName, btn);
+                filterBar.appendChild(btn);
+            });
+
+            // 3. Render Sections
+            container.innerHTML = ''; 
             for (const [catName, items] of Object.entries(categories)) {
                 const section = document.createElement('section');
+                section.className = "menu-section mb-16";
+                section.setAttribute('data-category', catName);
                 
                 let sectionHTML = `
                     <h2 class="text-3xl border-b border-stone-200 pb-4 mb-8 text-amber-950">${catName}</h2>
@@ -103,12 +129,12 @@
                                 <h3 class="item-name text-xl font-bold text-stone-800">${item.name}</h3>
                                 ${isSoldOut ? '<span class="text-[10px] bg-red-100 text-red-600 px-2 py-1 rounded-full uppercase font-bold">Sold Out</span>' : ''}
                             </div>
-                            <p class="text-stone-500 text-sm mb-4">${item.description || 'Artisanal creation handcrafted daily.'}</p>
+                            <p class="text-stone-500 text-sm mb-4 leading-relaxed">${item.description || 'Artisanal creation handcrafted daily.'}</p>
                             <div class="flex items-center justify-between mt-auto">
                                 <span class="font-semibold text-amber-900">$${item.price.toLocaleString()} JMD</span>
                                 <button 
                                     onclick="addToCart('${item.name.replace(/'/g, "\\'")}', ${item.price})" 
-                                    class="add-button px-4 py-2 rounded text-sm font-semibold transition ${isSoldOut ? 'bg-stone-300 text-stone-600 cursor-not-allowed' : 'bg-stone-800 text-white hover:bg-amber-900'}"
+                                    class="add-button px-4 py-2 rounded text-xs font-bold transition ${isSoldOut ? 'bg-stone-300 text-stone-600 cursor-not-allowed' : 'bg-stone-800 text-white hover:bg-amber-900'}"
                                     ${isSoldOut ? 'disabled' : ''}>
                                     ${isSoldOut ? 'Out of Stock' : 'Add to Cart'}
                                 </button>
@@ -117,10 +143,25 @@
                     `;
                 });
 
-                sectionHTML += `</div>`; // Close grid
+                sectionHTML += `</div>`;
                 section.innerHTML = sectionHTML;
                 container.appendChild(section);
             }
+        }
+
+        function applyFilter(category, clickedBtn) {
+            // Update buttons
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            clickedBtn.classList.add('active');
+
+            // Filter sections
+            document.querySelectorAll('.menu-section').forEach(section => {
+                if (category === 'all' || section.getAttribute('data-category') === category) {
+                    section.style.display = 'block';
+                } else {
+                    section.style.display = 'none';
+                }
+            });
         }
 
         function addToCart(name, price) {
