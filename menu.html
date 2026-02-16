@@ -52,8 +52,7 @@
             </div>
         </div>
 
-        <div id="menu-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
-            </div>
+        <div id="menu-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12"></div>
     </main>
 
     <script src="inventory.js"></script>
@@ -62,7 +61,6 @@
         let currentCategory = 'all';
 
         function filterMenu() {
-            // Get the data from window.CremeInventory (from inventory.js)
             const inventory = window.CremeInventory || {};
             const searchTerm = document.getElementById('menu-search').value.toLowerCase();
             const grid = document.getElementById('menu-grid');
@@ -72,23 +70,39 @@
             Object.keys(inventory).forEach(key => {
                 const item = inventory[key];
                 const isSoldOut = !item.inStock;
-                const matchesSearch = item.name ? item.name.toLowerCase().includes(searchTerm) : key.toLowerCase().includes(searchTerm);
+                const matchesSearch = (item.name || key).toLowerCase().includes(searchTerm);
                 const matchesCategory = currentCategory === 'all' || item.category === currentCategory;
 
                 if (matchesSearch && matchesCategory) {
                     const displayName = item.name || key;
                     const displayImage = item.image || "https://images.unsplash.com/photo-1555507036-ab1f4038808a?q=80&w=800";
 
+                    // New Badge Logic
+                    let isNew = false;
+                    if (item.dateAdded) {
+                        const addedDate = new Date(item.dateAdded);
+                        const today = new Date();
+                        const diffTime = Math.abs(today - addedDate);
+                        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                        if (diffDays <= 7) isNew = true;
+                    }
+
                     grid.innerHTML += `
                         <div class="bg-white p-4 rounded-3xl shadow-sm border border-stone-100 transition duration-300 ${isSoldOut ? 'opacity-75' : 'hover:shadow-md'}">
                             <div class="relative overflow-hidden rounded-2xl aspect-square mb-6">
                                 <img src="${displayImage}" alt="${displayName}" class="object-cover w-full h-full ${isSoldOut ? 'filter grayscale' : ''}">
+                                
+                                <div class="absolute top-4 left-4 flex flex-col gap-2">
+                                    ${isNew ? '<span class="bg-amber-900 text-white px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest shadow-lg">New Arrival</span>' : ''}
+                                </div>
+
                                 <div class="absolute top-4 right-4">
                                     <span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest shadow-sm ${isSoldOut ? 'bg-red-100 text-red-600' : 'bg-green-100 text-green-600'}">
                                         ${isSoldOut ? 'Sold Out' : 'In Stock'}
                                     </span>
                                 </div>
                             </div>
+
                             <div class="flex justify-between items-start mb-2 px-2">
                                 <div>
                                     <h3 class="text-xl text-amber-950 font-semibold">${displayName}</h3>
@@ -100,4 +114,12 @@
                             <button onclick="addToCart('${displayName}', ${item.price})" 
                                 ${isSoldOut ? 'disabled' : ''}
                                 class="w-full border border-amber-900 text-amber-900 py-3 rounded-xl transition uppercase tracking-widest text-[10px] font-bold ${isSoldOut ? 'opacity-20 cursor-not-allowed' : 'hover:bg-amber-900 hover:text-white'}">
-                                ${isSoldOut ? 'Currently Finished' : 'Add to
+                                ${isSoldOut ? 'Currently Finished' : 'Add to Selection'}
+                            </button>
+                        </div>
+                    `;
+                }
+            });
+
+            if (grid.innerHTML === '') {
+                grid.innerHTML = '<p class="col-span-full text-center text-stone-400 py-12">No treats found matching that name...</p>';
