@@ -12,7 +12,7 @@
         <h1 class="text-2xl font-bold text-amber-950 mb-6 text-center uppercase tracking-widest">Admin Access</h1>
         <input type="password" id="pass-input" placeholder="Enter Password" 
             class="w-full p-4 border rounded-xl mb-4 focus:ring-2 focus:ring-amber-900 outline-none">
-        <button onclick="checkPass()" id="login-btn"
+        <button onclick="checkPass()" 
             class="w-full bg-amber-900 text-white py-4 rounded-xl font-bold hover:bg-amber-800 transition">
             Login
         </button>
@@ -20,60 +20,131 @@
     </div>
 
     <div id="admin-content" class="hidden w-full max-w-6xl mx-auto">
-        <div class="flex justify-between items-center mb-10">
-            <h1 class="text-4xl font-bold text-amber-950">Creme Control</h1>
-            <button onclick="exportData()" class="bg-amber-900 text-white px-8 py-4 rounded-2xl font-bold shadow-xl">🚀 Export to GitHub</button>
+        <div class="flex flex-col md:flex-row justify-between items-center mb-10 gap-4">
+            <div>
+                <h1 class="text-4xl font-bold text-amber-950">Creme Control</h1>
+                <p class="text-stone-500">Manage your menu, prices, and global settings.</p>
+            </div>
+            <button onclick="exportData()" class="bg-amber-900 text-white px-8 py-4 rounded-2xl font-bold shadow-xl hover:scale-105 transition transform">
+                🚀 Export Changes to GitHub
+            </button>
         </div>
-        <div id="admin-grid" class="grid gap-6"></div>
+
+        <div class="bg-white p-8 rounded-3xl shadow-sm border border-stone-200 mb-8">
+            <h2 class="text-lg font-bold text-amber-950 mb-4 flex items-center gap-2">⚙️ Global Settings</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-bold mb-2 text-stone-700">Homepage Announcement Bar</label>
+                    <input type="text" id="set-announcement" onchange="updateSetting('announcement', this.value)" 
+                        placeholder="e.g. Valentines Pre-orders are Open!"
+                        class="w-full p-3 bg-stone-50 border rounded-xl outline-none focus:ring-2 focus:ring-amber-900">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold mb-2 text-stone-700">Shop Status</label>
+                    <button id="shop-toggle" onclick="toggleShop()" class="w-full py-3 rounded-xl font-bold transition">Loading...</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white p-8 rounded-3xl shadow-sm border border-stone-200 mb-12">
+            <h2 class="text-lg font-bold text-amber-950 mb-4 italic text-stone-400">Add New Creation</h2>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <input type="text" id="new-name" placeholder="Item Name" class="p-3 border rounded-xl outline-none focus:ring-1 focus:ring-amber-900">
+                <select id="new-category" class="p-3 border rounded-xl outline-none">
+                    <option value="Signature Cakes">Signature Cakes</option>
+                    <option value="Daily Pastries">Daily Pastries</option>
+                </select>
+                <input type="number" id="new-price" placeholder="Price (JMD)" class="p-3 border rounded-xl outline-none">
+                <button onclick="addNewItem()" class="bg-stone-800 text-white rounded-xl font-bold hover:bg-stone-900 transition">Add to Inventory</button>
+            </div>
+            <input type="text" id="new-image" placeholder="Image URL" class="w-full mt-4 p-3 border rounded-xl outline-none">
+            <textarea id="new-desc" placeholder="Brief description..." class="w-full mt-4 p-3 border rounded-xl outline-none resize-none"></textarea>
+        </div>
+
+        <div id="admin-grid" class="grid gap-6 pb-20"></div>
+
+        <div id="export-modal" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50 backdrop-blur-sm">
+            <div class="bg-white p-8 rounded-3xl w-full max-w-2xl shadow-2xl">
+                <h2 class="text-2xl font-bold mb-2">Update Live Site</h2>
+                <p class="text-stone-500 mb-6 text-sm">Copy this code and paste it into your <strong>inventory.js</strong> on GitHub.</p>
+                <textarea id="export-area" class="w-full h-64 p-4 font-mono text-xs border rounded-2xl bg-stone-50 mb-6"></textarea>
+                <div class="flex gap-3">
+                    <button onclick="copyCode()" class="flex-1 bg-amber-900 text-white py-4 rounded-xl font-bold">Copy Code</button>
+                    <button onclick="closeModal()" class="flex-1 bg-stone-200 py-4 rounded-xl font-bold text-stone-600">Close</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="inventory.js"></script>
-
     <script>
-        const CREME_PASSWORD = "creme_admin_2026";
+        const CREME_PASSWORD = "creme_admin_2026"; 
+        
+        let inventory = window.CremeInventory || {};
+        let settings = window.CremeSettings || { announcement: "", shopOpen: true };
 
         function checkPass() {
             const input = document.getElementById('pass-input').value.trim();
-            console.log("Attempting login..."); // This helps you see it working in 'Inspect'
-
             if (input === CREME_PASSWORD) {
                 document.getElementById('login-screen').classList.add('hidden');
                 document.getElementById('admin-content').classList.remove('hidden');
+                initSettings();
                 renderAdmin();
             } else {
                 document.getElementById('error-msg').classList.remove('hidden');
             }
         }
 
+        document.getElementById("pass-input").addEventListener("keyup", (e) => {
+            if (e.key === "Enter") checkPass();
+        });
+
+        function initSettings() {
+            document.getElementById('set-announcement').value = settings.announcement || "";
+            updateShopBtn();
+        }
+
+        function toggleShop() {
+            settings.shopOpen = !settings.shopOpen;
+            updateShopBtn();
+        }
+
+        function updateShopBtn() {
+            const btn = document.getElementById('shop-toggle');
+            if (!btn) return;
+            btn.innerText = settings.shopOpen ? "SHOP IS LIVE" : "SHOP IS CLOSED";
+            btn.className = settings.shopOpen 
+                ? "w-full py-3 rounded-xl font-bold bg-green-100 text-green-700 border border-green-200"
+                : "w-full py-3 rounded-xl font-bold bg-red-100 text-red-700 border border-red-200";
+        }
+
+        function updateSetting(field, val) { settings[field] = val; }
+
         function renderAdmin() {
             const grid = document.getElementById('admin-grid');
-            const data = window.CremeInventory || {};
+            if (!grid) return;
             grid.innerHTML = '';
-
-            Object.keys(data).forEach(key => {
+            
+            Object.keys(inventory).sort().forEach(key => {
+                const item = inventory[key];
                 grid.innerHTML += `
-                    <div class="bg-white p-6 rounded-3xl border border-stone-200 flex justify-between items-center">
-                        <div>
-                            <p class="font-bold">${key}</p>
-                            <p class="text-sm text-stone-500">$${data[key].price}</p>
+                    <div class="bg-white p-6 rounded-3xl shadow-sm border border-stone-200 grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+                        <div class="md:col-span-2">
+                            <img src="${item.image}" class="w-20 h-20 rounded-2xl object-cover mb-2">
+                            <button onclick="toggleStock('${key}')" class="w-full py-2 rounded-lg text-[10px] font-bold ${item.inStock ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">${item.inStock ? 'In Stock' : 'Sold Out'}</button>
                         </div>
-                        <button onclick="deleteItem('${key}')">🗑️</button>
+                        <div class="md:col-span-5">
+                            <h3 class="font-bold text-amber-950">${key}</h3>
+                            <p class="text-sm text-stone-500">${item.description}</p>
+                        </div>
+                        <div class="md:col-span-4 font-bold text-amber-900">$${item.price.toLocaleString()} JMD</div>
+                        <div class="md:col-span-1 flex justify-center">
+                            <button onclick="deleteItem('${key}')" class="text-stone-300 hover:text-red-500 transition text-xl">🗑️</button>
+                        </div>
                     </div>`;
             });
         }
 
-        function deleteItem(key) {
-            if(confirm('Delete?')) {
-                delete window.CremeInventory[key];
-                renderAdmin();
-            }
-        }
-
-        function exportData() {
-            const output = "window.CremeInventory = " + JSON.stringify(window.CremeInventory, null, 4) + ";";
-            alert("Check console (F12) for your code to copy!");
-            console.log(output);
-        }
-    </script>
-</body>
-</html>
+        function toggleStock(key) { inventory[key].inStock = !inventory[key].inStock; renderAdmin(); }
+        function deleteItem(key) { if(confirm('Delete this item?')) { delete inventory[key]; renderAdmin(); } }
+        function closeModal() { document.getElementById('export
