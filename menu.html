@@ -68,7 +68,7 @@
                 id="menu-search" 
                 onkeyup="handleSearch()" 
                 placeholder="Search for cakes, pastries..." 
-                class="w-full p-3 rounded-full border border-stone-200 focus:ring-2 focus:ring-amber-900 outline-none text-sm transition shadow-sm"
+                class="w-full p-4 rounded-full border border-stone-200 focus:ring-2 focus:ring-amber-900 outline-none text-sm transition shadow-sm"
             >
         </div>
 
@@ -99,6 +99,12 @@
     <script>
         let cart = JSON.parse(localStorage.getItem('creme_cart')) || [];
         let currentFilter = 'all';
+
+        // Initialize Menu on Load
+        window.onload = () => {
+            renderMenu();
+            updateCartCount();
+        };
 
         window.onscroll = function() {
             const btn = document.getElementById("back-to-top");
@@ -152,7 +158,7 @@
                             <div class="flex items-center justify-between mt-auto">
                                 <span class="font-semibold text-amber-900">$${item.price.toLocaleString()} JMD</span>
                                 <button 
-                                    onclick="addToCart('${item.name.replace(/'/g, "\\'")}', ${item.price})" 
+                                    onclick="addToCart('${item.name.replace(/'/g, "\\'")}', ${item.price}, this)" 
                                     class="add-button px-4 py-2 rounded text-xs font-bold transition ${isSoldOut ? 'bg-stone-300 text-stone-600 cursor-not-allowed' : 'bg-stone-800 text-white hover:bg-amber-900'}"
                                     ${isSoldOut ? 'disabled' : ''}>
                                     ${isSoldOut ? 'Out of Stock' : 'Add to Cart'}
@@ -201,3 +207,30 @@
                     } else {
                         item.style.display = 'none';
                     }
+                });
+                section.style.display = hasVisibleItems ? 'block' : 'none';
+            });
+        }
+
+        function addToCart(name, price, btn) {
+            cart.push({ name, price });
+            localStorage.setItem('creme_cart', JSON.stringify(cart));
+            updateCartCount();
+            
+            // UI Feedback
+            const originalText = btn.innerText;
+            btn.innerText = "Added! ✨";
+            btn.classList.replace('bg-stone-800', 'bg-green-700');
+            setTimeout(() => {
+                btn.innerText = originalText;
+                btn.classList.replace('bg-green-700', 'bg-stone-800');
+            }, 1500);
+        }
+
+        function updateCartCount() {
+            const countDisplay = document.getElementById('cart-count');
+            if (countDisplay) countDisplay.innerText = cart.length;
+        }
+    </script>
+</body>
+</html>
