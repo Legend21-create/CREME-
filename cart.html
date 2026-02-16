@@ -3,86 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Selection | Creme Theory</title>
+    <title>Checkout | Creme Theory</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; }
-        h1, h2 { font-family: 'Playfair Display', serif; }
-        input:checked + div { border-color: white; background-color: rgba(255,255,255,0.1); }
+        h1, h2, h3 { font-family: 'Playfair Display', serif; }
+        /* Smooth transitions for the delivery drawer */
+        #delivery-options { transition: all 0.3s ease-in-out; }
     </style>
 </head>
-<body class="bg-stone-50 text-stone-800">
+<body class="bg-stone-50 text-stone-800 border-t-4 border-amber-900">
 
     <nav class="p-6 max-w-7xl mx-auto flex justify-between items-center">
-        <a href="index.html" class="text-xl font-bold tracking-tighter text-amber-900 uppercase">Creme Theory</a>
-        <a href="menu.html" class="text-sm font-semibold text-stone-500 hover:text-amber-900 transition">← Back to Menu</a>
+        <a href="index.html" class="text-2xl font-bold tracking-tighter text-amber-900 uppercase italic">Creme Theory</a>
+        <a href="menu.html" class="text-xs font-bold uppercase tracking-widest text-stone-400 hover:text-amber-900 transition">← Back to Menu</a>
     </nav>
 
-    <main class="max-w-3xl mx-auto px-6 py-12">
-        <h1 class="text-4xl text-amber-900 mb-8">Your Selection</h1>
-
-        <div id="cart-items" class="bg-white rounded-2xl shadow-sm border border-stone-200 overflow-hidden mb-8"></div>
-
-        <div class="bg-amber-900 text-white p-8 rounded-3xl shadow-xl">
-            <div class="flex justify-between items-center mb-6 border-b border-white/10 pb-6">
-                <span class="opacity-80 uppercase tracking-widest text-xs font-bold">Total Amount</span>
-                <span id="total-price" class="text-3xl font-bold">$0 JMD</span>
-            </div>
-
-            <div class="space-y-6">
-                <div>
-                    <label class="block text-[10px] uppercase tracking-widest font-bold mb-2 opacity-70">Full Name</label>
-                    <input type="text" id="customer-name" placeholder="Enter your name" class="w-full p-4 rounded-xl bg-white/10 border border-white/20 outline-none focus:border-white transition text-white">
+    <main class="max-w-4xl mx-auto px-6 py-12 grid md:grid-cols-5 gap-12">
+        
+        <div class="md:col-span-3">
+            <h1 class="text-4xl text-amber-950 mb-8">Your Selection</h1>
+            <div id="cart-items" class="space-y-4">
                 </div>
-
-                <div>
-                    <label class="block text-[10px] uppercase tracking-widest font-bold mb-3 opacity-70">Delivery Method</label>
-                    <div class="grid grid-cols-2 gap-4">
-                        <label class="cursor-pointer">
-                            <input type="radio" name="delivery" value="Pickup" checked class="hidden peer">
-                            <div class="p-4 border border-white/20 rounded-xl text-center peer-checked:bg-white peer-checked:text-amber-900 transition font-bold text-sm">📍 Pickup</div>
-                        </label>
-                        <label class="cursor-pointer">
-                            <input type="radio" name="delivery" value="Delivery" class="hidden peer">
-                            <div class="p-4 border border-white/20 rounded-xl text-center peer-checked:bg-white peer-checked:text-amber-900 transition font-bold text-sm">🚚 Delivery</div>
-                        </label>
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-[10px] uppercase tracking-widest font-bold mb-3 opacity-70">Payment Method</label>
-                    <div class="grid grid-cols-2 gap-4">
-                        <label class="cursor-pointer">
-                            <input type="radio" name="payment" value="Bank Transfer" checked class="hidden peer">
-                            <div class="p-4 border border-white/20 rounded-xl text-center peer-checked:bg-white peer-checked:text-amber-900 transition font-bold text-sm">🏦 Bank Transfer</div>
-                        </label>
-                        <label class="cursor-pointer">
-                            <input type="radio" name="payment" value="Cash / Other" class="hidden peer">
-                            <div class="p-4 border border-white/20 rounded-xl text-center peer-checked:bg-white peer-checked:text-amber-900 transition font-bold text-sm">💵 Cash / Other</div>
-                        </label>
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-[10px] uppercase tracking-widest font-bold mb-2 opacity-70">Special Instructions / Location</label>
-                    <textarea id="special-notes" rows="2" placeholder="Address for delivery or allergy notes..." class="w-full p-4 rounded-xl bg-white/10 border border-white/20 outline-none focus:border-white transition text-white resize-none"></textarea>
-                </div>
-
-                <div class="flex items-start gap-3 py-2">
-                    <input type="checkbox" id="terms-check" class="mt-1 accent-white w-4 h-4">
-                    <label for="terms-check" class="text-xs opacity-80 leading-relaxed">
-                        I agree to the <a href="terms.html" class="underline font-bold hover:text-stone-200">Terms and Conditions</a>, including the 50% non-refundable deposit required for all orders.
-                    </label>
-                </div>
-                
-                <button onclick="sendOrder()" class="w-full bg-white text-amber-900 py-5 rounded-2xl font-black uppercase tracking-widest hover:bg-stone-100 transition shadow-2xl flex justify-center items-center gap-3">
-                    <span>Confirm & Send via WhatsApp</span>
-                </button>
-            </div>
+            
+            <button onclick="clearCart()" class="mt-8 text-[10px] uppercase tracking-widest font-bold text-stone-300 hover:text-red-500 transition">
+                Clear All Selections
+            </button>
         </div>
 
-        <button onclick="clearCart()" class="w-full mt-12 text-stone-400 text-[10px] hover:text-red-500 transition uppercase tracking-widest font-bold">Clear Selection</button>
+        <div class="md:col-span-2">
+            <form action="https://formspree.io/f/mvzbzywl" method="POST" id="checkout-form" class="bg-white p-8 rounded-3xl shadow-sm border border-stone-100 space-y-6 sticky top-8">
+                
+                <input type="hidden" name="_next" value="https://legend21-create.github.io/CREME-/success.html">
+                <textarea name="order_summary" id="hidden-summary" class="hidden"></textarea>
+
+                <div class="border-b border-stone-100 pb-6 mb-6">
+                    <h2 class="text-sm uppercase tracking-widest font-bold text-amber-900 mb-4">Summary</h2>
+                    <div class="flex justify-between text-sm mb-2 text-stone-500">
+                        <span>Items Subtotal</span>
+                        <span id="subtotal-display">$0</span>
+                    </div>
+                    <div class="flex justify-between text-sm mb-4 text-stone-500">
+                        <span>Delivery Fee</span>
+                        <span id="fee-display">$0</span>
+                    </div>
+                    <div class="flex justify-between items-center pt-4 border-t border-stone-100">
+                        <span class="font-bold text-amber-950">Grand Total</span>
+                        <span id="grand-total" class="text-2xl font-bold text-amber-900">$0</span>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-[10px] uppercase tracking-widest font-bold mb-2">Your Name</label>
+                        <input type="text" name="name" required placeholder="Jane Doe" class="w-full p-3 bg-stone-50 border border-stone-200 rounded-xl focus:ring-1 focus:ring-amber-900 outline-none">
+                    </div>
+
+                    <div>
+                        <label class="block text-[10px] uppercase tracking-widest font-bold mb-2">Delivery Method</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <label class="relative cursor-pointer">
+                                <input type="radio" name="delivery_type" value="Pickup" checked onclick="toggleDelivery(false)" class="peer hidden">
+                                <div class="p-3 text-center border border-stone-200 rounded-xl text-xs font-bold peer-checked:bg-amber-900 peer-checked:text-white transition">📍 Pickup</div>
+                            </label>
+                            <label class="relative cursor-pointer">
+                                <input type="radio" name="delivery_type" value="Delivery" onclick="toggleDelivery(true)" class="peer hidden">
+                                <div class="p-3 text-center border border-stone-200 rounded-xl text-xs font-bold peer-checked:bg-amber-900 peer-checked:text-white transition">🚚 Delivery</div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div id="delivery-options" class="hidden space-y-4 animate-in fade-in slide-in-from-top-2">
+                        <label class="block text-[10px] uppercase tracking-widest font-bold mb-2">Location</label>
+                        <select name="location" id="location-select" onchange="calculateTotal()" class="w-full p-3 bg-stone-50 border border-stone-200 rounded-xl text-sm focus:ring-1 focus:ring-amber-900 outline-none">
+                            <option value="Spanish Town" data-fee="1000">Spanish Town ($1,000)</option>
+                            <option value="Half Way Tree" data-fee="1200">Half Way Tree ($1,200)</option>
+                            <option value="Papine" data-fee="1500">Papine ($1,500)</option>
+                            <option value="May Pen" data-fee="2500">May Pen ($2,500)</option>
+                        </select>
+                        <textarea name="address" placeholder="Exact street address / Landmarks" class="w-full p-3 bg-stone-50 border border-stone-200 rounded-xl text-sm outline-none h-20 resize-none"></textarea>
+                    </div>
+
+                    <div>
+                        <label class="block text-[10px] uppercase tracking-widest font-bold mb-2">Payment Method</label>
+                        <select name="payment" class="w-full p-3 bg-stone-50 border border-stone-200 rounded-xl text-sm outline-none">
+                            <option>Bank Transfer (NCB)</option>
+                            <option>Cash on Delivery/Pickup</option>
+                        </select>
+                    </div>
+
+                    <div class="flex items-start gap-3 py-2">
+                        <input type="checkbox" required id="terms" class="mt-1 accent-amber-900">
+                        <label for="terms" class="text-[10px] text-stone-500 leading-tight">
+                            I agree to the <a href="terms.html" class="underline font-bold">Terms</a> & the 50% deposit requirement.
+                        </label>
+                    </div>
+
+                    <button type="submit" class="w-full bg-amber-900 text-white py-4 rounded-xl font-bold uppercase tracking-widest hover:bg-amber-800 transition shadow-lg shadow-amber-900/20">
+                        Place Order
+                    </button>
+                </div>
+            </form>
+        </div>
     </main>
 
     <script>
@@ -93,89 +116,76 @@
             return parseFloat(priceVal.replace(/[^0-9.]/g, '')) || 0;
         }
 
-        function renderCheckout() {
-            const container = document.getElementById('cart-items');
-            const totalDisplay = document.getElementById('total-price');
+        function toggleDelivery(show) {
+            const div = document.getElementById('delivery-options');
+            if (show) div.classList.remove('hidden');
+            else div.classList.add('hidden');
+            calculateTotal();
+        }
+
+        function calculateTotal() {
+            const isDelivery = !document.getElementById('delivery-options').classList.contains('hidden');
+            const locationSelect = document.getElementById('location-select');
             
+            let itemsTotal = 0;
+            cart.forEach(item => itemsTotal += parsePrice(item.price));
+            
+            let deliveryFee = 0;
+            if (isDelivery) {
+                deliveryFee = parseInt(locationSelect.options[locationSelect.selectedIndex].getAttribute('data-fee'));
+            }
+
+            document.getElementById('subtotal-display').innerText = `$${itemsTotal.toLocaleString()}`;
+            document.getElementById('fee-display').innerText = `$${deliveryFee.toLocaleString()}`;
+            document.getElementById('grand-total').innerText = `$${(itemsTotal + deliveryFee).toLocaleString()}`;
+            
+            // Prepare the hidden summary for the email
+            let summary = `ORDER SUMMARY:\n`;
+            cart.forEach(item => summary += `- ${item.name} (${item.price})\n`);
+            summary += `\nSubtotal: $${itemsTotal.toLocaleString()}`;
+            summary += `\nDelivery: $${deliveryFee.toLocaleString()} (${isDelivery ? locationSelect.value : 'Pickup'})`;
+            summary += `\nGRAND TOTAL: $${(itemsTotal + deliveryFee).toLocaleString()}`;
+            document.getElementById('hidden-summary').value = summary;
+        }
+
+        function renderItems() {
+            const container = document.getElementById('cart-items');
             if (cart.length === 0) {
-                container.innerHTML = `<div class="p-16 text-center text-stone-400 italic">No items selected.</div>`;
-                totalDisplay.innerText = "$0 JMD";
+                container.innerHTML = `<div class="py-20 text-center border-2 border-dashed border-stone-200 rounded-3xl text-stone-400 italic">No sweets selected yet.</div>`;
                 return;
             }
 
-            let total = 0;
-            container.innerHTML = '';
-
-            cart.forEach((item, index) => {
-                const numericPrice = parsePrice(item.price);
-                total += numericPrice;
-                
-                const row = document.createElement('div');
-                row.className = "flex justify-between items-center p-6 border-b border-stone-100 last:border-0";
-                row.innerHTML = `
+            container.innerHTML = cart.map((item, index) => `
+                <div class="flex justify-between items-center bg-white p-6 rounded-2xl border border-stone-100 group">
                     <div>
-                        <h3 class="font-bold text-stone-800">${item.name}</h3>
-                        <p class="text-[10px] text-stone-400 uppercase">Item ID: ${item.id}</p>
+                        <h3 class="font-bold text-amber-950">${item.name}</h3>
+                        <p class="text-[10px] text-stone-400 uppercase tracking-widest">Handcrafted Item</p>
                     </div>
                     <div class="flex items-center gap-6">
-                        <span class="font-semibold text-amber-900">$${numericPrice.toLocaleString()}</span>
-                        <button onclick="removeItem(${index})" class="text-stone-300 hover:text-red-500 transition text-lg">&times;</button>
+                        <span class="font-semibold text-stone-600">$${parsePrice(item.price).toLocaleString()}</span>
+                        <button onclick="removeItem(${index})" class="text-stone-300 hover:text-red-500 transition-colors text-xl">&times;</button>
                     </div>
-                `;
-                container.appendChild(row);
-            });
-
-            totalDisplay.innerText = `$${total.toLocaleString()} JMD`;
+                </div>
+            `).join('');
+            
+            calculateTotal();
         }
 
         function removeItem(index) {
             cart.splice(index, 1);
             localStorage.setItem('creme_cart', JSON.stringify(cart));
-            renderCheckout();
+            renderItems();
         }
 
         function clearCart() {
-            if(confirm("Clear selection?")) {
+            if(confirm("Empty your selection?")) {
                 cart = [];
                 localStorage.setItem('creme_cart', JSON.stringify(cart));
-                renderCheckout();
+                renderItems();
             }
         }
 
-        function sendOrder() {
-            const name = document.getElementById('customer-name').value.trim();
-            const notes = document.getElementById('special-notes').value.trim();
-            const delivery = document.querySelector('input[name="delivery"]:checked').value;
-            const payment = document.querySelector('input[name="payment"]:checked').value;
-            const terms = document.getElementById('terms-check').checked;
-
-            if (!name) { alert("Please provide your name."); return; }
-            if (cart.length === 0) { alert("Cart is empty."); return; }
-            if (!terms) { alert("Please agree to the Terms and Conditions."); return; }
-
-            let total = 0;
-            let itemList = "";
-            cart.forEach(item => {
-                const nPrice = parsePrice(item.price);
-                itemList += `%0A• ${item.name} ($${nPrice.toLocaleString()})`;
-                total += nPrice;
-            });
-
-            let message = `*NEW ORDER - CREME THEORY*%0A%0A`;
-            message += `*Customer:* ${name}%0A`;
-            message += `*Delivery:* ${delivery}%0A`;
-            message += `*Payment:* ${payment}%0A`;
-            message += `%0A*Order Details:* ${itemList}%0A%0A`;
-            message += `*Total Amount:* $${total.toLocaleString()} JMD%0A`;
-            
-            if (notes) { message += `%0A*Instructions/Address:* ${notes}`; }
-            message += `%0A%0A_I agree to the Terms & Conditions._`;
-
-            const phoneNumber = "18765398891"; 
-            window.open(`https://wa.me/${phoneNumber}?text=${message}`, '_blank');
-        }
-
-        window.onload = renderCheckout;
+        window.onload = renderItems;
     </script>
 </body>
 </html>
