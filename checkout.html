@@ -18,10 +18,18 @@
     <main class="max-w-4xl mx-auto px-6 py-12 grid md:grid-cols-2 gap-12">
         <div>
             <h1 class="text-3xl text-amber-950 mb-8">Your Order</h1>
-            <div id="cart-list" class="space-y-4 mb-6">
+            <div id="cart-list" class="space-y-4 mb-6"></div>
+            
+            <div class="border-t border-stone-200 pt-4 space-y-2">
+                <div class="flex justify-between text-stone-600">
+                    <span>Subtotal</span>
+                    <span id="cart-subtotal">$0 JMD</span>
                 </div>
-            <div class="border-t border-stone-200 pt-4">
-                <div class="flex justify-between text-xl font-bold text-amber-900">
+                <div class="flex justify-between text-stone-600">
+                    <span>Delivery Fee</span>
+                    <span id="delivery-fee-display">$0 JMD</span>
+                </div>
+                <div class="flex justify-between text-2xl font-bold text-amber-900 pt-2 border-t border-stone-100">
                     <span>Total</span>
                     <span id="cart-total">$0 JMD</span>
                 </div>
@@ -32,21 +40,26 @@
             <h2 class="text-lg font-semibold mb-4">Order Details</h2>
             
             <input type="hidden" name="order_items" id="hidden-cart-input">
+            <input type="hidden" name="delivery_fee" id="hidden-fee-input">
             <input type="hidden" name="order_total" id="hidden-total-input">
 
             <div>
                 <label class="block text-xs uppercase tracking-widest font-bold mb-1">Full Name</label>
-                <input type="text" name="name" required class="w-full p-3 border border-stone-200 rounded-md">
+                <input type="text" name="name" required class="w-full p-3 border border-stone-200 rounded-md outline-none focus:ring-1 focus:ring-amber-900">
             </div>
             <div>
                 <label class="block text-xs uppercase tracking-widest font-bold mb-1">Phone Number</label>
-                <input type="tel" name="phone" required class="w-full p-3 border border-stone-200 rounded-md">
+                <input type="tel" name="phone" required class="w-full p-3 border border-stone-200 rounded-md outline-none focus:ring-1 focus:ring-amber-900">
             </div>
+            
             <div>
                 <label class="block text-xs uppercase tracking-widest font-bold mb-1">Pickup or Delivery?</label>
-                <select name="type" class="w-full p-3 border border-stone-200 rounded-md">
-                    <option value="pickup">Boutique Pickup</option>
-                    <option value="delivery">Islandwide Delivery</option>
+                <select name="delivery_location" id="delivery-select" onchange="calculateTotal()" required class="w-full p-3 border border-stone-200 rounded-md outline-none focus:ring-1 focus:ring-amber-900">
+                    <option value="Store Pickup" data-fee="0">Store Pickup ($0)</option>
+                    <option value="Papine" data-fee="500">Delivery: Papine ($500)</option>
+                    <option value="Half Way Tree" data-fee="500">Delivery: Half Way Tree ($500)</option>
+                    <option value="Spanish Town" data-fee="1500">Delivery: Spanish Town ($1,500)</option>
+                    <option value="May Pen" data-fee="1500">Delivery: May Pen ($1,500)</option>
                 </select>
             </div>
 
@@ -60,32 +73,56 @@
     </main>
 
     <script>
+        let subtotal = 0;
+
         function loadCheckout() {
             let cart = JSON.parse(localStorage.getItem('creme_cart')) || [];
             let list = document.getElementById('cart-list');
-            let totalEl = document.getElementById('cart-total');
+            let subtotalEl = document.getElementById('cart-subtotal');
             let hiddenInput = document.getElementById('hidden-cart-input');
-            let hiddenTotal = document.getElementById('hidden-total-input');
 
             if (cart.length === 0) {
-                list.innerHTML = "<p>Your cart is empty.</p>";
+                list.innerHTML = "<p class='text-stone-400'>Your cart is empty.</p>";
                 return;
             }
 
-            let total = 0;
-            let summaryText = "";
+            subtotal = 0;
+            let summaryArray = [];
             list.innerHTML = "";
 
             cart.forEach(item => {
-                list.innerHTML += `<div class="flex justify-between"><span>${item.name}</span><span class="font-medium">$${item.price.toLocaleString()}</span></div>`;
-                total += item.price;
-                summaryText += `${item.name} ($${item.price}), `;
+                list.innerHTML += `
+                    <div class="flex justify-between items-center py-2 border-b border-stone-50">
+                        <span>${item.name}</span>
+                        <span class="font-medium">$${item.price.toLocaleString()}</span>
+                    </div>`;
+                subtotal += item.price;
+                summaryArray.push(`${item.name} ($${item.price})`);
             });
 
-            totalEl.innerText = `$${total.toLocaleString()} JMD`;
-            hiddenInput.value = summaryText;
-            hiddenTotal.value = `$${total} JMD`;
+            subtotalEl.innerText = `$${subtotal.toLocaleString()} JMD`;
+            hiddenInput.value = summaryArray.join(", ");
+            calculateTotal(); // Run this to set initial total
         }
+
+        function calculateTotal() {
+            const select = document.getElementById('delivery-select');
+            const feeDisplay = document.getElementById('delivery-fee-display');
+            const totalEl = document.getElementById('cart-total');
+            const hiddenFeeInput = document.getElementById('hidden-fee-input');
+            const hiddenTotalInput = document.getElementById('hidden-total-input');
+
+            // Get fee from the data-fee attribute of the selected option
+            const deliveryFee = parseInt(select.options[select.selectedIndex].getAttribute('data-fee'));
+            const finalTotal = subtotal + deliveryFee;
+
+            feeDisplay.innerText = `$${deliveryFee.toLocaleString()} JMD`;
+            totalEl.innerText = `$${finalTotal.toLocaleString()} JMD`;
+            
+            hiddenFeeInput.value = `$${deliveryFee} JMD`;
+            hiddenTotalInput.value = `$${finalTotal} JMD`;
+        }
+
         window.onload = loadCheckout;
     </script>
 </body>
