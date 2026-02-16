@@ -45,11 +45,7 @@
         <p class="text-stone-500 italic uppercase tracking-widest text-xs font-semibold">Baked in small batches, every single day.</p>
     </header>
 
-    <main class="max-w-5xl mx-auto px-6 pb-24">
-        <section class="mb-20">
-            <h2 class="text-3xl border-b border-stone-200 pb-4 mb-8 text-amber-950">Current Selection</h2>
-            <div id="dynamic-menu-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
-        </section>
+    <main id="menu-container" class="max-w-5xl mx-auto px-6 pb-24 space-y-20">
     </main>
 
     <footer class="bg-stone-900 text-stone-400 py-16 px-6 mt-auto">
@@ -75,35 +71,55 @@
         let cart = JSON.parse(localStorage.getItem('creme_cart')) || [];
 
         function renderMenu() {
-            const menuGrid = document.getElementById('dynamic-menu-grid');
+            const container = document.getElementById('menu-container');
             const inventory = window.CremeInventory;
             
-            if (!inventory || !menuGrid) return;
+            if (!inventory || !container) return;
 
-            menuGrid.innerHTML = ''; // Clear current grid
+            container.innerHTML = ''; // Clear existing content
 
+            // 1. Group items by their category
+            const categories = {};
             for (const [name, data] of Object.entries(inventory)) {
-                const isSoldOut = !data.inStock;
+                const cat = data.category || "Our Selection";
+                if (!categories[cat]) categories[cat] = [];
+                categories[cat].push({ name, ...data });
+            }
+
+            // 2. Create HTML sections for each category
+            for (const [catName, items] of Object.entries(categories)) {
+                const section = document.createElement('section');
                 
-                const itemHTML = `
-                    <div class="menu-item bg-white border border-stone-100 p-6 rounded-xl shadow-sm hover:shadow-md transition flex flex-col ${isSoldOut ? 'opacity-60 grayscale-[0.5]' : ''}">
-                        <div class="flex justify-between items-start mb-1">
-                            <h3 class="item-name text-xl font-bold text-stone-800">${name}</h3>
-                            ${isSoldOut ? '<span class="text-[10px] bg-red-100 text-red-600 px-2 py-1 rounded-full uppercase font-bold">Sold Out</span>' : ''}
-                        </div>
-                        <p class="text-stone-500 text-sm mb-4">${data.description || 'Artisanal creation handcrafted daily.'}</p>
-                        <div class="flex items-center justify-between mt-auto">
-                            <span class="font-semibold text-amber-900">$${data.price.toLocaleString()} JMD</span>
-                            <button 
-                                onclick="addToCart('${name.replace(/'/g, "\\'")}', ${data.price})" 
-                                class="add-button px-4 py-2 rounded text-sm font-semibold transition ${isSoldOut ? 'bg-stone-300 text-stone-600 cursor-not-allowed' : 'bg-stone-800 text-white hover:bg-amber-900'}"
-                                ${isSoldOut ? 'disabled' : ''}>
-                                ${isSoldOut ? 'Out of Stock' : 'Add to Cart'}
-                            </button>
-                        </div>
-                    </div>
+                let sectionHTML = `
+                    <h2 class="text-3xl border-b border-stone-200 pb-4 mb-8 text-amber-950">${catName}</h2>
+                    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 `;
-                menuGrid.insertAdjacentHTML('beforeend', itemHTML);
+
+                items.forEach(item => {
+                    const isSoldOut = !item.inStock;
+                    sectionHTML += `
+                        <div class="menu-item bg-white border border-stone-100 p-6 rounded-xl shadow-sm hover:shadow-md transition flex flex-col ${isSoldOut ? 'opacity-60 grayscale-[0.5]' : ''}">
+                            <div class="flex justify-between items-start mb-1">
+                                <h3 class="item-name text-xl font-bold text-stone-800">${item.name}</h3>
+                                ${isSoldOut ? '<span class="text-[10px] bg-red-100 text-red-600 px-2 py-1 rounded-full uppercase font-bold">Sold Out</span>' : ''}
+                            </div>
+                            <p class="text-stone-500 text-sm mb-4">${item.description || 'Artisanal creation handcrafted daily.'}</p>
+                            <div class="flex items-center justify-between mt-auto">
+                                <span class="font-semibold text-amber-900">$${item.price.toLocaleString()} JMD</span>
+                                <button 
+                                    onclick="addToCart('${item.name.replace(/'/g, "\\'")}', ${item.price})" 
+                                    class="add-button px-4 py-2 rounded text-sm font-semibold transition ${isSoldOut ? 'bg-stone-300 text-stone-600 cursor-not-allowed' : 'bg-stone-800 text-white hover:bg-amber-900'}"
+                                    ${isSoldOut ? 'disabled' : ''}>
+                                    ${isSoldOut ? 'Out of Stock' : 'Add to Cart'}
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                sectionHTML += `</div>`; // Close grid
+                section.innerHTML = sectionHTML;
+                container.appendChild(section);
             }
         }
 
@@ -119,7 +135,6 @@
             if (countDisplay) countDisplay.innerText = cart.length;
         }
 
-        // Initialize page
         window.onload = () => {
             renderMenu();
             updateCartCount();
