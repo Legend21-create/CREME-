@@ -9,6 +9,7 @@
     <style>
         body { font-family: 'Inter', sans-serif; }
         h1, h2 { font-family: 'Playfair Display', serif; }
+        input:checked + div { border-color: white; background-color: rgba(255,255,255,0.1); }
     </style>
 </head>
 <body class="bg-stone-50 text-stone-800">
@@ -21,41 +22,72 @@
     <main class="max-w-3xl mx-auto px-6 py-12">
         <h1 class="text-4xl text-amber-900 mb-8">Your Selection</h1>
 
-        <div id="cart-items" class="bg-white rounded-2xl shadow-sm border border-stone-200 overflow-hidden mb-8">
-            </div>
+        <div id="cart-items" class="bg-white rounded-2xl shadow-sm border border-stone-200 overflow-hidden mb-8"></div>
 
-        <div class="bg-amber-900 text-white p-8 rounded-2xl shadow-xl">
+        <div class="bg-amber-900 text-white p-8 rounded-3xl shadow-xl">
             <div class="flex justify-between items-center mb-6 border-b border-white/10 pb-6">
                 <span class="opacity-80 uppercase tracking-widest text-xs font-bold">Total Amount</span>
                 <span id="total-price" class="text-3xl font-bold">$0 JMD</span>
             </div>
 
-            <div class="space-y-4">
+            <div class="space-y-6">
                 <div>
                     <label class="block text-[10px] uppercase tracking-widest font-bold mb-2 opacity-70">Full Name</label>
-                    <input type="text" id="customer-name" placeholder="Enter your name" class="w-full p-3 rounded-lg bg-white/10 border border-white/20 placeholder:text-white/30 outline-none focus:border-white transition text-white">
+                    <input type="text" id="customer-name" placeholder="Enter your name" class="w-full p-4 rounded-xl bg-white/10 border border-white/20 outline-none focus:border-white transition text-white">
                 </div>
 
                 <div>
-                    <label class="block text-[10px] uppercase tracking-widest font-bold mb-2 opacity-70">Special Instructions / Allergies</label>
-                    <textarea id="special-notes" rows="3" placeholder="e.g. Pickup at 2pm, no nuts, happy birthday note..." class="w-full p-3 rounded-lg bg-white/10 border border-white/20 placeholder:text-white/30 outline-none focus:border-white transition text-white resize-none"></textarea>
+                    <label class="block text-[10px] uppercase tracking-widest font-bold mb-3 opacity-70">Delivery Method</label>
+                    <div class="grid grid-cols-2 gap-4">
+                        <label class="cursor-pointer">
+                            <input type="radio" name="delivery" value="Pickup" checked class="hidden peer">
+                            <div class="p-4 border border-white/20 rounded-xl text-center peer-checked:bg-white peer-checked:text-amber-900 transition font-bold text-sm">📍 Pickup</div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="delivery" value="Delivery" class="hidden peer">
+                            <div class="p-4 border border-white/20 rounded-xl text-center peer-checked:bg-white peer-checked:text-amber-900 transition font-bold text-sm">🚚 Delivery</div>
+                        </label>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] uppercase tracking-widest font-bold mb-3 opacity-70">Payment Method</label>
+                    <div class="grid grid-cols-2 gap-4">
+                        <label class="cursor-pointer">
+                            <input type="radio" name="payment" value="Bank Transfer" checked class="hidden peer">
+                            <div class="p-4 border border-white/20 rounded-xl text-center peer-checked:bg-white peer-checked:text-amber-900 transition font-bold text-sm">🏦 Bank Transfer</div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="payment" value="Cash / Other" class="hidden peer">
+                            <div class="p-4 border border-white/20 rounded-xl text-center peer-checked:bg-white peer-checked:text-amber-900 transition font-bold text-sm">💵 Cash / Other</div>
+                        </label>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] uppercase tracking-widest font-bold mb-2 opacity-70">Special Instructions / Location</label>
+                    <textarea id="special-notes" rows="2" placeholder="Address for delivery or allergy notes..." class="w-full p-4 rounded-xl bg-white/10 border border-white/20 outline-none focus:border-white transition text-white resize-none"></textarea>
+                </div>
+
+                <div class="flex items-start gap-3 py-2">
+                    <input type="checkbox" id="terms-check" class="mt-1 accent-white w-4 h-4">
+                    <label for="terms-check" class="text-xs opacity-80 leading-relaxed">
+                        I agree to the <a href="terms.html" class="underline font-bold hover:text-stone-200">Terms and Conditions</a>, including the 50% non-refundable deposit required for all orders.
+                    </label>
                 </div>
                 
-                <button onclick="sendOrder()" class="w-full bg-white text-amber-900 py-4 rounded-xl font-bold hover:bg-stone-100 transition shadow-lg flex justify-center items-center gap-3">
-                    <span>Place Order via WhatsApp</span>
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.438 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.335-1.662c1.72.937 3.659 1.432 5.628 1.433h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+                <button onclick="sendOrder()" class="w-full bg-white text-amber-900 py-5 rounded-2xl font-black uppercase tracking-widest hover:bg-stone-100 transition shadow-2xl flex justify-center items-center gap-3">
+                    <span>Confirm & Send via WhatsApp</span>
                 </button>
             </div>
-            <p class="text-[10px] text-center mt-6 opacity-50 italic">Creme Theory | Artisanal Excellence</p>
         </div>
 
-        <button onclick="clearCart()" class="w-full mt-8 text-stone-400 text-[10px] hover:text-red-500 transition uppercase tracking-widest font-bold">Clear All Items</button>
+        <button onclick="clearCart()" class="w-full mt-12 text-stone-400 text-[10px] hover:text-red-500 transition uppercase tracking-widest font-bold">Clear Selection</button>
     </main>
 
     <script>
         let cart = JSON.parse(localStorage.getItem('creme_cart')) || [];
 
-        // Helper to turn "$6,500" into 6500
         function parsePrice(priceVal) {
             if (typeof priceVal === 'number') return priceVal;
             return parseFloat(priceVal.replace(/[^0-9.]/g, '')) || 0;
@@ -66,7 +98,7 @@
             const totalDisplay = document.getElementById('total-price');
             
             if (cart.length === 0) {
-                container.innerHTML = `<div class="p-16 text-center text-stone-400 italic">Your selection is empty.</div>`;
+                container.innerHTML = `<div class="p-16 text-center text-stone-400 italic">No items selected.</div>`;
                 totalDisplay.innerText = "$0 JMD";
                 return;
             }
@@ -79,11 +111,11 @@
                 total += numericPrice;
                 
                 const row = document.createElement('div');
-                row.className = "flex justify-between items-center p-6 border-b border-stone-100 last:border-0 hover:bg-stone-50 transition";
+                row.className = "flex justify-between items-center p-6 border-b border-stone-100 last:border-0";
                 row.innerHTML = `
                     <div>
                         <h3 class="font-bold text-stone-800">${item.name}</h3>
-                        <p class="text-[10px] text-stone-400 uppercase tracking-tighter">Freshly Prepared</p>
+                        <p class="text-[10px] text-stone-400 uppercase">Item ID: ${item.id}</p>
                     </div>
                     <div class="flex items-center gap-6">
                         <span class="font-semibold text-amber-900">$${numericPrice.toLocaleString()}</span>
@@ -103,7 +135,7 @@
         }
 
         function clearCart() {
-            if(confirm("Empty your cart?")) {
+            if(confirm("Clear selection?")) {
                 cart = [];
                 localStorage.setItem('creme_cart', JSON.stringify(cart));
                 renderCheckout();
@@ -113,16 +145,13 @@
         function sendOrder() {
             const name = document.getElementById('customer-name').value.trim();
             const notes = document.getElementById('special-notes').value.trim();
+            const delivery = document.querySelector('input[name="delivery"]:checked').value;
+            const payment = document.querySelector('input[name="payment"]:checked').value;
+            const terms = document.getElementById('terms-check').checked;
 
-            if (!name) {
-                alert("Please provide your name for the order.");
-                return;
-            }
-
-            if (cart.length === 0) {
-                alert("Select some items first!");
-                return;
-            }
+            if (!name) { alert("Please provide your name."); return; }
+            if (cart.length === 0) { alert("Cart is empty."); return; }
+            if (!terms) { alert("Please agree to the Terms and Conditions."); return; }
 
             let total = 0;
             let itemList = "";
@@ -132,14 +161,15 @@
                 total += nPrice;
             });
 
-            let message = `*NEW ORDER - CREME THEORY*%0A`;
-            message += `*Name:* ${name}%0A`;
-            message += `*Items:* ${itemList}%0A%0A`;
-            message += `*Total:* $${total.toLocaleString()} JMD`;
+            let message = `*NEW ORDER - CREME THEORY*%0A%0A`;
+            message += `*Customer:* ${name}%0A`;
+            message += `*Delivery:* ${delivery}%0A`;
+            message += `*Payment:* ${payment}%0A`;
+            message += `%0A*Order Details:* ${itemList}%0A%0A`;
+            message += `*Total Amount:* $${total.toLocaleString()} JMD%0A`;
             
-            if (notes) {
-                message += `%0A%0A*Special Instructions:*%0A${notes}`;
-            }
+            if (notes) { message += `%0A*Instructions/Address:* ${notes}`; }
+            message += `%0A%0A_I agree to the Terms & Conditions._`;
 
             const phoneNumber = "18765398891"; 
             window.open(`https://wa.me/${phoneNumber}?text=${message}`, '_blank');
