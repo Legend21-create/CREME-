@@ -1,4 +1,4 @@
-// CREME THEORY - CENTRAL INVENTORY
+// CREME THEORY - CENTRAL DATA
 const InventoryData = {
     "Signature 6\" Cake": { 
         "inStock": true, 
@@ -42,4 +42,12 @@ const InventoryData = {
     }
 };
 
+const SiteSettings = {
+    "announcement": "We are now accepting orders for the weekend!",
+    "shopOpen": true,
+    "themeColor": "amber-900",
+    "deliveryFee": 500
+};
+
 window.CremeInventory = InventoryData;
+window.CremeSettings = SiteSettings;
