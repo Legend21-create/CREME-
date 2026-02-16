@@ -31,9 +31,7 @@
         </div>
 
         <div class="bg-white p-8 rounded-3xl shadow-sm border border-stone-200 mb-8">
-            <h2 class="text-lg font-bold text-amber-950 mb-4 flex items-center gap-2">
-                ⚙️ Global Settings
-            </h2>
+            <h2 class="text-lg font-bold text-amber-950 mb-4 flex items-center gap-2">⚙️ Global Settings</h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div class="md:col-span-2">
                     <label class="block text-sm font-bold mb-2 text-stone-700">Homepage Announcement Bar</label>
@@ -43,9 +41,7 @@
                 </div>
                 <div>
                     <label class="block text-sm font-bold mb-2 text-stone-700">Shop Status</label>
-                    <button id="shop-toggle" onclick="toggleShop()" class="w-full py-3 rounded-xl font-bold transition">
-                        Loading...
-                    </button>
+                    <button id="shop-toggle" onclick="toggleShop()" class="w-full py-3 rounded-xl font-bold transition">Loading...</button>
                 </div>
             </div>
         </div>
@@ -70,8 +66,7 @@
         <div id="export-modal" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50 backdrop-blur-sm">
             <div class="bg-white p-8 rounded-3xl w-full max-w-2xl shadow-2xl">
                 <h2 class="text-2xl font-bold mb-2">Update Live Site</h2>
-                <p class="text-stone-500 mb-6 text-sm">Copy this code and paste it into your <strong>inventory.js</strong> on GitHub.</p>
-                <textarea id="export-area" class="w-full h-64 p-4 font-mono text-xs border rounded-2xl bg-stone-50 mb-6 ring-1 ring-stone-200"></textarea>
+                <textarea id="export-area" class="w-full h-64 p-4 font-mono text-xs border rounded-2xl bg-stone-50 mb-6"></textarea>
                 <div class="flex gap-3">
                     <button onclick="copyCode()" class="flex-1 bg-amber-900 text-white py-4 rounded-xl font-bold">Copy Code</button>
                     <button onclick="closeModal()" class="flex-1 bg-stone-200 py-4 rounded-xl font-bold text-stone-600">Close</button>
@@ -87,7 +82,8 @@
         let settings = window.CremeSettings || { announcement: "", shopOpen: true };
 
         function checkPass() {
-            if (document.getElementById('pass-input').value === CREME_PASSWORD) {
+            const input = document.getElementById('pass-input').value;
+            if (input === CREME_PASSWORD) {
                 document.getElementById('login-screen').classList.add('hidden');
                 document.getElementById('admin-content').classList.remove('hidden');
                 initSettings();
@@ -98,7 +94,7 @@
         }
 
         function initSettings() {
-            document.getElementById('set-announcement').value = settings.announcement;
+            document.getElementById('set-announcement').value = settings.announcement || "";
             updateShopBtn();
         }
 
@@ -120,75 +116,53 @@
         function renderAdmin() {
             const grid = document.getElementById('admin-grid');
             grid.innerHTML = '';
-            Object.keys(inventory).sort().forEach(key => {
+            Object.keys(inventory).forEach(key => {
                 const item = inventory[key];
                 grid.innerHTML += `
                     <div class="bg-white p-6 rounded-3xl shadow-sm border border-stone-200 grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
-                        <div class="md:col-span-2 flex flex-col items-center gap-3">
-                            <img src="${item.image}" class="w-20 h-20 rounded-2xl object-cover shadow-sm bg-stone-100">
-                            <button onclick="toggleStock('${key}')" 
-                                class="w-full py-2 rounded-lg text-[10px] font-bold uppercase tracking-wider transition ${item.inStock ? 'bg-green-100 text-green-700 border border-green-200' : 'bg-red-100 text-red-700 border border-red-200'}">
-                                ${item.inStock ? 'In Stock' : 'Sold Out'}
-                            </button>
+                        <div class="md:col-span-2">
+                            <img src="${item.image}" class="w-20 h-20 rounded-2xl object-cover mb-2">
+                            <button onclick="toggleStock('${key}')" class="w-full py-2 rounded-lg text-[10px] font-bold ${item.inStock ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">${item.inStock ? 'In Stock' : 'Sold Out'}</button>
                         </div>
-                        <div class="md:col-span-5 space-y-3">
-                            <h3 class="font-bold text-amber-950">${key}</h3>
-                            <textarea onchange="updateValue('${key}', 'description', this.value)" 
-                                class="w-full text-sm border-b border-stone-100 focus:border-amber-900 outline-none resize-none">${item.description}</textarea>
-                        </div>
-                        <div class="md:col-span-4 grid grid-cols-2 gap-4">
-                            <div>
-                                <label class="text-[10px] font-bold text-stone-400 uppercase">Price</label>
-                                <input type="number" value="${item.price}" onchange="updateValue('${key}', 'price', Number(this.value))" 
-                                    class="w-full p-2 border rounded-lg outline-none text-sm">
-                            </div>
-                            <div>
-                                <label class="text-[10px] font-bold text-stone-400 uppercase">Date</label>
-                                <input type="date" value="${item.dateAdded || ''}" onchange="updateValue('${key}', 'dateAdded', this.value)" 
-                                    class="w-full p-2 border rounded-lg text-xs outline-none">
-                            </div>
-                        </div>
-                        <div class="md:col-span-1 flex justify-center">
-                            <button onclick="deleteItem('${key}')" class="text-stone-300 hover:text-red-500 transition text-xl p-2">🗑️</button>
-                        </div>
+                        <div class="md:col-span-5"><h3 class="font-bold">${key}</h3><p class="text-sm text-stone-500">${item.description}</p></div>
+                        <div class="md:col-span-4 font-bold text-amber-900">$${item.price}</div>
+                        <div class="md:col-span-1"><button onclick="deleteItem('${key}')">🗑️</button></div>
                     </div>`;
             });
         }
 
-        function addNewItem() {
-            const name = document.getElementById('new-name').value;
-            const cat = document.getElementById('new-category').value;
-            const price = Number(document.getElementById('new-price').value);
-            const img = document.getElementById('new-image').value || "https://images.unsplash.com/photo-1555507036-ab1f4038808a";
-            const desc = document.getElementById('new-desc').value;
-
-            if (!name || !price) return alert("Please enter at least a Name and Price.");
-
-            inventory[name] = {
-                inStock: true,
-                price: price,
-                category: cat,
-                description: desc,
-                image: img,
-                dateAdded: new Date().toISOString().split('T')[0]
-            };
-            
-            document.getElementById('new-name').value = '';
-            document.getElementById('new-price').value = '';
-            document.getElementById('new-desc').value = '';
-            renderAdmin();
-        }
-
-        function updateValue(key, field, value) { inventory[key][field] = value; }
         function toggleStock(key) { inventory[key].inStock = !inventory[key].inStock; renderAdmin(); }
-        function deleteItem(key) { if(confirm(`Delete ${key}?`)) { delete inventory[key]; renderAdmin(); } }
+        function deleteItem(key) { if(confirm('Delete?')) { delete inventory[key]; renderAdmin(); } }
         function closeModal() { document.getElementById('export-modal').classList.add('hidden'); }
-        
+
         function exportData() {
-            // Exports BOTH inventory and settings
             const dataStr = "const InventoryData = " + JSON.stringify(inventory, null, 4) + ";\n\n" +
                             "const SiteSettings = " + JSON.stringify(settings, null, 4) + ";\n\n" +
                             "window.CremeInventory = InventoryData;\n" +
                             "window.CremeSettings = SiteSettings;";
-            
-            document.getElementById('export-
+            document.getElementById('export-area').value = dataStr;
+            document.getElementById('export-modal').classList.remove('hidden');
+        }
+
+        function copyCode() {
+            document.getElementById('export-area').select();
+            document.execCommand('copy');
+            alert("Copied! Paste into inventory.js");
+        }
+
+        function addNewItem() {
+            const name = document.getElementById('new-name').value;
+            const price = document.getElementById('new-price').value;
+            if(!name || !price) return;
+            inventory[name] = { 
+                inStock: true, 
+                price: Number(price), 
+                category: document.getElementById('new-category').value,
+                description: document.getElementById('new-desc').value,
+                image: document.getElementById('new-image').value || "https://images.unsplash.com/photo-1555507036-ab1f4038808a"
+            };
+            renderAdmin();
+        }
+    </script>
+</body>
+</html>
