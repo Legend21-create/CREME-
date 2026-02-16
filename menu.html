@@ -107,34 +107,36 @@
         </div>
     </footer>
 
-    <script>
-        // --- CENTRAL INVENTORY CONTROL ---
-        // Change 'inStock' to false to disable ordering for that item
-        const Inventory = {
-            "Signature 6\" Cake": { inStock: true },
-            "Velvet Theory": { inStock: false }, // Set to false to test "Sold Out"
-            "Heritage Croissant": { inStock: true }
-        };
+    <script src="inventory.js"></script>
 
+    <script>
         let cart = JSON.parse(localStorage.getItem('creme_cart')) || [];
 
         function updateMenuAvailability() {
+            // Use the data from our central inventory file
+            const Inventory = window.CremeInventory;
+            if (!Inventory) return; // Guard in case file is missing
+
             const items = document.querySelectorAll('.menu-item');
+            
             items.forEach(item => {
-                const name = item.querySelector('.item-name').innerText;
-                // Match inventory exactly or by name
+                const name = item.querySelector('.item-name').innerText.trim();
+                
                 if (Inventory[name] && !Inventory[name].inStock) {
-                    item.classList.add('opacity-60');
+                    item.classList.add('opacity-60', 'grayscale-[0.5]');
                     const btn = item.querySelector('.add-button');
                     btn.innerText = "Sold Out";
                     btn.disabled = true;
                     btn.classList.replace('bg-stone-800', 'bg-stone-300');
                     btn.classList.add('cursor-not-allowed');
                     
-                    const badge = document.createElement('span');
-                    badge.className = "text-[10px] bg-red-100 text-red-600 px-2 py-1 rounded-full uppercase font-bold ml-2";
-                    badge.innerText = "Out of Stock";
-                    item.querySelector('.item-name').appendChild(badge);
+                    // Add "Out of Stock" Badge if it doesn't exist
+                    if (!item.querySelector('.stock-badge')) {
+                        const badge = document.createElement('span');
+                        badge.className = "stock-badge text-[10px] bg-red-100 text-red-600 px-2 py-1 rounded-full uppercase font-bold ml-2 inline-block align-middle";
+                        badge.innerText = "Out of Stock";
+                        item.querySelector('.item-name').appendChild(badge);
+                    }
                 }
             });
         }
@@ -151,7 +153,6 @@
             if (countDisplay) countDisplay.innerText = cart.length;
         }
 
-        // Run functions on load
         window.onload = () => {
             updateCartCount();
             updateMenuAvailability();
