@@ -83,14 +83,24 @@
                 </div>
             </div>
 
-            <div>
-                <label class="block text-sm font-semibold mb-2">Cake Style</label>
-                <select name="style" class="w-full p-3 border border-stone-200 rounded-md focus:outline-none focus:ring-1 focus:ring-amber-900">
-                    <option value="wedding">Wedding Cake</option>
-                    <option value="birthday">Birthday Celebration</option>
-                    <option value="corporate">Corporate Event</option>
-                    <option value="other">Other</option>
-                </select>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-sm font-semibold mb-2">Cake Style</label>
+                    <select name="style" class="w-full p-3 border border-stone-200 rounded-md focus:outline-none focus:ring-1 focus:ring-amber-900">
+                        <option value="wedding">Wedding Cake</option>
+                        <option value="birthday">Birthday Celebration</option>
+                        <option value="corporate">Corporate Event</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold mb-2">Payment Method</label>
+                    <select name="payment_method" required class="w-full p-3 border border-stone-200 rounded-md focus:outline-none focus:ring-1 focus:ring-amber-900">
+                        <option value="" disabled selected>Select an option</option>
+                        <option value="bank_transfer">Bank Transfer</option>
+                        <option value="cash">Cash on Delivery/Pickup</option>
+                    </select>
+                </div>
             </div>
 
             <div>
@@ -104,7 +114,7 @@
                 </div>
                 <div class="ml-3 text-sm">
                     <label for="terms" class="font-medium text-stone-700">
-                        I agree to the <a href="terms.html" class="text-amber-900 hover:underline">Terms of Service</a> and understand that payment is via <strong>Bank Transfer</strong>.
+                        I agree to the <a href="terms.html" class="text-amber-900 hover:underline">Terms of Service</a> and understand that payment is via <strong>Bank Transfer</strong> or <strong>Cash on Delivery/Pickup</strong>.
                     </label>
                 </div>
             </div>
