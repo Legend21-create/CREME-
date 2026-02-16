@@ -49,5 +49,6 @@ const SiteSettings = {
     "deliveryFee": 500
 };
 
+// Connect data to the global window
 window.CremeInventory = InventoryData;
 window.CremeSettings = SiteSettings;
