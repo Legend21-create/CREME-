@@ -6,117 +6,234 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Terms of Service | Creme Theory</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
-        h1, h2, h3 { font-family: 'Playfair Display', serif; }
+        * { box-sizing: border-box; }
+        body { font-family: 'DM Sans', sans-serif; scroll-behavior: smooth; }
+        h1, h2, h3, h4 { font-family: 'Playfair Display', serif; }
+
+        #mobile-menu { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
+        #mobile-menu.open { max-height: 300px; }
     </style>
 </head>
 <body class="bg-stone-50 text-stone-800 border-t-4 border-amber-900">
 
-    <nav class="flex justify-between items-center p-6 max-w-7xl mx-auto">
-        <a href="index.html" class="text-2xl font-bold tracking-tighter text-amber-900 uppercase">Creme Theory</a>
-        <div class="hidden md:flex space-x-8 font-medium items-center">
-            <a href="menu.html" class="hover:text-amber-700 transition">Menu</a>
-            <a href="story.html" class="hover:text-amber-700 transition">Our Story</a>
-            <a href="order.html" class="hover:text-amber-700 transition">Custom Orders</a>
+    <!-- ── NAV ── -->
+    <nav class="sticky top-0 z-50 bg-stone-50/90 backdrop-blur-md border-b border-stone-100">
+        <div class="flex justify-between items-center px-6 py-4 max-w-7xl mx-auto">
+            <a href="index.html" class="text-2xl font-bold tracking-tighter text-amber-900 uppercase">Creme Theory</a>
+
+            <div class="hidden md:flex space-x-8 font-medium items-center">
+                <a href="menu.html" class="hover:text-amber-700 transition">Menu</a>
+                <a href="story.html" class="hover:text-amber-700 transition">Our Story</a>
+                <a href="order.html" class="hover:text-amber-700 transition">Custom Orders</a>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <a href="cart.html" class="relative cursor-pointer flex items-center hover:opacity-75 transition">
+                    <span class="text-xl">🛒</span>
+                    <span id="cart-count" class="absolute -top-2 -right-2 bg-amber-900 text-white text-[10px] rounded-full px-1.5 py-0.5 font-bold min-w-[18px] text-center">0</span>
+                </a>
+                <a href="index.html#newsletter" class="hidden sm:inline-block bg-amber-900 text-white px-4 py-2 rounded-full hover:bg-amber-800 transition text-xs font-semibold">Join Now</a>
+                <button id="menu-toggle" class="md:hidden flex flex-col gap-1.5 cursor-pointer" aria-label="Toggle navigation">
+                    <span class="block w-6 h-0.5 bg-stone-800 transition-all" id="bar1"></span>
+                    <span class="block w-6 h-0.5 bg-stone-800 transition-all" id="bar2"></span>
+                    <span class="block w-4 h-0.5 bg-stone-800 transition-all" id="bar3"></span>
+                </button>
+            </div>
         </div>
-        <div class="flex items-center gap-4">
-            <a href="cart.html" class="relative cursor-pointer flex items-center hover:opacity-75 transition mr-1">
-                <span class="text-xl">🛒</span>
-                <span id="cart-count" class="absolute -top-2 -right-2 bg-amber-900 text-white text-[10px] rounded-full px-1.5 py-0.5 font-bold">0</span>
-            </a>
-            <a href="index.html#newsletter" class="bg-amber-900 text-white px-4 py-2 rounded-full hover:bg-amber-800 transition text-xs font-semibold">Join Now</a>
+
+        <div id="mobile-menu" class="md:hidden border-t border-stone-100 bg-stone-50">
+            <div class="flex flex-col px-6 py-4 space-y-4 text-sm font-medium">
+                <a href="menu.html" class="hover:text-amber-700 transition">Menu</a>
+                <a href="story.html" class="hover:text-amber-700 transition">Our Story</a>
+                <a href="order.html" class="hover:text-amber-700 transition">Custom Orders</a>
+                <a href="index.html#newsletter" class="text-amber-900 font-semibold">Join Now</a>
+            </div>
         </div>
     </nav>
 
+    <!-- ── HEADER ── -->
     <main class="max-w-3xl mx-auto px-6 py-16">
         <header class="text-center mb-16">
+            <p class="text-xs uppercase tracking-[0.3em] text-amber-700 mb-4 font-medium">Legal</p>
             <h1 class="text-4xl md:text-5xl text-amber-950 mb-4">Terms & Conditions</h1>
-            <div class="w-16 h-1 bg-amber-900 mx-auto mb-6"></div>
-            <p class="text-stone-500 italic text-sm">Last Updated: February 2026</p>
+            <div class="w-16 h-1 bg-amber-900 mx-auto mb-6 rounded-full"></div>
+            <p class="text-stone-400 italic text-sm">Last Updated: February 2026</p>
         </header>
 
         <div class="space-y-12 text-stone-600 leading-relaxed">
-            
+
+            <!-- 1. Payment & Deposits -->
             <section>
                 <h2 class="text-2xl text-amber-900 mb-6 flex items-center gap-3">
-                    <span class="text-sm bg-amber-100 text-amber-900 w-8 h-8 rounded-full flex items-center justify-center font-serif italic">1</span>
+                    <span class="text-sm bg-amber-100 text-amber-900 w-8 h-8 rounded-full flex items-center justify-center font-bold flex-shrink-0">1</span>
                     Payment & Deposits
                 </h2>
-                <div class="grid md:grid-cols-2 gap-6">
+                <div class="grid md:grid-cols-2 gap-6 mb-6">
                     <div class="bg-white p-6 rounded-2xl border border-stone-200 shadow-sm">
                         <h3 class="font-bold text-amber-950 mb-2 uppercase text-xs tracking-widest">Store Pickup</h3>
-                        <p class="text-sm">Online orders for pickup require <strong>100% payment</strong>. Your items will be reserved and prepared only after payment is confirmed.</p>
+                        <p class="text-sm">Online orders for pickup require <strong>100% payment</strong> upfront. Your items will be reserved and prepared only after payment is confirmed.</p>
                     </div>
                     <div class="bg-white p-6 rounded-2xl border border-stone-200 shadow-sm">
                         <h3 class="font-bold text-amber-950 mb-2 uppercase text-xs tracking-widest">Delivery</h3>
-                        <p class="text-sm">Delivery orders require a <strong>50% non-refundable deposit</strong> to secure your slot. The balance is due upon delivery.</p>
+                        <p class="text-sm">Delivery orders require a <strong>50% non-refundable deposit</strong> to secure your slot. The remaining balance is due upon delivery.</p>
                     </div>
                 </div>
-                <p class="mt-6 text-sm">Payments are accepted via <strong>Bank Transfer (NCB)</strong> or <strong>Cash</strong>. Proof of transfer must be sent for order processing.</p>
+                <p class="text-sm">Payments are accepted via <strong>Bank Transfer (NCB)</strong> or <strong>Cash</strong>. Proof of transfer must be sent to our Instagram to confirm order processing.</p>
             </section>
 
+            <!-- 2. Identity Verification -->
             <section class="bg-amber-900 text-white p-8 rounded-3xl shadow-xl">
                 <h2 class="text-2xl mb-4 flex items-center gap-3">
-                    <span class="text-sm bg-white/20 text-white w-8 h-8 rounded-full flex items-center justify-center font-serif italic">2</span>
+                    <span class="text-sm bg-white/20 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold flex-shrink-0">2</span>
                     Identity Verification
                 </h2>
                 <p class="text-sm leading-relaxed opacity-90">
-                    To prevent fraud and ensure order accuracy, <strong>valid government-issued identification</strong> (Driver's License, Passport, or National ID) is required for:
+                    To prevent fraud and ensure order accuracy, <strong>valid government-issued identification</strong> (Driver's Licence, Passport, or National ID) is required for:
                 </p>
                 <ul class="mt-4 space-y-2 text-sm">
                     <li class="flex items-center gap-2">✔ All Store Pickups</li>
                     <li class="flex items-center gap-2">✔ All Deliveries</li>
                 </ul>
-                <p class="mt-4 text-[11px] italic opacity-70">The name on the ID must match the name provided during the online checkout process.</p>
+                <p class="mt-4 text-[11px] italic opacity-70">The name on the ID must match the name provided during checkout.</p>
             </section>
 
+            <!-- 3. Delivery Zones -->
             <section>
                 <h2 class="text-2xl text-amber-900 mb-6 flex items-center gap-3">
-                    <span class="text-sm bg-amber-100 text-amber-900 w-8 h-8 rounded-full flex items-center justify-center font-serif italic">3</span>
-                    Delivery Zones
+                    <span class="text-sm bg-amber-100 text-amber-900 w-8 h-8 rounded-full flex items-center justify-center font-bold flex-shrink-0">3</span>
+                    Delivery Zones & Fees
                 </h2>
-                <p class="mb-4 text-sm">We provide delivery to the following locations. Fees are calculated at checkout:</p>
-                <ul class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-                    <li class="bg-stone-100 p-3 rounded-xl text-[10px] font-bold uppercase tracking-widest">Spanish Town</li>
-                    <li class="bg-stone-100 p-3 rounded-xl text-[10px] font-bold uppercase tracking-widest">Papine</li>
-                    <li class="bg-stone-100 p-3 rounded-xl text-[10px] font-bold uppercase tracking-widest">Half Way Tree</li>
-                    <li class="bg-stone-100 p-3 rounded-xl text-[10px] font-bold uppercase tracking-widest">May Pen</li>
+                <p class="mb-4 text-sm">We deliver to the following locations. Fees are calculated at checkout and may be updated periodically.</p>
+                <!-- Populated from inventory.js if available, fallback to static -->
+                <ul id="delivery-zones" class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                    <!-- Static fallback — overwritten by JS if inventory.js loads -->
+                    <li class="bg-stone-100 p-4 rounded-xl">
+                        <p class="text-[10px] font-bold uppercase tracking-widest mb-1">Spanish Town</p>
+                        <p class="text-xs text-amber-900 font-bold">J$1,000</p>
+                    </li>
+                    <li class="bg-stone-100 p-4 rounded-xl">
+                        <p class="text-[10px] font-bold uppercase tracking-widest mb-1">Half Way Tree</p>
+                        <p class="text-xs text-amber-900 font-bold">J$1,200</p>
+                    </li>
+                    <li class="bg-stone-100 p-4 rounded-xl">
+                        <p class="text-[10px] font-bold uppercase tracking-widest mb-1">Papine</p>
+                        <p class="text-xs text-amber-900 font-bold">J$1,500</p>
+                    </li>
+                    <li class="bg-stone-100 p-4 rounded-xl">
+                        <p class="text-[10px] font-bold uppercase tracking-widest mb-1">May Pen</p>
+                        <p class="text-xs text-amber-900 font-bold">J$2,500</p>
+                    </li>
                 </ul>
             </section>
 
+            <!-- 4. Cancellations -->
             <section>
                 <h2 class="text-2xl text-amber-900 mb-6 flex items-center gap-3">
-                    <span class="text-sm bg-amber-100 text-amber-900 w-8 h-8 rounded-full flex items-center justify-center font-serif italic">4</span>
-                    Cancellations
+                    <span class="text-sm bg-amber-100 text-amber-900 w-8 h-8 rounded-full flex items-center justify-center font-bold flex-shrink-0">4</span>
+                    Cancellations & Liability
                 </h2>
                 <p class="text-sm">
-                    Deposits are <strong>non-refundable</strong>. Once an order has been verified and handed over (via pickup or delivery), Creme Theory is no longer liable for damage caused by improper transport or storage.
+                    Deposits are <strong>non-refundable</strong>. Once an order has been verified and handed over — whether via pickup or delivery — Creme Theory is no longer liable for damage caused by improper transport or storage by the customer.
                 </p>
             </section>
 
         </div>
 
+        <!-- Questions CTA -->
         <div class="mt-20 p-8 border border-stone-200 rounded-3xl text-center">
-            <h4 class="font-serif text-xl mb-2 text-amber-950">Questions?</h4>
+            <h4 class="text-xl mb-2 text-amber-950">Questions?</h4>
             <p class="text-stone-500 text-sm mb-6">We're here to help with your artisanal experience.</p>
-            <a href="mailto:cremetheory@gmail.com" class="text-amber-900 font-bold hover:underline">cremetheory@gmail.com</a>
+            <a href="mailto:cremetheory@gmail.com"
+               class="text-amber-900 font-bold hover:underline text-sm">
+                cremetheory@gmail.com
+            </a>
         </div>
     </main>
 
+    <!-- ── FOOTER ── -->
     <footer class="bg-stone-900 text-stone-400 py-20 px-6 mt-20">
-        <div class="max-w-7xl mx-auto text-center md:text-left">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 border-b border-stone-800 pb-16 mb-12">
+                <div class="col-span-1">
+                    <h2 class="text-white text-2xl font-bold tracking-tighter mb-4 uppercase">Creme Theory</h2>
+                    <p class="text-sm">Artisanal excellence in every bite.</p>
+                </div>
+                <div>
+                    <h4 class="text-white font-bold uppercase tracking-widest text-[10px] mb-6">Shop</h4>
+                    <ul class="space-y-4 text-sm">
+                        <li><a href="menu.html" class="hover:text-white transition">Full Menu</a></li>
+                        <li><a href="order.html" class="hover:text-white transition">Custom Orders</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-white font-bold uppercase tracking-widests text-[10px] mb-6">Support</h4>
+                    <ul class="space-y-4 text-sm">
+                        <li><a href="terms.html" class="hover:text-white transition font-bold text-amber-500 underline">Terms of Service</a></li>
+                        <li><a href="story.html" class="hover:text-white transition">Our Story</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-white font-bold uppercase tracking-widests text-[10px] mb-6">Bakery Hours</h4>
+                    <ul class="text-sm space-y-3">
+                        <li class="flex justify-between border-b border-stone-800 pb-2">
+                            <span>Mon – Fri</span>
+                            <span class="text-white font-medium">7:00 AM – 6:00 PM</span>
+                        </li>
+                        <li class="flex justify-between pt-1">
+                            <span>Sat – Sun</span>
+                            <span class="text-white font-medium">8:00 AM – 2:00 PM</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
             <p class="text-[10px] uppercase tracking-widest">© 2026 Creme Theory. All Rights Reserved.</p>
         </div>
     </footer>
 
+    <script src="inventory.js"></script>
     <script>
-        window.onload = () => {
-            const cart = JSON.parse(localStorage.getItem('creme_cart')) || [];
-            const countEl = document.getElementById('cart-count');
-            if (countEl) countEl.innerText = cart.length;
-        };
+        // ─── CART BADGE ───────────────────────────────────────────────
+        function updateCartCount() {
+            const cart  = JSON.parse(localStorage.getItem('creme_cart')) || [];
+            const total = cart.reduce((sum, i) => sum + (i.qty || 1), 0);
+            document.getElementById('cart-count').innerText = total;
+        }
+
+        // ─── DELIVERY ZONES (live from inventory.js) ──────────────────
+        function renderDeliveryZones() {
+            const fees = window.CremeSettings && window.CremeSettings.deliveryFees;
+            if (!fees) return; // keep static fallback if inventory.js not loaded
+
+            const list = document.getElementById('delivery-zones');
+            list.innerHTML = Object.entries(fees).map(([zone, fee]) => `
+                <li class="bg-stone-100 p-4 rounded-xl">
+                    <p class="text-[10px] font-bold uppercase tracking-widest mb-1">${zone}</p>
+                    <p class="text-xs text-amber-900 font-bold">J$${fee.toLocaleString()}</p>
+                </li>`).join('');
+        }
+
+        function boot() {
+            updateCartCount();
+            renderDeliveryZones();
+        }
+
+        document.addEventListener('inventoryLoaded', boot);
+        window.addEventListener('DOMContentLoaded', () => {
+            updateCartCount();
+            if (window.CremeSettings) renderDeliveryZones();
+        });
+
+        // ─── MOBILE NAV ───────────────────────────────────────────────
+        document.getElementById('menu-toggle').addEventListener('click', () => {
+            const menu   = document.getElementById('mobile-menu');
+            const isOpen = menu.classList.toggle('open');
+            document.getElementById('bar1').style.transform = isOpen ? 'translateY(8px) rotate(45deg)' : '';
+            document.getElementById('bar2').style.opacity   = isOpen ? '0' : '1';
+            document.getElementById('bar3').style.transform = isOpen ? 'translateY(-8px) rotate(-45deg)' : '';
+            document.getElementById('bar3').style.width     = isOpen ? '24px' : '';
+        });
     </script>
 </body>
 </html>
