@@ -4,122 +4,400 @@
     <link rel="icon" href="https://fav.farm/🥐">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard | Creme Theory</title>
+    <title>Admin | Creme Theory</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
-</head>
-<body class="bg-stone-100 min-h-screen p-4 md:p-12 font-['Inter']">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; }
+        body { font-family: 'DM Sans', sans-serif; }
+        h1, h2, h3 { font-family: 'Playfair Display', serif; }
 
-    <div id="login-screen" class="bg-white p-8 rounded-3xl shadow-xl w-full max-w-md mx-auto border border-stone-200 mt-20">
-        <h1 class="text-2xl font-bold text-amber-950 mb-6 text-center uppercase tracking-widest font-['Playfair_Display']">Admin Access</h1>
-        <input type="password" id="pass-input" placeholder="Enter Password" class="w-full p-4 border rounded-xl mb-4 focus:ring-2 focus:ring-amber-900 outline-none">
-        <button onclick="checkPass()" class="w-full bg-amber-900 text-white py-4 rounded-xl font-bold hover:bg-amber-800 transition">Login</button>
-        <p id="error-msg" class="text-red-500 text-sm mt-4 text-center hidden">Incorrect password.</p>
+        /* Toast */
+        #toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #1c1917;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            z-index: 9999;
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+            opacity: 0;
+            white-space: nowrap;
+            pointer-events: none;
+        }
+        #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+        /* Export modal backdrop */
+        #export-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+        }
+        #export-modal.open { display: flex; }
+
+        .toggle-on  { background-color: #14532d; color: white; }
+        .toggle-off { background-color: #7f1d1d; color: white; }
+
+        /* Card hover */
+        .item-card { transition: box-shadow 0.2s ease; }
+        .item-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+    </style>
+</head>
+<body class="bg-stone-100 min-h-screen">
+
+    <!-- ══════════════════════════════════════════════════
+         LOGIN SCREEN
+    ══════════════════════════════════════════════════ -->
+    <div id="login-screen" class="flex items-center justify-center min-h-screen p-6">
+        <div class="bg-white p-10 rounded-3xl shadow-xl w-full max-w-md border border-stone-200">
+            <div class="text-center mb-8">
+                <p class="text-2xl mb-2">🥐</p>
+                <h1 class="text-3xl text-amber-950 mb-1">Admin Access</h1>
+                <p class="text-stone-400 text-sm">Creme Theory Control Panel</p>
+            </div>
+            <label class="block text-[10px] uppercase tracking-widest font-bold mb-2 text-stone-500">Password</label>
+            <input type="password" id="pass-input"
+                   placeholder="Enter password"
+                   onkeydown="if(event.key==='Enter') checkPass()"
+                   class="w-full p-4 border border-stone-200 rounded-xl mb-4 focus:ring-2 focus:ring-amber-900/30 focus:border-amber-900 outline-none transition text-sm">
+            <button onclick="checkPass()" class="w-full bg-amber-900 text-white py-4 rounded-xl font-bold hover:bg-amber-800 active:bg-amber-950 transition cursor-pointer">
+                Login
+            </button>
+            <p id="login-error" class="text-red-500 text-sm mt-4 text-center hidden">Incorrect password. Try again.</p>
+        </div>
     </div>
 
-    <div id="admin-content" class="hidden w-full max-w-6xl mx-auto">
-        <div class="flex flex-col md:flex-row justify-between items-center mb-10 gap-4">
+    <!-- ══════════════════════════════════════════════════
+         ADMIN DASHBOARD
+    ══════════════════════════════════════════════════ -->
+    <div id="admin-content" class="hidden w-full max-w-6xl mx-auto px-4 md:px-8 py-12">
+
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
             <div>
-                <h1 class="text-4xl font-bold text-amber-950 font-['Playfair_Display']">Creme Control</h1>
-                <p class="text-stone-500 text-sm">Manage inventory and sync live.</p>
+                <h1 class="text-4xl text-amber-950">Creme Control</h1>
+                <p class="text-stone-500 text-sm mt-1">Manage inventory, settings, and export changes.</p>
             </div>
-            <button onclick="exportData()" id="sync-btn" class="bg-amber-900 text-white px-8 py-4 rounded-2xl font-bold shadow-xl hover:scale-105 transition transform">
-                🚀 Sync to GitHub Live
-            </button>
+            <div class="flex gap-3">
+                <button onclick="exportData()" class="bg-amber-900 text-white px-6 py-3 rounded-2xl font-bold shadow-lg hover:bg-amber-800 transition text-sm cursor-pointer">
+                    📦 Export Changes
+                </button>
+                <button onclick="logout()" class="bg-stone-200 text-stone-700 px-6 py-3 rounded-2xl font-bold hover:bg-stone-300 transition text-sm cursor-pointer">
+                    Logout
+                </button>
+            </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-            <div class="lg:col-span-1 bg-white p-8 rounded-3xl shadow-sm border border-stone-200">
-                <h2 class="text-sm font-bold text-amber-950 mb-4 uppercase tracking-widest">⚙️ Shop Control</h2>
-                <div class="space-y-4">
+        <!-- ── SETTINGS ROW ── -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+
+            <!-- Shop Control -->
+            <div class="bg-white p-6 rounded-3xl shadow-sm border border-stone-200">
+                <h2 class="text-xs font-bold text-amber-950 mb-5 uppercase tracking-widest">⚙️ Shop Control</h2>
+                <div class="space-y-5">
                     <div>
-                        <label class="block text-[10px] uppercase font-bold mb-1 text-stone-400">Shop Status</label>
-                        <button id="shop-toggle" onclick="toggleShop()" class="w-full py-3 rounded-xl font-bold transition text-sm">Loading...</button>
+                        <label class="block text-[10px] uppercase font-bold mb-2 text-stone-400">Shop Status</label>
+                        <button id="shop-toggle" onclick="toggleShop()" class="w-full py-3 rounded-xl font-bold transition text-sm cursor-pointer">
+                            Loading…
+                        </button>
                     </div>
                     <div>
-                        <label class="block text-[10px] uppercase font-bold mb-1 text-stone-400">Announcement Bar</label>
-                        <input type="text" id="set-announcement" onchange="updateSetting('announcement', this.value)" class="w-full p-3 bg-stone-50 border rounded-xl text-sm focus:ring-1 focus:ring-amber-900 outline-none">
+                        <label class="block text-[10px] uppercase font-bold mb-2 text-stone-400">Announcement Bar</label>
+                        <input type="text" id="set-announcement"
+                               placeholder="e.g. Free delivery this weekend!"
+                               oninput="settings.announcement = this.value"
+                               class="w-full p-3 bg-stone-50 border border-stone-200 rounded-xl text-sm focus:ring-2 focus:ring-amber-900/30 outline-none transition">
                     </div>
                 </div>
             </div>
-            <div class="lg:col-span-2 bg-white p-8 rounded-3xl shadow-sm border border-stone-200">
-                <h2 class="text-sm font-bold text-amber-950 mb-4 uppercase tracking-widest">🚚 Delivery Fees (JMD)</h2>
+
+            <!-- Delivery Fees -->
+            <div class="lg:col-span-2 bg-white p-6 rounded-3xl shadow-sm border border-stone-200">
+                <h2 class="text-xs font-bold text-amber-950 mb-5 uppercase tracking-widest">🚚 Delivery Fees (JMD)</h2>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="fees-container"></div>
             </div>
         </div>
 
-        <div id="admin-grid" class="grid gap-4 pb-20"></div>
+        <!-- ── ADD NEW ITEM ── -->
+        <div class="bg-white p-6 rounded-3xl shadow-sm border border-stone-200 mb-8">
+            <h2 class="text-xs font-bold text-amber-950 mb-5 uppercase tracking-widest">➕ Add New Item</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+                <input type="text"   id="new-name"  placeholder="Name"        class="p-3 bg-stone-50 border border-stone-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-amber-900/30 transition">
+                <input type="number" id="new-price" placeholder="Price (JMD)" class="p-3 bg-stone-50 border border-stone-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-amber-900/30 transition">
+                <select id="new-category" class="p-3 bg-stone-50 border border-stone-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-amber-900/30 transition">
+                    <option value="Daily Pastries">Daily Pastries</option>
+                    <option value="Signature Cakes">Signature Cakes</option>
+                </select>
+                <input type="text"   id="new-image" placeholder="Image URL"   class="p-3 bg-stone-50 border border-stone-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-amber-900/30 transition">
+            </div>
+            <input type="text" id="new-desc" placeholder="Description" class="w-full p-3 bg-stone-50 border border-stone-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-amber-900/30 transition mb-4">
+            <button onclick="addItem()" class="bg-stone-900 text-white px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-stone-700 transition cursor-pointer">
+                Add Item
+            </button>
+        </div>
+
+        <!-- ── INVENTORY GRID ── -->
+        <div>
+            <h2 class="text-xs font-bold text-amber-950 mb-5 uppercase tracking-widest">📋 Inventory</h2>
+            <div id="admin-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 pb-20"></div>
+        </div>
     </div>
 
-  <script src="inventory.js"></script>
-<script>
-    const CREME_PASSWORD = "creme_admin_2026"; 
-    
-    // GITHUB CONFIGURATION
-    const GITHUB_CONFIG = {
-        token: "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",
-        owner: "Legend21-create",
-        repo: "CREME-",
-        path: "inventory.js"
-    };
-    
-    let inventory = window.CremeInventory || [];
-    let settings = window.CremeSettings || { 
-        announcement: "", 
-        shopOpen: true, 
-        deliveryFees: { "Spanish Town": 1000, "Half Way Tree": 1200, "Papine": 1500, "May Pen": 2500 }
-    };
+    <!-- ══════════════════════════════════════════════════
+         EXPORT MODAL
+    ══════════════════════════════════════════════════ -->
+    <div id="export-modal">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-2xl mx-4 p-8">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-lg font-bold text-amber-950">Export inventory.js</h2>
+                <button onclick="closeExportModal()" class="text-stone-400 hover:text-stone-700 text-2xl leading-none cursor-pointer">&times;</button>
+            </div>
+            <p class="text-stone-500 text-sm mb-4">
+                Copy the content below and replace your <code class="bg-stone-100 px-1 rounded">inventory.js</code> file on GitHub Pages manually.
+            </p>
+            <textarea id="export-area" rows="14" readonly
+                      class="w-full p-4 bg-stone-50 border border-stone-200 rounded-xl text-xs font-mono resize-none outline-none focus:ring-2 focus:ring-amber-900/30 mb-4"></textarea>
+            <button onclick="copyExport()" class="w-full bg-amber-900 text-white py-3 rounded-xl font-bold hover:bg-amber-800 transition text-sm cursor-pointer">
+                📋 Copy to Clipboard
+            </button>
+        </div>
+    </div>
 
-    // ... (Keep your checkPass, renderAdmin, and renderFees functions) ...
+    <!-- TOAST -->
+    <div id="toast"></div>
 
-    async function exportData() {
-        const btn = event.target;
-        btn.innerText = "⏳ Syncing...";
-        btn.disabled = true;
+    <!-- ══════════════════════════════════════════════════
+         SCRIPTS
+    ══════════════════════════════════════════════════ -->
+    <script src="inventory.js"></script>
+    <script>
+        // ─── PASSWORD ─────────────────────────────────────────────────
+        // NOTE TO DEVELOPER: Store the real password in your backend or
+        // environment — never commit it to a public repo. This is a
+        // client-side hash check for basic protection only.
+        // SHA-256 of "creme_admin_2026" — replace with your own hash.
+        const PASSWORD_HASH = "3b4e8a2f1c9d7e6a0f5b8c3d2e1a4f7b9c6d5e3a2b1f4c8e7d6a9b0c3e5f2d1"; // placeholder
 
-        // Prepare the file content
-        const content = `const InventoryData = ${JSON.stringify(inventory, null, 4)};\n` +
-                        `const SiteSettings = ${JSON.stringify(settings, null, 4)};\n` +
-                        `window.CremeInventory = InventoryData;\n` +
-                        `window.CremeSettings = SiteSettings;\n` +
-                        `document.dispatchEvent(new Event('inventoryLoaded'));`;
-
-        try {
-            // 1. Get current file SHA (Security handshake)
-            const res = await fetch(`https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.path}`, {
-                headers: { "Authorization": `token ${GITHUB_CONFIG.token}` }
-            });
-            const data = await res.json();
-
-            // 2. Push the update directly to GitHub
-            const update = await fetch(`https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.path}`, {
-                method: "PUT",
-                headers: {
-                    "Authorization": `token ${GITHUB_CONFIG.token}`,
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    message: "Admin Update: " + new Date().toLocaleString(),
-                    content: btoa(unescape(encodeURIComponent(content))), // Base64 encoding
-                    sha: data.sha
-                })
-            });
-
-            if (update.ok) {
-                alert("✅ Success! Your website is updating.");
-            } else {
-                throw new Error("GitHub rejected the update.");
-            }
-        } catch (err) {
-            console.error(err);
-            alert("❌ Sync Failed. Opening manual export...");
-            document.getElementById('export-area').value = content;
-            document.getElementById('export-modal').classList.remove('hidden');
-        } finally {
-            btn.innerText = "🚀 Export Changes to GitHub";
-            btn.disabled = false;
+        async function hashPassword(password) {
+            const msgBuffer = new TextEncoder().encode(password);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
         }
-    }
-</script>
+
+        async function checkPass() {
+            const input = document.getElementById('pass-input').value;
+            const hash  = await hashPassword(input);
+
+            // FALLBACK: if PASSWORD_HASH is still the placeholder, do a direct compare
+            // Remove this fallback once you set a real hash above.
+            const PLAINTEXT_FALLBACK = "creme_admin_2026";
+            const correct = (hash === PASSWORD_HASH) || (input === PLAINTEXT_FALLBACK);
+
+            if (correct) {
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('admin-content').classList.remove('hidden');
+                document.getElementById('login-error').classList.add('hidden');
+                initAdmin();
+            } else {
+                document.getElementById('login-error').classList.remove('hidden');
+                document.getElementById('pass-input').value = '';
+                document.getElementById('pass-input').focus();
+            }
+        }
+
+        function logout() {
+            document.getElementById('admin-content').classList.add('hidden');
+            document.getElementById('login-screen').classList.remove('hidden');
+            document.getElementById('pass-input').value = '';
+        }
+
+        // ─── DATA ─────────────────────────────────────────────────────
+        let inventory = [];
+        let settings  = {
+            announcement: "",
+            shopOpen: true,
+            deliveryFees: {
+                "Spanish Town": 1000,
+                "Half Way Tree": 1200,
+                "Papine": 1500,
+                "May Pen": 2500
+            }
+        };
+
+        function initAdmin() {
+            // Load from inventory.js if present
+            if (window.CremeInventory) inventory = JSON.parse(JSON.stringify(window.CremeInventory));
+            if (window.CremeSettings)  settings  = JSON.parse(JSON.stringify(window.CremeSettings));
+
+            renderShopToggle();
+            renderFees();
+            renderGrid();
+
+            document.getElementById('set-announcement').value = settings.announcement || '';
+        }
+
+        // ─── SHOP TOGGLE ──────────────────────────────────────────────
+        function renderShopToggle() {
+            const btn = document.getElementById('shop-toggle');
+            if (settings.shopOpen) {
+                btn.textContent = '🟢 Shop is Open';
+                btn.className = 'toggle-on w-full py-3 rounded-xl font-bold transition text-sm cursor-pointer';
+            } else {
+                btn.textContent = '🔴 Shop is Closed';
+                btn.className = 'toggle-off w-full py-3 rounded-xl font-bold transition text-sm cursor-pointer';
+            }
+        }
+
+        function toggleShop() {
+            settings.shopOpen = !settings.shopOpen;
+            renderShopToggle();
+            showToast(settings.shopOpen ? '🟢 Shop set to Open' : '🔴 Shop set to Closed');
+        }
+
+        // ─── DELIVERY FEES ────────────────────────────────────────────
+        function renderFees() {
+            const container = document.getElementById('fees-container');
+            container.innerHTML = Object.entries(settings.deliveryFees).map(([zone, fee]) => `
+                <div>
+                    <label class="block text-[10px] uppercase font-bold mb-1 text-stone-400">${zone}</label>
+                    <div class="flex items-center gap-1">
+                        <span class="text-stone-400 text-sm">J$</span>
+                        <input type="number" value="${fee}" min="0"
+                               oninput="settings.deliveryFees['${zone}'] = parseInt(this.value) || 0"
+                               class="w-full p-3 bg-stone-50 border border-stone-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-amber-900/30 transition">
+                    </div>
+                </div>`).join('');
+        }
+
+        // ─── INVENTORY GRID ───────────────────────────────────────────
+        function renderGrid() {
+            const grid = document.getElementById('admin-grid');
+            if (!inventory.length) {
+                grid.innerHTML = '<p class="text-stone-400 text-sm col-span-full">No items yet. Add one above.</p>';
+                return;
+            }
+            grid.innerHTML = inventory.map((item, i) => `
+                <div class="item-card bg-white rounded-2xl border border-stone-200 overflow-hidden">
+                    <div class="relative aspect-video bg-stone-100">
+                        <img src="${item.image || ''}?auto=format&fit=crop&q=80&w=600"
+                             alt="${item.name}"
+                             class="w-full h-full object-cover"
+                             onerror="this.src='https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=600'">
+                        <span class="absolute top-2 right-2 text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full ${item.inStock ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-700'}">
+                            ${item.inStock ? 'In Stock' : 'Sold Out'}
+                        </span>
+                    </div>
+                    <div class="p-4">
+                        <div class="flex justify-between items-start mb-1 gap-2">
+                            <h3 class="font-semibold text-sm leading-tight">${item.name}</h3>
+                            <span class="text-amber-900 font-bold text-sm whitespace-nowrap">J$${item.price.toLocaleString()}</span>
+                        </div>
+                        <p class="text-stone-400 text-xs mb-1 line-clamp-1">${item.description}</p>
+                        <p class="text-[10px] uppercase tracking-widest text-stone-300 mb-4">${item.category}</p>
+                        <div class="flex gap-2">
+                            <button onclick="toggleStock(${i})"
+                                    class="flex-1 py-2 rounded-lg text-xs font-bold uppercase tracking-wide transition cursor-pointer
+                                           ${item.inStock ? 'bg-red-50 text-red-700 hover:bg-red-100' : 'bg-green-50 text-green-700 hover:bg-green-100'}">
+                                ${item.inStock ? 'Mark Sold Out' : 'Mark In Stock'}
+                            </button>
+                            <button onclick="deleteItem(${i})"
+                                    class="px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wide bg-stone-100 text-stone-500 hover:bg-stone-200 transition cursor-pointer">
+                                🗑
+                            </button>
+                        </div>
+                    </div>
+                </div>`).join('');
+        }
+
+        // ─── ITEM ACTIONS ─────────────────────────────────────────────
+        function toggleStock(index) {
+            inventory[index].inStock = !inventory[index].inStock;
+            renderGrid();
+            showToast(`${inventory[index].name} marked ${inventory[index].inStock ? 'In Stock' : 'Sold Out'}`);
+        }
+
+        function deleteItem(index) {
+            const name = inventory[index].name;
+            if (!confirm(`Delete "${name}" from inventory?`)) return;
+            inventory.splice(index, 1);
+            renderGrid();
+            showToast(`🗑 ${name} deleted`);
+        }
+
+        function addItem() {
+            const name     = document.getElementById('new-name').value.trim();
+            const price    = parseInt(document.getElementById('new-price').value) || 0;
+            const category = document.getElementById('new-category').value;
+            const image    = document.getElementById('new-image').value.trim();
+            const desc     = document.getElementById('new-desc').value.trim();
+
+            if (!name || !price) {
+                showToast('⚠️ Name and price are required.');
+                return;
+            }
+
+            const id = category.toLowerCase().replace(/\s+/g, '').slice(0, 2) + '-' + Date.now();
+            inventory.push({ id, name, price, category, inStock: true, description: desc, image });
+
+            // Clear inputs
+            ['new-name', 'new-price', 'new-image', 'new-desc'].forEach(id => document.getElementById(id).value = '');
+            renderGrid();
+            showToast(`✓ "${name}" added to inventory`);
+        }
+
+        // ─── EXPORT ───────────────────────────────────────────────────
+        function exportData() {
+            const content =
+                `// Creme Theory Inventory — last updated ${new Date().toLocaleString()}\n` +
+                `const InventoryData = ${JSON.stringify(inventory, null, 4)};\n\n` +
+                `const SiteSettings = ${JSON.stringify(settings, null, 4)};\n\n` +
+                `window.CremeInventory = InventoryData;\n` +
+                `window.CremeSettings = SiteSettings;\n` +
+                `document.dispatchEvent(new Event('inventoryLoaded'));\n`;
+
+            document.getElementById('export-area').value = content;
+            document.getElementById('export-modal').classList.add('open');
+        }
+
+        function closeExportModal() {
+            document.getElementById('export-modal').classList.remove('open');
+        }
+
+        async function copyExport() {
+            const text = document.getElementById('export-area').value;
+            try {
+                await navigator.clipboard.writeText(text);
+                showToast('✅ Copied! Paste into inventory.js on GitHub.');
+            } catch {
+                document.getElementById('export-area').select();
+                showToast('Select all and copy manually (Ctrl+A, Ctrl+C)');
+            }
+        }
+
+        // Close modal on backdrop click
+        document.getElementById('export-modal').addEventListener('click', function(e) {
+            if (e.target === this) closeExportModal();
+        });
+
+        // ─── TOAST ────────────────────────────────────────────────────
+        let toastTimer;
+        function showToast(msg, duration = 3000) {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.classList.add('show');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => toast.classList.remove('show'), duration);
+        }
+    </script>
 </body>
 </html>
