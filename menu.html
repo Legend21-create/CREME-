@@ -12,81 +12,69 @@
         body { font-family: 'DM Sans', sans-serif; scroll-behavior: smooth; }
         h1, h2, h3 { font-family: 'Playfair Display', serif; }
 
-        /* Active category button */
-        .category-btn.active {
-            background-color: #78350f;
-            color: white;
-            border-color: #78350f;
-        }
+        .category-btn.active { background-color: #78350f; color: white; border-color: #78350f; }
 
-        /* Mobile menu */
-        #mobile-menu {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.35s ease;
-        }
-        #mobile-menu.open {
-            max-height: 300px;
-        }
+        #mobile-menu { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
+        #mobile-menu.open { max-height: 300px; }
 
-        /* Toast notification */
         #toast {
-            position: fixed;
-            bottom: 2rem;
-            left: 50%;
+            position: fixed; bottom: 2rem; left: 50%;
             transform: translateX(-50%) translateY(100px);
-            background: #1c1917;
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 999px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            letter-spacing: 0.05em;
+            background: #1c1917; color: white;
+            padding: 0.75rem 1.5rem; border-radius: 999px;
+            font-size: 0.8rem; font-weight: 600; letter-spacing: 0.05em;
             z-index: 9999;
             transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
-            opacity: 0;
-            white-space: nowrap;
-            pointer-events: none;
+            opacity: 0; white-space: nowrap; pointer-events: none;
         }
-        #toast.show {
-            transform: translateX(-50%) translateY(0);
-            opacity: 1;
-        }
+        #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
 
-        /* Card hover */
         .menu-card { transition: transform 0.25s ease; }
         .menu-card:hover { transform: translateY(-4px); }
-
-        /* Image zoom */
         .card-img { transition: transform 0.7s ease; }
         .menu-card:hover .card-img { transform: scale(1.06); }
 
-        /* Scrollbar for filter row */
+        /* Skeleton shimmer */
+        .skeleton {
+            background: linear-gradient(90deg, #e7e5e4 25%, #d6d3d1 50%, #e7e5e4 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.4s infinite;
+            border-radius: 1rem;
+        }
+        @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+        /* Announcement bar */
+        #announcement-bar { transition: transform 0.4s ease, opacity 0.4s ease; }
+        #announcement-bar.dismissed { transform: translateY(-100%); opacity: 0; }
+
         #category-filters::-webkit-scrollbar { height: 4px; }
         #category-filters::-webkit-scrollbar-thumb { background: #d6d3d1; border-radius: 9999px; }
     </style>
 </head>
 <body class="bg-stone-50 text-stone-800 border-t-4 border-amber-900">
 
+    <!-- ── ANNOUNCEMENT BAR ── -->
+    <div id="announcement-bar" class="relative bg-amber-900 text-white text-center text-xs font-semibold py-2.5 px-10 tracking-wide">
+        <span id="announcement-text"></span>
+        <button onclick="dismissAnnouncement()"
+                class="absolute right-4 top-1/2 -translate-y-1/2 opacity-60 hover:opacity-100 transition text-lg leading-none cursor-pointer"
+                aria-label="Dismiss">×</button>
+    </div>
+
     <!-- ── NAV ── -->
     <nav class="sticky top-0 z-50 bg-stone-50/90 backdrop-blur-md border-b border-stone-100">
         <div class="flex justify-between items-center px-6 py-4 max-w-7xl mx-auto">
             <a href="index.html" class="text-2xl font-bold tracking-tighter text-amber-900 uppercase">Creme Theory</a>
-
-            <!-- Desktop links -->
             <div class="hidden md:flex space-x-8 font-medium items-center">
                 <a href="menu.html" class="font-bold text-amber-900 underline decoration-2 underline-offset-8">Menu</a>
                 <a href="story.html" class="hover:text-amber-700 transition">Our Story</a>
                 <a href="order.html" class="hover:text-amber-700 transition">Custom Orders</a>
             </div>
-
             <div class="flex items-center gap-4">
-                <!-- Cart -->
                 <a href="cart.html" class="relative cursor-pointer flex items-center hover:opacity-75 transition">
                     <span class="text-xl">🛒</span>
                     <span id="cart-count" class="absolute -top-2 -right-2 bg-amber-900 text-white text-[10px] rounded-full px-1.5 py-0.5 font-bold min-w-[18px] text-center">0</span>
                 </a>
-                <!-- Hamburger (mobile) -->
                 <button id="menu-toggle" class="md:hidden flex flex-col gap-1.5 cursor-pointer" aria-label="Toggle navigation">
                     <span class="block w-6 h-0.5 bg-stone-800 transition-all" id="bar1"></span>
                     <span class="block w-6 h-0.5 bg-stone-800 transition-all" id="bar2"></span>
@@ -94,8 +82,6 @@
                 </button>
             </div>
         </div>
-
-        <!-- Mobile dropdown -->
         <div id="mobile-menu" class="md:hidden border-t border-stone-100 bg-stone-50">
             <div class="flex flex-col px-6 py-4 space-y-4 text-sm font-medium">
                 <a href="menu.html" class="text-amber-900 font-bold">Menu</a>
@@ -104,6 +90,12 @@
             </div>
         </div>
     </nav>
+
+    <!-- ── SHOP CLOSED BANNER ── -->
+    <div id="shop-closed-banner" class="hidden bg-stone-800 text-white text-center text-sm py-3 px-6 font-medium">
+        🕐 We're currently closed — check back soon or
+        <a href="order.html" class="underline text-amber-400 hover:text-amber-300">place a custom inquiry</a>.
+    </div>
 
     <!-- ── HEADER ── -->
     <header class="py-16 px-6 text-center max-w-4xl mx-auto">
@@ -121,14 +113,18 @@
                 <button data-category="Signature Cakes" onclick="updateCategory('Signature Cakes')" class="category-btn px-6 py-2 rounded-full border border-stone-200 text-sm font-medium transition whitespace-nowrap">Signature Cakes</button>
             </div>
             <div class="relative w-full md:w-64 flex-shrink-0">
-                <input type="text" id="menuSearch" oninput="searchMenu()" placeholder="Search menu..." class="w-full pl-10 pr-4 py-2.5 bg-white border border-stone-200 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-amber-900/30 transition">
+                <input type="text" id="menuSearch" oninput="applyFilters()" placeholder="Search menu..."
+                       class="w-full pl-10 pr-4 py-2.5 bg-white border border-stone-200 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-amber-900/30 transition">
                 <span class="absolute left-4 top-2.5 text-stone-400 text-sm">🔍</span>
             </div>
         </div>
     </section>
 
-    <!-- ── MENU GRID ── -->
+    <!-- ── MENU GRID (skeletons shown until inventory loads) ── -->
     <main id="menu-grid" class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 mb-20">
+        <div class="skeleton aspect-square"></div>
+        <div class="skeleton aspect-square"></div>
+        <div class="skeleton aspect-square hidden md:block"></div>
     </main>
 
     <!-- ── FOOTER ── -->
@@ -162,26 +158,72 @@
         </div>
     </footer>
 
-    <!-- ── TOAST ── -->
     <div id="toast"></div>
 
+    <!-- inventory.js dispatches 'inventoryLoaded' when ready -->
+    <script src="inventory.js"></script>
     <script>
-        // ─── INVENTORY ───────────────────────────────────────────────
-        const inventory = [
-            { id: "sc-01", name: "Signature 6\" Cake",  price: 6500, category: "Signature Cakes",  inStock: true,  description: "Serves 8–10. Perfect for intimate celebrations.", image: "https://images.unsplash.com/photo-1578985545062-69928b1d9587" },
-            { id: "sc-02", name: "Velvet Theory",        price: 7200, category: "Signature Cakes",  inStock: false, description: "Cocoa-infused sponge with vanilla bean frosting.", image: "https://images.unsplash.com/photo-1586788680434-30d324671ff6" },
-            { id: "dp-01", name: "Heritage Croissant",   price: 850,  category: "Daily Pastries",   inStock: true,  description: "Flaky layers made with French butter.", image: "https://images.unsplash.com/photo-1555507036-ab1f4038808a" },
-            { id: "dp-02", name: "Classic Croissant",    price: 850,  category: "Daily Pastries",   inStock: true,  description: "Traditional buttery goodness.", image: "https://images.unsplash.com/photo-1530610476181-d83430b64dcd" },
-            { id: "dp-03", name: "Chocolate Ganache",    price: 1200, category: "Daily Pastries",   inStock: true,  description: "Rich dark chocolate filling.", image: "https://images.unsplash.com/photo-1626803791432-152646637372" }
-        ];
-
+        // ─── STATE ────────────────────────────────────────────────────
+        let inventory     = [];
+        let settings      = {};
         let currentFilter = 'All';
+        let shopIsOpen    = true;
+        let booted        = false;
+
+        // ─── BOOT ─────────────────────────────────────────────────────
+        function boot() {
+            if (booted) return; // prevent double-boot
+            booted = true;
+
+            inventory  = window.CremeInventory || [];
+            settings   = window.CremeSettings  || {};
+            shopIsOpen = settings.shopOpen !== false;
+
+            applySettings();
+            renderMenu(inventory);
+            updateCartCount();
+        }
+
+        // inventory.js fires this event after it runs
+        document.addEventListener('inventoryLoaded', boot);
+
+        // Fallback: inventory.js may have loaded synchronously before this
+        // listener attached (common when running as a local file)
+        window.addEventListener('DOMContentLoaded', () => {
+            if (window.CremeInventory) boot();
+        });
+
+        // ─── SETTINGS ─────────────────────────────────────────────────
+        function applySettings() {
+            // Announcement bar
+            const bar       = document.getElementById('announcement-bar');
+            const textEl    = document.getElementById('announcement-text');
+            const dismissed = sessionStorage.getItem('ct_announcement_dismissed');
+
+            if (settings.announcement && !dismissed) {
+                textEl.textContent = settings.announcement;
+            } else {
+                bar.style.display = 'none';
+            }
+
+            // Shop closed banner
+            if (!shopIsOpen) {
+                document.getElementById('shop-closed-banner').classList.remove('hidden');
+            }
+        }
+
+        function dismissAnnouncement() {
+            const bar = document.getElementById('announcement-bar');
+            bar.classList.add('dismissed');
+            sessionStorage.setItem('ct_announcement_dismissed', '1');
+            setTimeout(() => bar.style.display = 'none', 420);
+        }
 
         // ─── RENDER ───────────────────────────────────────────────────
         function renderMenu(items) {
             const grid = document.getElementById('menu-grid');
 
-            if (items.length === 0) {
+            if (!items.length) {
                 grid.innerHTML = `
                     <div class="col-span-full text-center py-24">
                         <p class="text-4xl mb-4">🥐</p>
@@ -192,15 +234,19 @@
             }
 
             grid.innerHTML = items.map(item => {
-                const oos = !item.inStock;
+                const oos = !item.inStock || !shopIsOpen;
+                // image already has query params in inventory.js — do NOT append again
+                const imgSrc = item.image || 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=800';
+
                 return `
                 <div class="menu-card group ${oos ? 'opacity-60' : ''}">
                     <div class="relative overflow-hidden rounded-2xl bg-stone-200 aspect-square mb-6">
-                        <img src="${item.image}?auto=format&fit=crop&q=80&w=800"
+                        <img src="${imgSrc}"
                              alt="${item.name}"
                              class="card-img w-full h-full object-cover"
-                             loading="lazy">
-                        ${oos ? '<div class="absolute inset-0 bg-white/60 backdrop-blur-[2px] flex items-center justify-center font-bold uppercase tracking-widest text-xs text-stone-700">Sold Out</div>' : ''}
+                             loading="lazy"
+                             onerror="this.src='https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=800'">
+                        ${oos ? `<div class="absolute inset-0 bg-white/60 backdrop-blur-[2px] flex items-center justify-center font-bold uppercase tracking-widest text-xs text-stone-700">${!shopIsOpen ? 'Shop Closed' : 'Sold Out'}</div>` : ''}
                         <span class="absolute top-4 left-4 bg-white/80 backdrop-blur-sm text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full text-stone-600">${item.category}</span>
                     </div>
                     <div class="flex justify-between items-start mb-2">
@@ -213,7 +259,7 @@
                         ${oos ? 'disabled' : ''}
                         class="w-full border border-stone-300 py-3 rounded-xl text-xs font-bold uppercase tracking-widest transition
                                ${oos ? 'cursor-not-allowed text-stone-400' : 'hover:bg-stone-900 hover:text-white hover:border-stone-900 cursor-pointer'}">
-                        ${oos ? 'Unavailable' : 'Add to Selection'}
+                        ${oos ? (!shopIsOpen ? 'Shop Closed' : 'Unavailable') : 'Add to Selection'}
                     </button>
                 </div>`;
             }).join('');
@@ -228,41 +274,32 @@
             applyFilters();
         }
 
-        function searchMenu() {
-            applyFilters();
-        }
-
         function applyFilters() {
             const query = document.getElementById('menuSearch').value.toLowerCase().trim();
             const filtered = inventory.filter(item => {
                 const matchesCategory = currentFilter === 'All' || item.category === currentFilter;
-                const matchesSearch = !query || item.name.toLowerCase().includes(query) || item.description.toLowerCase().includes(query);
+                const matchesSearch   = !query ||
+                    item.name.toLowerCase().includes(query) ||
+                    item.description.toLowerCase().includes(query);
                 return matchesCategory && matchesSearch;
             });
             renderMenu(filtered);
         }
 
         // ─── CART ─────────────────────────────────────────────────────
-        function getCart() {
-            return JSON.parse(localStorage.getItem('creme_cart')) || [];
-        }
-
-        function saveCart(cart) {
-            localStorage.setItem('creme_cart', JSON.stringify(cart));
-        }
+        function getCart()       { return JSON.parse(localStorage.getItem('creme_cart')) || []; }
+        function saveCart(cart)  { localStorage.setItem('creme_cart', JSON.stringify(cart)); }
 
         function addToCart(id) {
+            if (!shopIsOpen) { showToast('🕐 Shop is currently closed'); return; }
+
             const item = inventory.find(i => i.id === id);
             if (!item || !item.inStock) return;
 
-            const cart = getCart();
+            const cart     = getCart();
             const existing = cart.find(i => i.id === id);
-
-            if (existing) {
-                existing.qty = (existing.qty || 1) + 1;
-            } else {
-                cart.push({ ...item, qty: 1 });
-            }
+            if (existing) { existing.qty = (existing.qty || 1) + 1; }
+            else          { cart.push({ ...item, qty: 1 }); }
 
             saveCart(cart);
             updateCartCount();
@@ -270,8 +307,7 @@
         }
 
         function updateCartCount() {
-            const cart = getCart();
-            const total = cart.reduce((sum, i) => sum + (i.qty || 1), 0);
+            const total = getCart().reduce((sum, i) => sum + (i.qty || 1), 0);
             document.getElementById('cart-count').innerText = total;
         }
 
@@ -287,20 +323,13 @@
 
         // ─── MOBILE NAV ───────────────────────────────────────────────
         document.getElementById('menu-toggle').addEventListener('click', () => {
-            const menu = document.getElementById('mobile-menu');
-            menu.classList.toggle('open');
-            // Animate bars
-            document.getElementById('bar1').style.transform = menu.classList.contains('open') ? 'translateY(8px) rotate(45deg)' : '';
-            document.getElementById('bar2').style.opacity  = menu.classList.contains('open') ? '0' : '1';
-            document.getElementById('bar3').style.transform = menu.classList.contains('open') ? 'translateY(-8px) rotate(-45deg)' : '';
-            document.getElementById('bar3').style.width    = menu.classList.contains('open') ? '24px' : '';
+            const menu   = document.getElementById('mobile-menu');
+            const isOpen = menu.classList.toggle('open');
+            document.getElementById('bar1').style.transform = isOpen ? 'translateY(8px) rotate(45deg)' : '';
+            document.getElementById('bar2').style.opacity   = isOpen ? '0' : '1';
+            document.getElementById('bar3').style.transform = isOpen ? 'translateY(-8px) rotate(-45deg)' : '';
+            document.getElementById('bar3').style.width     = isOpen ? '24px' : '';
         });
-
-        // ─── INIT ─────────────────────────────────────────────────────
-        window.onload = () => {
-            renderMenu(inventory);
-            updateCartCount();
-        };
     </script>
 </body>
 </html>
