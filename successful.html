@@ -1,56 +1,118 @@
 <!DOCTYPE html>
 <html lang="en">
-<head> 
+<head>
     <link rel="icon" href="https://fav.farm/🥐">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Order Received | Creme Theory</title>
+    <title>Thank You | Creme Theory</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; }
+        * { box-sizing: border-box; }
+        body { font-family: 'DM Sans', sans-serif; }
         h1, h2 { font-family: 'Playfair Display', serif; }
+        .fade-in > * { animation: fadeIn 0.6s ease-out both; }
+        .fade-in > *:nth-child(1) { animation-delay: 0.05s; }
+        .fade-in > *:nth-child(2) { animation-delay: 0.12s; }
+        .fade-in > *:nth-child(3) { animation-delay: 0.20s; }
+        .fade-in > *:nth-child(4) { animation-delay: 0.28s; }
+        .fade-in > *:nth-child(5) { animation-delay: 0.36s; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(14px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
-<body class="bg-stone-50 text-stone-800 flex items-center justify-center min-h-screen p-6">
+<body class="bg-stone-50 text-stone-800 border-t-4 border-amber-900 flex flex-col min-h-screen">
 
-    <div class="max-w-lg w-full bg-white p-10 rounded-2xl shadow-sm border border-stone-100 text-center">
-        <div class="mb-6 inline-flex items-center justify-center w-20 h-20 bg-amber-50 rounded-full">
-            <span class="text-4xl text-amber-900">✨</span>
+    <!-- Minimal nav -->
+    <nav class="px-6 py-4 max-w-7xl mx-auto w-full">
+        <a href="index.html" class="text-2xl font-bold tracking-tighter text-amber-900 uppercase">Creme Theory</a>
+    </nav>
+
+    <!-- Main -->
+    <main class="flex-grow flex items-center justify-center px-6 py-12">
+        <div class="max-w-lg w-full fade-in">
+
+            <!-- Icon -->
+            <div class="text-center mb-6">
+                <div class="inline-flex items-center justify-center w-20 h-20 bg-amber-50 rounded-full mb-4">
+                    <span class="text-4xl" id="success-icon">✨</span>
+                </div>
+                <h1 class="text-4xl text-amber-950 mb-3" id="success-heading">Request Received</h1>
+                <p class="text-stone-500 leading-relaxed" id="success-body">
+                    Thank you for choosing <strong class="text-stone-700">Creme Theory</strong>.
+                    We've received your inquiry and will be in touch within
+                    <strong class="text-stone-700">24–48 hours</strong> to confirm everything.
+                </p>
+            </div>
+
+            <!-- Payment instructions -->
+            <div class="bg-white border border-stone-100 rounded-2xl shadow-sm p-6 mb-6">
+                <h2 class="text-xs font-bold uppercase tracking-widest text-amber-900 mb-4">Payment Options</h2>
+                <ul class="space-y-4 text-sm text-stone-700">
+                    <li class="flex gap-3">
+                        <span class="font-bold text-amber-900 text-base flex-shrink-0">A.</span>
+                        <div>
+                            <strong>Bank Transfer</strong> — Details will be sent to your email.
+                            Please send a screenshot of your receipt to our
+                            <a href="https://instagram.com/creme.theory" target="_blank" rel="noopener"
+                               class="text-amber-900 underline font-semibold hover:text-amber-700 transition">
+                                Instagram
+                            </a> to confirm.
+                        </div>
+                    </li>
+                    <li class="flex gap-3 border-t border-stone-100 pt-4">
+                        <span class="font-bold text-amber-900 text-base flex-shrink-0">B.</span>
+                        <div>
+                            <strong>Cash</strong> — Pay upon delivery or pickup.
+                            Please have the exact amount ready to help our team.
+                        </div>
+                    </li>
+                </ul>
+                <p id="deposit-note" class="hidden mt-4 pt-4 border-t border-stone-100 text-xs text-stone-400 leading-relaxed">
+                    ⚠️ A <strong>50% deposit</strong> is required to confirm your order. Your spot is not secured until the deposit is received.
+                </p>
+            </div>
+
+            <!-- CTAs -->
+            <div class="space-y-3">
+                <a href="index.html"
+                   class="block w-full bg-amber-900 text-white font-bold py-4 rounded-xl hover:bg-amber-800 active:bg-amber-950 transition shadow-lg uppercase tracking-widest text-xs text-center">
+                    Return Home
+                </a>
+                <a href="menu.html"
+                   class="block w-full border border-stone-200 text-stone-600 font-bold py-4 rounded-xl hover:bg-stone-100 transition uppercase tracking-widest text-xs text-center">
+                    Browse the Menu
+                </a>
+                <a href="https://instagram.com/creme.theory" target="_blank" rel="noopener"
+                   class="block w-full text-center text-xs text-stone-400 hover:text-amber-900 transition font-medium py-2">
+                    Follow @creme.theory
+                </a>
+            </div>
+
         </div>
-        
-        <h1 class="text-3xl text-amber-950 mb-4">Order Received!</h1>
-        <p class="text-stone-600 mb-8 leading-relaxed">
-            Thank you for choosing <strong>Creme Theory</strong>. We’ve received your request and are currently checking our baking schedule.
-        </p>
+    </main>
 
-        <div class="bg-stone-50 p-6 rounded-xl text-left mb-8 border border-stone-100">
-            <h2 class="text-sm font-bold uppercase tracking-widest text-amber-900 mb-4 font-sans">Next Steps:</h2>
-            <ul class="text-sm space-y-3 text-stone-700">
-                <li class="flex gap-3">
-                    <span class="font-bold text-amber-900">1.</span> 
-                    Check your email for an order confirmation.
-                </li>
-                <li class="flex gap-3">
-                    <span class="font-bold text-amber-900">2.</span> 
-                    Complete the <strong>Bank Transfer</strong> using the details provided in the email.
-                </li>
-                <li class="flex gap-3">
-                    <span class="font-bold text-amber-900">3.</span> 
-                    Send us a screenshot of your receipt via email or 
-                    <a href="https://instagram.com/creme.theory" target="_blank" class="text-amber-900 underline font-semibold">Instagram</a>.
-                </li>
-            </ul>
-        </div>
-
-        <a href="index.html" class="inline-block bg-amber-900 text-white px-10 py-3 rounded-full hover:bg-amber-800 transition font-semibold shadow-md uppercase tracking-widest text-xs">
-            Return Home
-        </a>
-    </div>
+    <footer class="py-8 text-center text-[10px] uppercase tracking-widest text-stone-300">
+        © 2026 Creme Theory · Jamaica
+    </footer>
 
     <script>
-        // Once the user hits this page, the order is placed, so we clear their cart memory
+        // Always clear the cart — Formspree redirects don't pass referrer reliably
         localStorage.removeItem('creme_cart');
+
+        // Personalise copy if coming from cart/checkout
+        const ref = document.referrer;
+        if (ref.includes('cart.html') || ref.includes('checkout.html')) {
+            document.getElementById('success-icon').textContent    = '🎉';
+            document.getElementById('success-heading').textContent = 'Order Placed!';
+            document.getElementById('success-body').innerHTML =
+                'Thank you for your order with <strong class="text-stone-700">Creme Theory</strong>. ' +
+                'We\'ll confirm your order within <strong class="text-stone-700">24 hours</strong>. ' +
+                'Please send your deposit using one of the options below to secure your spot.';
+            document.getElementById('deposit-note').classList.remove('hidden');
+        }
     </script>
 </body>
 </html>
