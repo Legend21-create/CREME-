@@ -6,164 +6,343 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Creme Theory | Artisanal Bakery & Custom Cakes</title>
 
-    <meta name="description" content="Creme Theory is an artisanal boutique bakery in Jamaica specializing in custom cakes, gourmet cupcakes, and French pastries.">
+    <meta name="description" content="Creme Theory is an artisanal boutique bakery in Jamaica specialising in custom cakes, gourmet croissants, and French pastries.">
     <meta name="keywords" content="bakery Jamaica, custom cakes Kingston, artisan pastries, Creme Theory, wedding cakes Jamaica">
-
     <meta property="og:title" content="Creme Theory | Artisanal Bakery">
     <meta property="og:description" content="Engineering the perfect bake. Custom cakes and pastries in Jamaica.">
     <meta property="og:image" content="https://legend21-create.github.io/CREME-/storefront.jpg">
 
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
+        * { box-sizing: border-box; }
+        body { font-family: 'DM Sans', sans-serif; scroll-behavior: smooth; }
         h1, h2, h3 { font-family: 'Playfair Display', serif; }
-        #announcement-bar { transition: all 0.5s ease; }
+
+        /* Mobile menu */
+        #mobile-menu { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
+        #mobile-menu.open { max-height: 300px; }
+
+        /* Announcement bar */
+        #announcement-bar { transition: transform 0.4s ease, opacity 0.4s ease; }
+        #announcement-bar.dismissed { transform: translateY(-100%); opacity: 0; }
+
+        /* Hero image zoom */
+        .hero-img { transition: transform 8s ease; }
+        .hero-img:hover { transform: scale(1.04); }
+
+        /* Category card hover */
+        .cat-card img { transition: transform 0.5s ease; }
+        .cat-card:hover img { transform: scale(1.06); }
+
+        /* Toast */
+        #toast {
+            position: fixed; bottom: 2rem; left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #1c1917; color: white;
+            padding: 0.75rem 1.5rem; border-radius: 999px;
+            font-size: 0.8rem; font-weight: 600; letter-spacing: 0.05em;
+            z-index: 9999;
+            transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s ease;
+            opacity: 0; white-space: nowrap; pointer-events: none;
+        }
+        #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
     </style>
 </head>
 <body class="bg-stone-50 text-stone-800 border-t-4 border-amber-900">
 
-    <div id="announcement-bar" class="bg-amber-900 text-white text-center py-2.5 text-[10px] md:text-xs font-bold uppercase tracking-[0.2em] hidden sticky top-0 z-[100] px-4">
+    <!-- ── ANNOUNCEMENT BAR ── -->
+    <div id="announcement-bar" class="relative bg-amber-900 text-white text-center text-xs font-semibold py-2.5 px-10 tracking-wide hidden">
         <span id="announcement-text"></span>
+        <button onclick="dismissAnnouncement()"
+                class="absolute right-4 top-1/2 -translate-y-1/2 opacity-60 hover:opacity-100 transition text-lg leading-none cursor-pointer"
+                aria-label="Dismiss">×</button>
     </div>
 
-    <nav class="flex justify-between items-center p-6 max-w-7xl mx-auto">
-        <a href="index.html" class="text-2xl font-bold tracking-tighter text-amber-900 uppercase">Creme Theory</a>
-        
-        <div class="hidden md:flex space-x-8 font-medium items-center">
-            <a href="menu.html" class="hover:text-amber-700 transition">Menu</a>
-            <a href="story.html" class="hover:text-amber-700 transition">Our Story</a>
-            <a href="order.html" class="hover:text-amber-700 transition">Custom Orders</a>
+    <!-- ── NAV ── -->
+    <nav class="sticky top-0 z-50 bg-stone-50/90 backdrop-blur-md border-b border-stone-100">
+        <div class="flex justify-between items-center px-6 py-4 max-w-7xl mx-auto">
+            <a href="index.html" class="text-2xl font-bold tracking-tighter text-amber-900 uppercase">Creme Theory</a>
+
+            <div class="hidden md:flex space-x-8 font-medium items-center">
+                <a href="menu.html" class="hover:text-amber-700 transition">Menu</a>
+                <a href="story.html" class="hover:text-amber-700 transition">Our Story</a>
+                <a href="order.html" class="hover:text-amber-700 transition">Custom Orders</a>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <a href="cart.html" class="relative cursor-pointer flex items-center hover:opacity-75 transition">
+                    <span class="text-xl">🛒</span>
+                    <span id="cart-count" class="absolute -top-2 -right-2 bg-amber-900 text-white text-[10px] rounded-full px-1.5 py-0.5 font-bold min-w-[18px] text-center">0</span>
+                </a>
+                <a href="#newsletter" class="hidden sm:inline-block bg-amber-900 text-white px-5 py-2 rounded-full hover:bg-amber-800 transition text-sm font-semibold">Join Now</a>
+                <button id="menu-toggle" class="md:hidden flex flex-col gap-1.5 cursor-pointer" aria-label="Toggle navigation">
+                    <span class="block w-6 h-0.5 bg-stone-800 transition-all" id="bar1"></span>
+                    <span class="block w-6 h-0.5 bg-stone-800 transition-all" id="bar2"></span>
+                    <span class="block w-4 h-0.5 bg-stone-800 transition-all" id="bar3"></span>
+                </button>
+            </div>
         </div>
-        
-        <div class="flex items-center gap-4">
-            <a href="cart.html" class="relative cursor-pointer flex items-center hover:opacity-75 transition mr-1">
-                <span class="text-xl">🛒</span>
-                <span id="cart-count" class="absolute -top-2 -right-2 bg-amber-900 text-white text-[10px] rounded-full px-1.5 py-0.5 font-bold">0</span>
-            </a>
-            <a href="#newsletter" class="bg-amber-900 text-white px-5 py-2 rounded-full hover:bg-amber-800 transition text-sm font-semibold">Join Now</a>
+
+        <!-- Mobile dropdown -->
+        <div id="mobile-menu" class="md:hidden border-t border-stone-100 bg-stone-50">
+            <div class="flex flex-col px-6 py-4 space-y-4 text-sm font-medium">
+                <a href="menu.html" class="hover:text-amber-700 transition">Menu</a>
+                <a href="story.html" class="hover:text-amber-700 transition">Our Story</a>
+                <a href="order.html" class="hover:text-amber-700 transition">Custom Orders</a>
+                <a href="#newsletter" class="text-amber-900 font-semibold">Join Now</a>
+            </div>
         </div>
     </nav>
 
-    <header class="relative h-[80vh] flex items-center justify-center text-center px-4">
-        <div class="z-10">
-            <span class="uppercase tracking-widest text-sm mb-4 block text-amber-800 font-semibold">Handcrafted Daily</span>
-            <h1 class="text-5xl md:text-7xl mb-6 text-amber-950">Refined Sweets. <br> Elevated Flavors.</h1>
-            <p class="max-w-md mx-auto text-lg text-stone-600 mb-8">Experience the science of sweetness at Creme Theory, where every pastry is a masterpiece.</p>
-            <div class="flex flex-col md:flex-row gap-4 justify-center">
-                <a href="menu.html" class="bg-amber-900 text-white px-8 py-3 rounded-md shadow-lg hover:bg-amber-800 transition">View Menu</a>
-                <a href="order.html" class="border border-stone-300 px-8 py-3 rounded-md hover:bg-stone-100 transition">Custom Request</a>
+    <!-- ── HERO ── -->
+    <header class="relative h-[85vh] flex items-center justify-center text-center px-6 overflow-hidden bg-stone-100">
+        <!-- Background image -->
+        <div class="absolute inset-0 overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1486427944299-d1955d23e34d?auto=format&fit=crop&q=80&w=1600"
+                 alt="Bakery"
+                 class="hero-img w-full h-full object-cover opacity-20">
+        </div>
+        <div class="relative z-10 max-w-3xl mx-auto">
+            <span class="uppercase tracking-[0.3em] text-xs mb-6 block text-amber-800 font-semibold">Handcrafted Daily in Jamaica</span>
+            <h1 class="text-5xl md:text-7xl mb-6 text-amber-950 leading-tight">Refined Sweets.<br>Elevated Flavors.</h1>
+            <p class="max-w-md mx-auto text-lg text-stone-600 mb-10">Experience the science of sweetness at Creme Theory, where every pastry is a masterpiece.</p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="menu.html" class="bg-amber-900 text-white px-8 py-3.5 rounded-full shadow-lg hover:bg-amber-800 transition font-semibold">View Menu</a>
+                <a href="order.html" class="border border-stone-300 px-8 py-3.5 rounded-full hover:bg-stone-100 transition font-semibold">Custom Request</a>
             </div>
         </div>
     </header>
 
+    <!-- ── CATEGORIES ── -->
     <section class="py-20 max-w-7xl mx-auto px-6">
-        <div class="grid md:grid-cols-3 gap-12 text-center">
-            <div class="group cursor-pointer">
-                <div class="h-80 bg-stone-200 rounded-lg mb-4 overflow-hidden">
-                    <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&q=80&w=800" alt="Cake" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+        <div class="text-center mb-14">
+            <p class="text-xs uppercase tracking-[0.3em] text-amber-700 mb-3 font-medium">What we make</p>
+            <h2 class="text-4xl text-amber-950">Our Specialities</h2>
+        </div>
+        <div class="grid md:grid-cols-3 gap-8">
+            <a href="menu.html" class="cat-card group cursor-pointer block">
+                <div class="h-80 bg-stone-200 rounded-2xl mb-5 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&q=80&w=800"
+                         alt="Signature Cakes" class="w-full h-full object-cover">
                 </div>
-                <h3 class="text-xl font-semibold mb-2">Signature Cakes</h3>
-                <p class="text-stone-500">Multi-layered wonders for your most special occasions.</p>
-            </div>
-            <div class="group cursor-pointer">
-                <div class="h-80 bg-stone-200 rounded-lg mb-4 overflow-hidden">
-                    <img src="https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&q=80&w=800" alt="Pastries" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                <h3 class="text-xl font-semibold mb-2 group-hover:text-amber-900 transition">Signature Cakes</h3>
+                <p class="text-stone-500 text-sm">Multi-layered wonders for your most special occasions.</p>
+            </a>
+            <a href="menu.html" class="cat-card group cursor-pointer block">
+                <div class="h-80 bg-stone-200 rounded-2xl mb-5 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&q=80&w=800"
+                         alt="Daily Pastries" class="w-full h-full object-cover">
                 </div>
-                <h3 class="text-xl font-semibold mb-2">Daily Pastries</h3>
-                <p class="text-stone-500">Flaky, buttery, and baked fresh every single morning.</p>
-            </div>
-            <div class="group cursor-pointer">
-                <div class="h-80 bg-stone-200 rounded-lg mb-4 overflow-hidden">
-                    <img src="https://images.unsplash.com/photo-1481391243133-f96216dcb5d2?auto=format&fit=crop&q=80&w=800" alt="Macarons" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                <h3 class="text-xl font-semibold mb-2 group-hover:text-amber-900 transition">Daily Pastries</h3>
+                <p class="text-stone-500 text-sm">Flaky, buttery, and baked fresh every single morning.</p>
+            </a>
+            <a href="order.html" class="cat-card group cursor-pointer block">
+                <div class="h-80 bg-stone-200 rounded-2xl mb-5 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1621303837174-89787a7d4729?auto=format&fit=crop&q=80&w=800"
+                         alt="Custom Orders" class="w-full h-full object-cover">
                 </div>
-                <h3 class="text-xl font-semibold mb-2">Artisan Macarons</h3>
-                <p class="text-stone-500">A delicate balance of texture and vibrant seasonal flavors.</p>
+                <h3 class="text-xl font-semibold mb-2 group-hover:text-amber-900 transition">Custom Orders</h3>
+                <p class="text-stone-500 text-sm">Bespoke creations designed around your vision and occasion.</p>
+            </a>
+        </div>
+    </section>
+
+    <!-- ── WHY US ── -->
+    <section class="bg-amber-950 text-white py-20 px-6">
+        <div class="max-w-4xl mx-auto text-center">
+            <p class="text-xs uppercase tracking-[0.3em] text-amber-400 mb-4 font-medium">Why Creme Theory</p>
+            <h2 class="text-4xl mb-16">The Science of Sweetness</h2>
+            <div class="grid md:grid-cols-3 gap-10 text-left">
+                <div>
+                    <p class="text-3xl mb-4">🧈</p>
+                    <h3 class="text-lg font-semibold mb-2">Premium Ingredients</h3>
+                    <p class="text-amber-200 text-sm leading-relaxed">We use French butter, single-origin chocolate, and locally sourced produce — never shortcuts.</p>
+                </div>
+                <div>
+                    <p class="text-3xl mb-4">📐</p>
+                    <h3 class="text-lg font-semibold mb-2">Precision Baking</h3>
+                    <p class="text-amber-200 text-sm leading-relaxed">Every recipe is tested to the gram. Consistency is not an accident — it's our process.</p>
+                </div>
+                <div>
+                    <p class="text-3xl mb-4">🚚</p>
+                    <h3 class="text-lg font-semibold mb-2">Island-Wide Delivery</h3>
+                    <p class="text-amber-200 text-sm leading-relaxed">Serving Kingston and St. Catherine with care. Fresh to your door, never frozen.</p>
+                </div>
             </div>
         </div>
     </section>
 
+    <!-- ── NEWSLETTER ── -->
     <section id="newsletter" class="py-20 bg-amber-50 text-center px-6 border-t border-amber-100">
         <div class="max-w-xl mx-auto">
-            <h2 class="text-3xl text-amber-950 mb-2">Be the First to Know</h2>
-            <p class="text-stone-600 mb-8">Join the inner circle for exclusive launch updates and tasting invites.</p>
-            <form action="https://formspree.io/f/YOUR_NEW_ID" method="POST" class="flex flex-col md:flex-row gap-3">
-                <input type="email" name="email" required placeholder="Enter your email address" class="flex-1 p-4 rounded-md border border-stone-200 focus:outline-none focus:ring-1 focus:ring-amber-900">
-                <button type="submit" class="bg-amber-900 text-white px-8 py-4 rounded-md hover:bg-amber-800 transition font-bold shadow-md">Join Now</button>
+            <p class="text-xs uppercase tracking-[0.3em] text-amber-700 mb-4 font-medium">Stay in the loop</p>
+            <h2 class="text-3xl text-amber-950 mb-3">Be the First to Know</h2>
+            <p class="text-stone-500 mb-8">Join the inner circle for exclusive launch updates and tasting invites.</p>
+            <form action="https://formspree.io/f/mvzbzywl" method="POST"
+                  class="flex flex-col sm:flex-row gap-3" onsubmit="handleNewsletterSubmit(event)">
+                <input type="email" name="email" required placeholder="Enter your email address"
+                       class="flex-1 p-4 rounded-full border border-stone-200 focus:outline-none focus:ring-2 focus:ring-amber-900/30 text-sm">
+                <button type="submit"
+                        class="bg-amber-900 text-white px-8 py-4 rounded-full hover:bg-amber-800 transition font-bold shadow-md whitespace-nowrap">
+                    Join Now
+                </button>
             </form>
+            <p id="newsletter-thanks" class="hidden text-amber-800 font-semibold text-sm mt-4">✓ You're on the list — thank you!</p>
         </div>
     </section>
 
-    <footer class="bg-stone-900 text-stone-400 py-20 px-6 mt-20">
+    <!-- ── FOOTER ── -->
+    <footer class="bg-stone-900 text-stone-400 py-20 px-6">
         <div class="max-w-7xl mx-auto">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-12 border-b border-stone-800 pb-16 mb-12">
-                <div class="col-span-1 md:col-span-1 text-center md:text-left">
+                <div class="col-span-1">
                     <h2 class="text-white text-2xl font-bold tracking-tighter mb-4 uppercase">Creme Theory</h2>
                     <p class="text-sm leading-relaxed">Artisanal excellence in every bite. Handcrafted pastries and signature cakes delivered from our heart to your home.</p>
-                    <div class="flex gap-4 mt-6 justify-center md:justify-start">
-                        <a href="https://instagram.com/creme.theory" target="_blank" class="flex items-center gap-2 text-stone-300 hover:text-white transition-all duration-300 group">
+                    <div class="flex gap-4 mt-6">
+                        <a href="https://instagram.com/creme.theory" target="_blank" rel="noopener"
+                           class="flex items-center gap-2 text-stone-300 hover:text-white transition group">
                             <span class="text-xl group-hover:scale-110 transition-transform">📸</span>
                             <span class="text-xs font-bold tracking-widest border-b border-transparent group-hover:border-white">@creme.theory</span>
                         </a>
                     </div>
                 </div>
-                <div class="text-center md:text-left">
+                <div>
                     <h4 class="text-white font-bold uppercase tracking-widest text-[10px] mb-6">Shop</h4>
                     <ul class="space-y-4 text-sm">
                         <li><a href="menu.html" class="hover:text-white transition">Full Menu</a></li>
                         <li><a href="menu.html" class="hover:text-white transition">Daily Pastries</a></li>
                         <li><a href="menu.html" class="hover:text-white transition">Signature Cakes</a></li>
-                        <li><a href="order.html" class="hover:text-white transition">Custom Requests</a></li>
+                        <li><a href="order.html" class="hover:text-white transition">Custom Orders</a></li>
                     </ul>
                 </div>
-                <div class="text-center md:text-left">
+                <div>
                     <h4 class="text-white font-bold uppercase tracking-widest text-[10px] mb-6">Support</h4>
                     <ul class="space-y-4 text-sm">
-                        <li><a href="terms.html" class="hover:text-white transition">Terms of Service</a></li>
+                        <li><a href="terms.html" class="hover:text-white transition font-bold text-amber-500 underline">Terms of Service</a></li>
                         <li><a href="story.html" class="hover:text-white transition">Our Story</a></li>
                         <li><a href="mailto:cremetheory@gmail.com" class="hover:text-white transition">Contact Us</a></li>
                     </ul>
                 </div>
-                <div class="text-center md:text-left">
+                <div>
                     <h4 class="text-white font-bold uppercase tracking-widest text-[10px] mb-6">Bakery Hours</h4>
-                    <ul class="text-sm space-y-2">
-                        <li class="flex justify-between border-b border-stone-800 pb-2"><span>Mon - Fri</span> <span class="text-white">7:00 AM - 6:00 PM</span></li>
-                        <li class="flex justify-between pt-2"><span>Sat - Sun</span> <span class="text-white">8:00 AM - 2:00 PM</span></li>
+                    <ul class="text-sm space-y-3">
+                        <li class="flex justify-between border-b border-stone-800 pb-2">
+                            <span>Mon – Fri</span>
+                            <span class="text-white font-medium">7:00 AM – 6:00 PM</span>
+                        </li>
+                        <li class="flex justify-between pt-1">
+                            <span>Sat – Sun</span>
+                            <span class="text-white font-medium">8:00 AM – 2:00 PM</span>
+                        </li>
                     </ul>
                 </div>
             </div>
             <div class="flex flex-col md:flex-row justify-between items-center gap-6">
                 <p class="text-[10px] uppercase tracking-widest">© 2026 Creme Theory. Jamaica.</p>
-                <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="text-[10px] font-bold hover:text-white transition flex items-center gap-2 uppercase tracking-widest">
+                <button onclick="window.scrollTo({top:0,behavior:'smooth'})"
+                        class="text-[10px] font-bold hover:text-white transition flex items-center gap-2 uppercase tracking-widest cursor-pointer">
                     Back to Top <span class="text-lg">↑</span>
                 </button>
             </div>
         </div>
     </footer>
 
+    <div id="toast"></div>
+
     <script src="inventory.js"></script>
     <script>
-        function initPage() {
-            let cart = JSON.parse(localStorage.getItem('creme_cart')) || [];
-            const countDisplay = document.getElementById('cart-count');
-            if (countDisplay) countDisplay.innerText = cart.length;
+        // ─── BOOT ─────────────────────────────────────────────────────
+        let booted = false;
 
+        function boot() {
+            if (booted) return;
+            booted = true;
+
+            updateCartCount();
+            applySettings();
+        }
+
+        document.addEventListener('inventoryLoaded', boot);
+        window.addEventListener('DOMContentLoaded', () => {
+            if (window.CremeInventory) boot();
+        });
+
+        // ─── CART BADGE ───────────────────────────────────────────────
+        function updateCartCount() {
+            const cart  = JSON.parse(localStorage.getItem('creme_cart')) || [];
+            const total = cart.reduce((sum, i) => sum + (i.qty || 1), 0);
+            document.getElementById('cart-count').innerText = total;
+        }
+
+        // ─── ANNOUNCEMENT + SHOP STATUS ───────────────────────────────
+        function applySettings() {
             const settings = window.CremeSettings;
-            const bar = document.getElementById('announcement-bar');
-            const text = document.getElementById('announcement-text');
+            if (!settings) return;
 
-            if (settings && bar && text) {
-                if (!settings.shopOpen) {
-                    text.innerText = "Order books currently closed. Stay tuned for updates!";
-                    bar.classList.remove('hidden');
-                    bar.classList.replace('bg-amber-900', 'bg-stone-800');
-                } else if (settings.announcement && settings.announcement.trim() !== "") {
-                    text.innerText = settings.announcement;
-                    bar.classList.remove('hidden');
-                }
+            const bar    = document.getElementById('announcement-bar');
+            const textEl = document.getElementById('announcement-text');
+            const dismissed = sessionStorage.getItem('ct_announcement_dismissed');
+
+            if (!settings.shopOpen) {
+                // Override announcement with closed message
+                textEl.textContent = '🕐 Order books currently closed — stay tuned for updates!';
+                bar.style.background = '#292524'; // stone-800
+                bar.classList.remove('hidden');
+            } else if (settings.announcement && settings.announcement.trim() && !dismissed) {
+                textEl.textContent = settings.announcement;
+                bar.classList.remove('hidden');
             }
         }
-        window.onload = initPage;
+
+        function dismissAnnouncement() {
+            const bar = document.getElementById('announcement-bar');
+            bar.classList.add('dismissed');
+            sessionStorage.setItem('ct_announcement_dismissed', '1');
+            setTimeout(() => bar.style.display = 'none', 420);
+        }
+
+        // ─── NEWSLETTER ───────────────────────────────────────────────
+        function handleNewsletterSubmit(e) {
+            // Let Formspree handle the POST but show inline thanks
+            // instead of redirecting, for a smoother experience
+            e.preventDefault();
+            const form   = e.target;
+            const data   = new FormData(form);
+
+            fetch(form.action, {
+                method: 'POST',
+                body: data,
+                headers: { 'Accept': 'application/json' }
+            }).then(res => {
+                if (res.ok) {
+                    form.classList.add('hidden');
+                    document.getElementById('newsletter-thanks').classList.remove('hidden');
+                } else {
+                    showToast('⚠️ Something went wrong. Please try again.');
+                }
+            }).catch(() => showToast('⚠️ Network error. Please try again.'));
+        }
+
+        // ─── TOAST ────────────────────────────────────────────────────
+        let toastTimer;
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.classList.add('show');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+        }
+
+        // ─── MOBILE NAV ───────────────────────────────────────────────
+        document.getElementById('menu-toggle').addEventListener('click', () => {
+            const menu   = document.getElementById('mobile-menu');
+            const isOpen = menu.classList.toggle('open');
+            document.getElementById('bar1').style.transform = isOpen ? 'translateY(8px) rotate(45deg)' : '';
+            document.getElementById('bar2').style.opacity   = isOpen ? '0' : '1';
+            document.getElementById('bar3').style.transform = isOpen ? 'translateY(-8px) rotate(-45deg)' : '';
+            document.getElementById('bar3').style.width     = isOpen ? '24px' : '';
+        });
     </script>
 </body>
 </html>
