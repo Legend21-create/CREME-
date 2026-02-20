@@ -6,86 +6,142 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Our Story | Creme Theory</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
-        h1, h2, h3 { font-family: 'Playfair Display', serif; }
+        * { box-sizing: border-box; }
+        body { font-family: 'DM Sans', sans-serif; scroll-behavior: smooth; }
+        h1, h2, h3, h4 { font-family: 'Playfair Display', serif; }
+
+        /* Mobile menu */
+        #mobile-menu { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
+        #mobile-menu.open { max-height: 300px; }
+
+        /* Parallax hero image */
         .parallax-bg {
             background-image: url('https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&q=80&w=2000');
             background-position: center;
             background-size: cover;
             background-repeat: no-repeat;
-            background-attachment: scroll; 
+            height: 280px;
         }
-        @media (min-width: 768px) { .parallax-bg { background-attachment: fixed; height: 500px; } }
-        @media (max-width: 767px) { .parallax-bg { height: 250px; } }
+        @media (min-width: 768px) {
+            .parallax-bg {
+                background-attachment: fixed;
+                height: 480px;
+            }
+        }
     </style>
 </head>
 <body class="bg-stone-50 text-stone-800 border-t-4 border-amber-900">
 
-    <nav class="flex justify-between items-center p-6 max-w-7xl mx-auto">
-        <a href="index.html" class="text-2xl font-bold tracking-tighter text-amber-900 uppercase">Creme Theory</a>
-        <div class="hidden md:flex space-x-8 font-medium items-center">
-            <a href="menu.html" class="hover:text-amber-700 transition">Menu</a>
-            <a href="story.html" class="font-bold text-amber-900 underline decoration-2 underline-offset-8">Our Story</a>
-            <a href="order.html" class="hover:text-amber-700 transition">Custom Orders</a>
+    <!-- ── NAV ── -->
+    <nav class="sticky top-0 z-50 bg-stone-50/90 backdrop-blur-md border-b border-stone-100">
+        <div class="flex justify-between items-center px-6 py-4 max-w-7xl mx-auto">
+            <a href="index.html" class="text-2xl font-bold tracking-tighter text-amber-900 uppercase">Creme Theory</a>
+
+            <div class="hidden md:flex space-x-8 font-medium items-center">
+                <a href="menu.html" class="hover:text-amber-700 transition">Menu</a>
+                <a href="story.html" class="font-bold text-amber-900 underline decoration-2 underline-offset-8">Our Story</a>
+                <a href="order.html" class="hover:text-amber-700 transition">Custom Orders</a>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <a href="cart.html" class="relative cursor-pointer flex items-center hover:opacity-75 transition">
+                    <span class="text-xl">🛒</span>
+                    <span id="cart-count" class="absolute -top-2 -right-2 bg-amber-900 text-white text-[10px] rounded-full px-1.5 py-0.5 font-bold min-w-[18px] text-center">0</span>
+                </a>
+                <a href="index.html#newsletter" class="hidden sm:inline-block bg-amber-900 text-white px-4 py-2 rounded-full hover:bg-amber-800 transition text-xs font-semibold">Join Now</a>
+                <button id="menu-toggle" class="md:hidden flex flex-col gap-1.5 cursor-pointer" aria-label="Toggle navigation">
+                    <span class="block w-6 h-0.5 bg-stone-800 transition-all" id="bar1"></span>
+                    <span class="block w-6 h-0.5 bg-stone-800 transition-all" id="bar2"></span>
+                    <span class="block w-4 h-0.5 bg-stone-800 transition-all" id="bar3"></span>
+                </button>
+            </div>
         </div>
-        <div class="flex items-center gap-4">
-            <a href="cart.html" class="relative cursor-pointer flex items-center hover:opacity-75 transition mr-1">
-                <span class="text-xl">🛒</span>
-                <span id="cart-count" class="absolute -top-2 -right-2 bg-amber-900 text-white text-[10px] rounded-full px-1.5 py-0.5 font-bold">0</span>
-            </a>
-            <a href="index.html#newsletter" class="bg-amber-900 text-white px-4 py-2 rounded-full hover:bg-amber-800 transition text-xs font-semibold">Join Now</a>
+
+        <div id="mobile-menu" class="md:hidden border-t border-stone-100 bg-stone-50">
+            <div class="flex flex-col px-6 py-4 space-y-4 text-sm font-medium">
+                <a href="menu.html" class="hover:text-amber-700 transition">Menu</a>
+                <a href="story.html" class="text-amber-900 font-bold">Our Story</a>
+                <a href="order.html" class="hover:text-amber-700 transition">Custom Orders</a>
+                <a href="index.html#newsletter" class="text-amber-900 font-semibold">Join Now</a>
+            </div>
         </div>
     </nav>
 
+    <!-- ── HEADER ── -->
     <header class="py-24 px-6 text-center max-w-4xl mx-auto">
+        <p class="text-xs uppercase tracking-[0.3em] text-amber-700 mb-6 font-medium">Our Story</p>
         <h1 class="text-5xl md:text-7xl text-amber-950 mb-8">The Science of Sweetness</h1>
-        <p class="text-lg text-stone-600 leading-relaxed italic">
-            At Creme Theory, we believe baking is the perfect alchemy of precision, passion, and premium ingredients. Based in Jamaica, we craft refined sweets for those who appreciate the finer details.
+        <p class="text-lg text-stone-500 leading-relaxed italic max-w-2xl mx-auto">
+            At Creme Theory, we believe baking is the perfect alchemy of precision, passion, and premium ingredients.
+            Based in Jamaica, we craft refined sweets for those who appreciate the finer details.
         </p>
     </header>
 
-    <div class="parallax-bg w-full my-12 shadow-inner"></div>
+    <!-- ── PARALLAX IMAGE ── -->
+    <div class="parallax-bg w-full shadow-inner"></div>
 
+    <!-- ── PHILOSOPHY ── -->
     <main class="max-w-5xl mx-auto px-6 py-20">
         <div class="grid md:grid-cols-2 gap-16 items-center">
             <div>
                 <h2 class="text-4xl text-amber-900 mb-6">Our Philosophy</h2>
                 <div class="space-y-4 text-stone-600 leading-relaxed">
-                    <p>Founded on the principle that every bite should be an experience, Creme Theory moves away from mass production. We specialize in small-batch artisanal pastries and custom-designed cakes.</p>
-                    <p>From the flakiest croissants to multi-tiered wedding masterpieces, our process remains the same: <strong>No shortcuts. No compromises.</strong></p>
+                    <p>Founded on the principle that every bite should be an experience, Creme Theory moves away from mass production. We specialise in small-batch artisanal pastries and custom-designed cakes.</p>
+                    <p>From the flakiest croissants to multi-tiered celebration masterpieces, our process remains the same: <strong class="text-stone-800">No shortcuts. No compromises.</strong></p>
+                    <p>Every order is made to order, every layer folded by hand, every detail considered. That's what separates a Creme Theory creation from everything else.</p>
                 </div>
+                <a href="menu.html" class="inline-block mt-8 bg-amber-900 text-white px-8 py-3 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-amber-800 transition">
+                    Shop the Menu
+                </a>
             </div>
+
+            <!-- Value pillars -->
             <div class="grid grid-cols-2 gap-4">
                 <div class="bg-stone-100 p-8 rounded-2xl text-center border border-stone-200">
-                    <span class="block text-3xl mb-2">🌿</span>
-                    <h4 class="font-bold text-amber-950 uppercase text-xs tracking-widest">Quality</h4>
-                    <p class="text-[10px] text-stone-500 mt-2">Finest local & imported ingredients.</p>
+                    <span class="block text-3xl mb-3">🌿</span>
+                    <h4 class="font-bold text-amber-950 uppercase text-xs tracking-widest mb-2">Quality</h4>
+                    <p class="text-[10px] text-stone-500 leading-relaxed">Finest local & imported ingredients, no fillers.</p>
                 </div>
                 <div class="bg-amber-900 p-8 rounded-2xl text-center text-white shadow-xl">
-                    <span class="block text-3xl mb-2">⚖️</span>
-                    <h4 class="font-bold uppercase text-xs tracking-widest">Precision</h4>
-                    <p class="text-[10px] opacity-80 mt-2">The exact science behind every rise.</p>
+                    <span class="block text-3xl mb-3">⚖️</span>
+                    <h4 class="font-bold uppercase text-xs tracking-widest mb-2">Precision</h4>
+                    <p class="text-[10px] opacity-80 leading-relaxed">The exact science behind every perfect rise.</p>
                 </div>
                 <div class="bg-stone-800 p-8 rounded-2xl text-center text-white">
-                    <span class="block text-3xl mb-2">🎨</span>
-                    <h4 class="font-bold uppercase text-xs tracking-widest">Artistry</h4>
-                    <p class="text-[10px] opacity-80 mt-2">Hand-painted & sculpted details.</p>
+                    <span class="block text-3xl mb-3">🎨</span>
+                    <h4 class="font-bold uppercase text-xs tracking-widest mb-2">Artistry</h4>
+                    <p class="text-[10px] opacity-80 leading-relaxed">Hand-painted & sculpted details, every time.</p>
                 </div>
                 <div class="bg-stone-100 p-8 rounded-2xl text-center border border-stone-200">
-                    <span class="block text-3xl mb-2">🥐</span>
-                    <h4 class="font-bold text-amber-950 uppercase text-xs tracking-widest">Freshness</h4>
-                    <p class="text-[10px] text-stone-500 mt-2">Baked daily in small batches.</p>
+                    <span class="block text-3xl mb-3">🥐</span>
+                    <h4 class="font-bold text-amber-950 uppercase text-xs tracking-widest mb-2">Freshness</h4>
+                    <p class="text-[10px] text-stone-500 leading-relaxed">Baked daily in small batches, never frozen.</p>
                 </div>
             </div>
         </div>
     </main>
 
+    <!-- ── CTA STRIP ── -->
+    <section class="bg-amber-950 text-white text-center py-20 px-6">
+        <h2 class="text-3xl mb-4">Ready to Experience It?</h2>
+        <p class="text-amber-200 text-sm mb-8 max-w-md mx-auto">Browse our current selection or place a custom order for your next occasion.</p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="menu.html" class="bg-white text-amber-950 px-8 py-3 rounded-full font-bold text-xs uppercase tracking-widest hover:bg-amber-100 transition">
+                View Menu
+            </a>
+            <a href="order.html" class="border border-amber-600 text-amber-200 px-8 py-3 rounded-full font-bold text-xs uppercase tracking-widest hover:bg-amber-900 transition">
+                Custom Order
+            </a>
+        </div>
+    </section>
+
+    <!-- ── FOOTER ── -->
     <footer class="bg-stone-900 text-stone-400 py-20 px-6">
         <div class="max-w-7xl mx-auto">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-12 border-b border-stone-800 pb-16 mb-12">
-                <div class="col-span-1 md:col-span-1">
+                <div class="col-span-1">
                     <h2 class="text-white text-2xl font-bold tracking-tighter mb-4 uppercase">Creme Theory</h2>
                     <p class="text-sm">Artisanal excellence in every bite. Handcrafted pastries and cakes delivered across Jamaica.</p>
                 </div>
@@ -93,7 +149,7 @@
                     <h4 class="text-white font-bold uppercase tracking-widest text-[10px] mb-6">Shop</h4>
                     <ul class="space-y-4 text-sm">
                         <li><a href="menu.html" class="hover:text-white transition">Full Menu</a></li>
-                        <li><a href="order.html" class="hover:text-white transition">Custom Requests</a></li>
+                        <li><a href="order.html" class="hover:text-white transition">Custom Orders</a></li>
                     </ul>
                 </div>
                 <div>
@@ -104,9 +160,17 @@
                     </ul>
                 </div>
                 <div>
-                    <h4 class="text-white font-bold uppercase tracking-widest text-[10px] mb-6">Location</h4>
-                    <p class="text-xs mb-2">St. Catherine & Kingston, Jamaica.</p>
-                    <p class="text-xs">Mon-Sat: 9am - 6pm</p>
+                    <h4 class="text-white font-bold uppercase tracking-widest text-[10px] mb-6">Bakery Hours</h4>
+                    <ul class="text-sm space-y-3">
+                        <li class="flex justify-between border-b border-stone-800 pb-2">
+                            <span>Mon – Fri</span>
+                            <span class="text-white font-medium">7:00 AM – 6:00 PM</span>
+                        </li>
+                        <li class="flex justify-between pt-1">
+                            <span>Sat – Sun</span>
+                            <span class="text-white font-medium">8:00 AM – 2:00 PM</span>
+                        </li>
+                    </ul>
                 </div>
             </div>
             <p class="text-[10px] uppercase tracking-widest">© 2026 Creme Theory.</p>
@@ -114,12 +178,23 @@
     </footer>
 
     <script>
+        // ─── CART BADGE ───────────────────────────────────────────────
         function updateCartCount() {
-            const cart = JSON.parse(localStorage.getItem('creme_cart')) || [];
-            document.getElementById('cart-count').innerText = cart.length;
+            const cart  = JSON.parse(localStorage.getItem('creme_cart')) || [];
+            const total = cart.reduce((sum, i) => sum + (i.qty || 1), 0);
+            document.getElementById('cart-count').innerText = total;
         }
+        window.addEventListener('DOMContentLoaded', updateCartCount);
 
-        window.onload = updateCartCount;
+        // ─── MOBILE NAV ───────────────────────────────────────────────
+        document.getElementById('menu-toggle').addEventListener('click', () => {
+            const menu   = document.getElementById('mobile-menu');
+            const isOpen = menu.classList.toggle('open');
+            document.getElementById('bar1').style.transform = isOpen ? 'translateY(8px) rotate(45deg)' : '';
+            document.getElementById('bar2').style.opacity   = isOpen ? '0' : '1';
+            document.getElementById('bar3').style.transform = isOpen ? 'translateY(-8px) rotate(-45deg)' : '';
+            document.getElementById('bar3').style.width     = isOpen ? '24px' : '';
+        });
     </script>
 </body>
 </html>
