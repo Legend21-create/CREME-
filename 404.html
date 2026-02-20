@@ -1,26 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="icon" href="https://fav.farm/🥐">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Oops! | Creme Theory</title>
+    <title>Page Not Found | Creme Theory</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; }
+        * { box-sizing: border-box; }
+        body { font-family: 'DM Sans', sans-serif; }
         h1 { font-family: 'Playfair Display', serif; }
+        .fade-in {
+            animation: fadeIn 0.7s ease-out both;
+        }
+        .fade-in > * { animation: fadeIn 0.6s ease-out both; }
+        .fade-in > *:nth-child(1) { animation-delay: 0.05s; }
+        .fade-in > *:nth-child(2) { animation-delay: 0.15s; }
+        .fade-in > *:nth-child(3) { animation-delay: 0.25s; }
+        .fade-in > *:nth-child(4) { animation-delay: 0.35s; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
-<body class="bg-stone-50 flex items-center justify-center min-h-screen p-6 text-center">
+<body class="bg-stone-50 text-stone-800 border-t-4 border-amber-900 flex items-center justify-center min-h-screen p-6">
 
-    <div class="max-w-md">
-        <span class="text-6xl">🧁</span>
-        <h1 class="text-4xl text-amber-950 mt-6 mb-4">Something's still baking...</h1>
-        <p class="text-stone-500 mb-8">We can't seem to find the page you're looking for. It might have been moved, or perhaps it's just out of the oven.</p>
-        
-        <a href="index.html" class="inline-block bg-amber-900 text-white px-8 py-3 rounded-full hover:bg-amber-800 transition shadow-lg font-semibold">
-            Back to Home
-        </a>
+    <div class="max-w-md w-full text-center fade-in">
+
+        <span class="text-7xl block mb-6">🧁</span>
+
+        <h1 class="text-4xl text-amber-950 mb-4">Still Baking...</h1>
+
+        <p class="text-stone-500 leading-relaxed mb-10">
+            We can't find the page you're looking for. It may have been moved,
+            or perhaps it's just not out of the oven yet.
+        </p>
+
+        <div class="space-y-3">
+            <a href="index.html"
+               class="block w-full bg-amber-900 text-white px-8 py-4 rounded-xl hover:bg-amber-800 active:bg-amber-950 transition shadow-lg font-bold uppercase tracking-widest text-xs">
+                Back to Home
+            </a>
+            <a href="menu.html"
+               class="block w-full border border-stone-200 text-stone-600 px-8 py-4 rounded-xl hover:bg-stone-100 transition font-bold uppercase tracking-widest text-xs">
+                Browse the Menu
+            </a>
+        </div>
+
+        <p class="text-[10px] text-stone-300 uppercase tracking-widest mt-10">
+            Creme Theory · Jamaica
+        </p>
     </div>
 
 </body>
