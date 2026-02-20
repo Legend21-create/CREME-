@@ -235,5 +235,71 @@
             document.getElementById('bar3').style.width     = isOpen ? '24px' : '';
         });
     </script>
+    <!-- ── WHATSAPP FLOATING BUTTON ──────────────────────────────
+     Paste this block just before </body> on every page.
+     Replace 1876XXXXXXX with your real WhatsApp number
+     (include country code, no + or spaces).
+──────────────────────────────────────────────────────────── -->
+<style>
+    #whatsapp-btn {
+        position: fixed;
+        bottom: 1.5rem;
+        right: 1.5rem;
+        z-index: 9998;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: #25D366;
+        color: white;
+        border-radius: 999px;
+        padding: 0.75rem 1.25rem 0.75rem 0.9rem;
+        box-shadow: 0 4px 20px rgba(37,211,102,0.4);
+        font-family: 'DM Sans', sans-serif;
+        font-size: 0.78rem;
+        font-weight: 700;
+        text-decoration: none;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        animation: wa-pop 0.5s cubic-bezier(0.34,1.56,0.64,1) 1.5s both;
+    }
+    #whatsapp-btn:hover {
+        transform: translateY(-2px) scale(1.03);
+        box-shadow: 0 8px 28px rgba(37,211,102,0.5);
+    }
+    #whatsapp-btn svg {
+        width: 20px;
+        height: 20px;
+        flex-shrink: 0;
+    }
+    /* Pulse ring */
+    #whatsapp-btn::before {
+        content: '';
+        position: absolute;
+        inset: -4px;
+        border-radius: 999px;
+        border: 2px solid #25D366;
+        opacity: 0;
+        animation: wa-pulse 2.5s ease-out 2s infinite;
+    }
+    @keyframes wa-pulse {
+        0%   { transform: scale(1);   opacity: 0.6; }
+        100% { transform: scale(1.18); opacity: 0; }
+    }
+    @keyframes wa-pop {
+        from { opacity: 0; transform: translateY(20px) scale(0.8); }
+        to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+</style>
+
+<a id="whatsapp-btn"
+   href="https://wa.me/1876XXXXXXX?text=Hi%20Creme%20Theory!%20I%27d%20like%20to%20place%20an%20order%20%F0%9F%A5%90"
+   target="_blank"
+   rel="noopener"
+   aria-label="Chat on WhatsApp">
+    <!-- WhatsApp SVG icon -->
+    <svg viewBox="0 0 32 32" fill="white" xmlns="http://www.w3.org/2000/svg">
+        <path d="M16 2C8.268 2 2 8.268 2 16c0 2.49.648 4.826 1.782 6.855L2 30l7.347-1.757A13.93 13.93 0 0016 30c7.732 0 14-6.268 14-14S23.732 2 16 2zm0 25.5a11.43 11.43 0 01-5.832-1.594l-.418-.248-4.361 1.043 1.074-4.25-.272-.435A11.46 11.46 0 014.5 16C4.5 9.648 9.648 4.5 16 4.5S27.5 9.648 27.5 16 22.352 27.5 16 27.5zm6.29-8.618c-.344-.172-2.036-1.004-2.352-1.118-.316-.115-.547-.172-.777.172-.23.344-.892 1.118-1.094 1.348-.2.23-.402.258-.746.086-.344-.172-1.452-.535-2.766-1.707-1.022-.912-1.712-2.038-1.912-2.382-.2-.344-.022-.53.15-.702.155-.154.344-.402.516-.603.172-.2.23-.344.344-.573.115-.23.058-.43-.028-.603-.086-.172-.777-1.874-1.064-2.566-.28-.672-.564-.58-.777-.59l-.66-.012c-.23 0-.603.086-.918.43-.316.344-1.206 1.178-1.206 2.872s1.235 3.33 1.407 3.56c.172.23 2.43 3.71 5.888 5.204.823.355 1.465.567 1.966.726.826.263 1.578.226 2.172.137.663-.099 2.036-.832 2.323-1.636.287-.804.287-1.493.2-1.636-.085-.143-.315-.23-.659-.402z"/>
+    </svg>
+    Order via WhatsApp
+</a>
 </body>
 </html>
