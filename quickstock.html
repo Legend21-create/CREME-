@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" href="https://fav.farm/🥐">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick Stock | Creme Theory</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; }
+        body { font-family: 'DM Sans', sans-serif; }
+
+        /* Toggle switch */
+        .toggle-track {
+            width: 48px; height: 26px;
+            border-radius: 999px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.25s ease;
+            flex-shrink: 0;
+        }
+        .toggle-track.on  { background: #14532d; }
+        .toggle-track.off { background: #9f3030; }
+        .toggle-thumb {
+            position: absolute;
+            top: 3px; left: 3px;
+            width: 20px; height: 20px;
+            border-radius: 50%;
+            background: white;
+            transition: transform 0.25s ease;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+        }
+        .toggle-track.on .toggle-thumb { transform: translateX(22px); }
+
+        /* Toast */
+        #toast {
+            position: fixed; bottom: 1.5rem; left: 50%;
+            transform: translateX(-50%) translateY(80px);
+            background: #1c1917; color: white;
+            padding: 0.65rem 1.25rem; border-radius: 999px;
+            font-size: 0.78rem; font-weight: 600;
+            z-index: 9999;
+            transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), opacity 0.25s;
+            opacity: 0; pointer-events: none; white-space: nowrap;
+        }
+        #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+        /* Unsaved indicator pulse */
+        @keyframes pulse-dot { 0%,100%{opacity:1} 50%{opacity:0.4} }
+        .pulse { animation: pulse-dot 1.5s infinite; }
+
+        /* Login */
+        #login-screen { min-height: 100vh; }
+    </style>
+</head>
+<body class="bg-stone-100 min-h-screen">
+
+    <!-- ── LOGIN ── -->
+    <div id="login-screen" class="flex items-center justify-center p-6">
+        <div class="bg-white rounded-3xl shadow-xl p-8 w-full max-w-sm border border-stone-200">
+            <div class="text-center mb-6">
+                <p class="text-3xl mb-2">🥐</p>
+                <h1 class="text-xl font-bold text-amber-950">Quick Stock</h1>
+                <p class="text-stone-400 text-xs mt-1">Creme Theory — Staff Access</p>
+            </div>
+            <input type="password" id="pass-input" placeholder="Password"
+                   onkeydown="if(event.key==='Enter') checkPass()"
+                   class="w-full p-3.5 border border-stone-200 rounded-xl mb-3 text-sm outline-none focus:ring-2 focus:ring-amber-900/30 focus:border-amber-900 transition">
+            <button onclick="checkPass()"
+                    class="w-full bg-amber-900 text-white py-3.5 rounded-xl font-bold text-sm hover:bg-amber-800 transition cursor-pointer">
+                Enter
+            </button>
+            <p id="login-error" class="text-red-500 text-xs text-center mt-3 hidden">Incorrect password.</p>
+        </div>
+    </div>
+
+    <!-- ── DASHBOARD ── -->
+    <div id="dashboard" class="hidden max-w-lg mx-auto px-4 py-8">
+
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-6">
+            <div>
+                <h1 class="text-xl font-bold text-amber-950">Quick Stock</h1>
+                <p class="text-stone-400 text-xs mt-0.5">Tap to toggle availability</p>
+            </div>
+            <button onclick="logout()" class="text-xs text-stone-400 hover:text-stone-700 transition cursor-pointer font-medium">
+                Logout
+            </button>
+        </div>
+
+        <!-- Unsaved changes bar -->
+        <div id="unsaved-bar" class="hidden bg-amber-50 border border-amber-200 rounded-2xl px-4 py-3 mb-5 flex justify-between items-center gap-3">
+            <div class="flex items-center gap-2">
+                <span class="pulse w-2 h-2 rounded-full bg-amber-500 inline-block"></span>
+                <span class="text-xs font-semibold text-amber-800">Unsaved changes</span>
+            </div>
+            <button onclick="exportChanges()"
+                    class="bg-amber-900 text-white text-xs font-bold px-4 py-2 rounded-full hover:bg-amber-800 transition cursor-pointer">
+                Export inventory.js
+            </button>
+        </div>
+
+        <!-- Category sections -->
+        <div id="item-list" class="space-y-3"></div>
+
+        <!-- Shop toggle -->
+        <div class="mt-8 bg-white rounded-2xl border border-stone-200 p-4 flex justify-between items-center">
+            <div>
+                <p class="font-bold text-sm text-stone-800">Shop Status</p>
+                <p id="shop-status-label" class="text-xs text-stone-400 mt-0.5">Open for orders</p>
+            </div>
+            <div class="toggle-track on" id="shop-toggle" onclick="toggleShop()">
+                <div class="toggle-thumb"></div>
+            </div>
+        </div>
+
+        <p class="text-center text-[10px] text-stone-300 uppercase tracking-widest mt-8">
+            Changes require export → deploy to go live
+        </p>
+    </div>
+
+    <!-- ── EXPORT MODAL ── -->
+    <div id="export-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-end sm:items-center justify-center p-4">
+        <div class="bg-white rounded-3xl w-full max-w-lg p-6 shadow-2xl">
+            <div class="flex justify-between items-center mb-3">
+                <h2 class="font-bold text-amber-950">Export inventory.js</h2>
+                <button onclick="closeModal()" class="text-stone-400 hover:text-stone-700 text-2xl leading-none cursor-pointer">&times;</button>
+            </div>
+            <p class="text-stone-500 text-xs mb-3">Copy this and replace <code class="bg-stone-100 px-1 rounded">inventory.js</code> on GitHub.</p>
+            <textarea id="export-area" rows="10" readonly
+                      class="w-full p-3 bg-stone-50 border border-stone-200 rounded-xl text-xs font-mono resize-none outline-none mb-4"></textarea>
+            <button onclick="copyExport()"
+                    class="w-full bg-amber-900 text-white py-3 rounded-xl font-bold text-sm hover:bg-amber-800 transition cursor-pointer">
+                📋 Copy to Clipboard
+            </button>
+        </div>
+    </div>
+
+    <div id="toast"></div>
+
+    <script src="inventory.js"></script>
+    <script>
+        // ─── PASSWORD ─────────────────────────────────────────────────
+        const PLAINTEXT_FALLBACK = "creme_admin_2026";
+
+        async function hashPassword(p) {
+            const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(p));
+            return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+        }
+
+        async function checkPass() {
+            const val  = document.getElementById('pass-input').value;
+            const hash = await hashPassword(val);
+            // Same fallback pattern as admin.html — replace PLAINTEXT_FALLBACK with a hash once set
+            if (val === PLAINTEXT_FALLBACK) {
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('dashboard').classList.remove('hidden');
+                document.getElementById('login-error').classList.add('hidden');
+                initDashboard();
+            } else {
+                document.getElementById('login-error').classList.remove('hidden');
+                document.getElementById('pass-input').value = '';
+                document.getElementById('pass-input').focus();
+            }
+        }
+
+        function logout() {
+            document.getElementById('dashboard').classList.add('hidden');
+            document.getElementById('login-screen').classList.remove('hidden');
+            document.getElementById('pass-input').value = '';
+        }
+
+        // ─── STATE ────────────────────────────────────────────────────
+        let inventory = [];
+        let settings  = {};
+        let hasChanges = false;
+
+        function initDashboard() {
+            inventory = JSON.parse(JSON.stringify(window.CremeInventory || []));
+            settings  = JSON.parse(JSON.stringify(window.CremeSettings  || { shopOpen: true }));
+            renderList();
+            renderShopToggle();
+        }
+
+        // ─── RENDER ───────────────────────────────────────────────────
+        function renderList() {
+            const container = document.getElementById('item-list');
+
+            // Group by category
+            const groups = {};
+            inventory.forEach(item => {
+                if (!groups[item.category]) groups[item.category] = [];
+                groups[item.category].push(item);
+            });
+
+            container.innerHTML = Object.entries(groups).map(([cat, items]) => `
+                <div class="mb-2">
+                    <p class="text-[10px] font-bold uppercase tracking-widest text-stone-400 mb-2 px-1">${cat}</p>
+                    <div class="space-y-2">
+                        ${items.map(item => `
+                        <div class="bg-white rounded-2xl border border-stone-200 px-4 py-3.5 flex items-center gap-4">
+                            <div class="flex-1 min-w-0">
+                                <p class="font-semibold text-sm text-stone-800 truncate">${item.name}</p>
+                                <p class="text-xs text-stone-400 mt-0.5">J$${item.price.toLocaleString()}</p>
+                            </div>
+                            <span class="text-xs font-medium ${item.inStock ? 'text-green-700' : 'text-red-600'}">
+                                ${item.inStock ? 'In Stock' : 'Sold Out'}
+                            </span>
+                            <div class="toggle-track ${item.inStock ? 'on' : 'off'}" onclick="toggleItem('${item.id}')">
+                                <div class="toggle-thumb"></div>
+                            </div>
+                        </div>`).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderShopToggle() {
+            const track = document.getElementById('shop-toggle');
+            const label = document.getElementById('shop-status-label');
+            if (settings.shopOpen) {
+                track.className = 'toggle-track on';
+                label.textContent = 'Open for orders';
+            } else {
+                track.className = 'toggle-track off';
+                label.textContent = 'Closed — customers can\'t order';
+            }
+        }
+
+        // ─── ACTIONS ──────────────────────────────────────────────────
+        function toggleItem(id) {
+            const item = inventory.find(i => i.id === id);
+            if (!item) return;
+            item.inStock = !item.inStock;
+            markChanged();
+            renderList();
+            showToast(`${item.name} → ${item.inStock ? '✅ In Stock' : '❌ Sold Out'}`);
+        }
+
+        function toggleShop() {
+            settings.shopOpen = !settings.shopOpen;
+            markChanged();
+            renderShopToggle();
+            showToast(settings.shopOpen ? '🟢 Shop is now Open' : '🔴 Shop is now Closed');
+        }
+
+        function markChanged() {
+            hasChanges = true;
+            document.getElementById('unsaved-bar').classList.remove('hidden');
+        }
+
+        // ─── EXPORT ───────────────────────────────────────────────────
+        function exportChanges() {
+            const content =
+                `// Creme Theory Inventory — updated ${new Date().toLocaleString()}\n` +
+                `const InventoryData = ${JSON.stringify(inventory, null, 4)};\n\n` +
+                `const SiteSettings = ${JSON.stringify(settings, null, 4)};\n\n` +
+                `window.CremeInventory = InventoryData;\n` +
+                `window.CremeSettings = SiteSettings;\n` +
+                `document.dispatchEvent(new Event('inventoryLoaded'));\n`;
+
+            document.getElementById('export-area').value = content;
+            document.getElementById('export-modal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('export-modal').classList.add('hidden');
+        }
+
+        async function copyExport() {
+            const text = document.getElementById('export-area').value;
+            try {
+                await navigator.clipboard.writeText(text);
+                showToast('✅ Copied! Paste into inventory.js on GitHub.');
+                hasChanges = false;
+                document.getElementById('unsaved-bar').classList.add('hidden');
+                closeModal();
+            } catch {
+                document.getElementById('export-area').select();
+                showToast('Select all & copy manually (Ctrl+A, Ctrl+C)');
+            }
+        }
+
+        // Close modal on backdrop click
+        document.getElementById('export-modal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        // ─── TOAST ────────────────────────────────────────────────────
+        let toastTimer;
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.classList.add('show');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
+        }
+
+        // Boot if inventory.js already loaded synchronously
+        document.addEventListener('inventoryLoaded', () => {});
+        window.addEventListener('DOMContentLoaded', () => {});
+    </script>
+</body>
+</html>
