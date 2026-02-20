@@ -1,106 +1,206 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="icon" href="https://fav.farm/🥐">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checkout | Creme Theory</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; }
+        * { box-sizing: border-box; }
+        body { font-family: 'DM Sans', sans-serif; scroll-behavior: smooth; }
         h1, h2, h3 { font-family: 'Playfair Display', serif; }
-        /* Smooth transitions for the delivery drawer */
-        #delivery-options { transition: all 0.3s ease-in-out; }
+
+        /* Mobile menu */
+        #mobile-menu { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
+        #mobile-menu.open { max-height: 300px; }
+
+        /* Delivery options slide */
+        #delivery-options {
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows 0.3s ease;
+        }
+        #delivery-options.open { grid-template-rows: 1fr; }
+        #delivery-options > div { overflow: hidden; }
+
+        /* Toast */
+        #toast {
+            position: fixed; bottom: 2rem; left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #1c1917; color: white;
+            padding: 0.75rem 1.5rem; border-radius: 999px;
+            font-size: 0.8rem; font-weight: 600; letter-spacing: 0.05em;
+            z-index: 9999;
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+            opacity: 0; white-space: nowrap; pointer-events: none;
+        }
+        #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+        /* Cart item fade-out on remove */
+        .cart-item { transition: opacity 0.2s ease, transform 0.2s ease; }
+        .cart-item.removing { opacity: 0; transform: translateX(8px); }
+
+        /* Qty buttons */
+        .qty-btn { transition: background 0.15s ease; }
+        .qty-btn:hover { background: #1c1917; color: white; }
     </style>
 </head>
 <body class="bg-stone-50 text-stone-800 border-t-4 border-amber-900">
 
-    <nav class="p-6 max-w-7xl mx-auto flex justify-between items-center">
-        <a href="index.html" class="text-2xl font-bold tracking-tighter text-amber-900 uppercase italic">Creme Theory</a>
-        <a href="menu.html" class="text-xs font-bold uppercase tracking-widest text-stone-400 hover:text-amber-900 transition">← Back to Menu</a>
+    <!-- ── NAV ── -->
+    <nav class="sticky top-0 z-50 bg-stone-50/90 backdrop-blur-md border-b border-stone-100">
+        <div class="flex justify-between items-center px-6 py-4 max-w-7xl mx-auto">
+            <a href="index.html" class="text-2xl font-bold tracking-tighter text-amber-900 uppercase">Creme Theory</a>
+            <div class="hidden md:flex space-x-8 font-medium items-center">
+                <a href="menu.html" class="hover:text-amber-700 transition">Menu</a>
+                <a href="story.html" class="hover:text-amber-700 transition">Our Story</a>
+                <a href="order.html" class="hover:text-amber-700 transition">Custom Orders</a>
+            </div>
+            <div class="flex items-center gap-4">
+                <a href="cart.html" class="relative cursor-pointer flex items-center hover:opacity-75 transition">
+                    <span class="text-xl">🛒</span>
+                    <span id="cart-count" class="absolute -top-2 -right-2 bg-amber-900 text-white text-[10px] rounded-full px-1.5 py-0.5 font-bold min-w-[18px] text-center">0</span>
+                </a>
+                <button id="menu-toggle" class="md:hidden flex flex-col gap-1.5 cursor-pointer" aria-label="Toggle navigation">
+                    <span class="block w-6 h-0.5 bg-stone-800 transition-all" id="bar1"></span>
+                    <span class="block w-6 h-0.5 bg-stone-800 transition-all" id="bar2"></span>
+                    <span class="block w-4 h-0.5 bg-stone-800 transition-all" id="bar3"></span>
+                </button>
+            </div>
+        </div>
+        <div id="mobile-menu" class="md:hidden border-t border-stone-100 bg-stone-50">
+            <div class="flex flex-col px-6 py-4 space-y-4 text-sm font-medium">
+                <a href="menu.html" class="hover:text-amber-700 transition">Menu</a>
+                <a href="story.html" class="hover:text-amber-700 transition">Our Story</a>
+                <a href="order.html" class="hover:text-amber-700 transition">Custom Orders</a>
+            </div>
+        </div>
     </nav>
 
-    <main class="max-w-4xl mx-auto px-6 py-12 grid md:grid-cols-5 gap-12">
-        
+    <!-- ── MAIN ── -->
+    <main class="max-w-5xl mx-auto px-6 py-12 grid md:grid-cols-5 gap-12">
+
+        <!-- ── LEFT: CART ITEMS ── -->
         <div class="md:col-span-3">
-            <h1 class="text-4xl text-amber-950 mb-8">Your Selection</h1>
-            <div id="cart-items" class="space-y-4">
-                </div>
-            
-            <button onclick="clearCart()" class="mt-8 text-[10px] uppercase tracking-widest font-bold text-stone-300 hover:text-red-500 transition">
-                Clear All Selections
-            </button>
+            <div class="flex justify-between items-center mb-8">
+                <h1 class="text-4xl text-amber-950">Your Selection</h1>
+                <button onclick="clearCart()"
+                        class="text-[10px] uppercase tracking-widest font-bold text-stone-300 hover:text-red-500 transition cursor-pointer hidden"
+                        id="clear-btn">
+                    Clear All
+                </button>
+            </div>
+            <div id="cart-items" class="space-y-4"></div>
         </div>
 
+        <!-- ── RIGHT: ORDER FORM ── -->
         <div class="md:col-span-2">
-            <form action="https://formspree.io/f/mvzbzywl" method="POST" id="checkout-form" class="bg-white p-8 rounded-3xl shadow-sm border border-stone-100 space-y-6 sticky top-8">
-                
-                <input type="hidden" name="_next" value="https://legend21-create.github.io/CREME-/success.html">
-                <textarea name="order_summary" id="hidden-summary" class="hidden"></textarea>
+            <form action="https://formspree.io/f/mvzbzywl" method="POST" id="checkout-form" novalidate
+                  class="bg-white p-8 rounded-3xl shadow-sm border border-stone-100 space-y-6 sticky top-24">
 
-                <div class="border-b border-stone-100 pb-6 mb-6">
-                    <h2 class="text-sm uppercase tracking-widest font-bold text-amber-900 mb-4">Summary</h2>
+                <input type="hidden" name="_next" value="https://legend21-create.github.io/CREME-/success.html">
+                <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
+                <textarea name="order_summary" id="hidden-summary" class="hidden" readonly></textarea>
+
+                <!-- Summary -->
+                <div class="border-b border-stone-100 pb-6">
+                    <h2 class="text-xs uppercase tracking-widest font-bold text-amber-900 mb-4">Order Summary</h2>
                     <div class="flex justify-between text-sm mb-2 text-stone-500">
                         <span>Items Subtotal</span>
-                        <span id="subtotal-display">$0</span>
+                        <span id="subtotal-display">J$0</span>
                     </div>
                     <div class="flex justify-between text-sm mb-4 text-stone-500">
                         <span>Delivery Fee</span>
-                        <span id="fee-display">$0</span>
+                        <span id="fee-display">J$0</span>
                     </div>
                     <div class="flex justify-between items-center pt-4 border-t border-stone-100">
                         <span class="font-bold text-amber-950">Grand Total</span>
-                        <span id="grand-total" class="text-2xl font-bold text-amber-900">$0</span>
+                        <span id="grand-total" class="text-2xl font-bold text-amber-900">J$0</span>
                     </div>
                 </div>
 
+                <!-- Fields -->
                 <div class="space-y-4">
+
+                    <!-- Name -->
                     <div>
-                        <label class="block text-[10px] uppercase tracking-widest font-bold mb-2">Your Name</label>
-                        <input type="text" name="name" required placeholder="Jane Doe" class="w-full p-3 bg-stone-50 border border-stone-200 rounded-xl focus:ring-1 focus:ring-amber-900 outline-none">
+                        <label class="block text-[10px] uppercase tracking-widest font-bold mb-2">Your Name <span class="text-red-400">*</span></label>
+                        <input type="text" id="field-name" name="name" required placeholder="Jane Doe"
+                               class="w-full p-3 bg-stone-50 border border-stone-200 rounded-xl focus:ring-2 focus:ring-amber-900/30 focus:border-amber-900 outline-none transition text-sm">
+                        <p class="error-msg text-red-500 text-xs mt-1 hidden">Please enter your name.</p>
                     </div>
 
+                    <!-- Phone -->
+                    <div>
+                        <label class="block text-[10px] uppercase tracking-widest font-bold mb-2">Phone Number <span class="text-red-400">*</span></label>
+                        <input type="tel" id="field-phone" name="phone" required placeholder="876-XXX-XXXX"
+                               class="w-full p-3 bg-stone-50 border border-stone-200 rounded-xl focus:ring-2 focus:ring-amber-900/30 focus:border-amber-900 outline-none transition text-sm">
+                        <p class="error-msg text-red-500 text-xs mt-1 hidden">Please enter a valid phone number.</p>
+                    </div>
+
+                    <!-- Delivery Method -->
                     <div>
                         <label class="block text-[10px] uppercase tracking-widest font-bold mb-2">Delivery Method</label>
                         <div class="grid grid-cols-2 gap-2">
-                            <label class="relative cursor-pointer">
-                                <input type="radio" name="delivery_type" value="Pickup" checked onclick="toggleDelivery(false)" class="peer hidden">
-                                <div class="p-3 text-center border border-stone-200 rounded-xl text-xs font-bold peer-checked:bg-amber-900 peer-checked:text-white transition">📍 Pickup</div>
+                            <label class="cursor-pointer">
+                                <input type="radio" name="delivery_type" value="Pickup" checked
+                                       onchange="toggleDelivery(false)" class="peer hidden">
+                                <div class="p-3 text-center border border-stone-200 rounded-xl text-xs font-bold
+                                            peer-checked:bg-amber-900 peer-checked:text-white peer-checked:border-amber-900 transition">
+                                    📍 Pickup
+                                </div>
                             </label>
-                            <label class="relative cursor-pointer">
-                                <input type="radio" name="delivery_type" value="Delivery" onclick="toggleDelivery(true)" class="peer hidden">
-                                <div class="p-3 text-center border border-stone-200 rounded-xl text-xs font-bold peer-checked:bg-amber-900 peer-checked:text-white transition">🚚 Delivery</div>
+                            <label class="cursor-pointer">
+                                <input type="radio" name="delivery_type" value="Delivery"
+                                       onchange="toggleDelivery(true)" class="peer hidden">
+                                <div class="p-3 text-center border border-stone-200 rounded-xl text-xs font-bold
+                                            peer-checked:bg-amber-900 peer-checked:text-white peer-checked:border-amber-900 transition">
+                                    🚚 Delivery
+                                </div>
                             </label>
                         </div>
                     </div>
 
-                    <div id="delivery-options" class="hidden space-y-4 animate-in fade-in slide-in-from-top-2">
-                        <label class="block text-[10px] uppercase tracking-widest font-bold mb-2">Location</label>
-                        <select name="location" id="location-select" onchange="calculateTotal()" class="w-full p-3 bg-stone-50 border border-stone-200 rounded-xl text-sm focus:ring-1 focus:ring-amber-900 outline-none">
-                            <option value="Spanish Town" data-fee="1000">Spanish Town ($1,000)</option>
-                            <option value="Half Way Tree" data-fee="1200">Half Way Tree ($1,200)</option>
-                            <option value="Papine" data-fee="1500">Papine ($1,500)</option>
-                            <option value="May Pen" data-fee="2500">May Pen ($2,500)</option>
-                        </select>
-                        <textarea name="address" placeholder="Exact street address / Landmarks" class="w-full p-3 bg-stone-50 border border-stone-200 rounded-xl text-sm outline-none h-20 resize-none"></textarea>
+                    <!-- Delivery options (animated) -->
+                    <div id="delivery-options">
+                        <div class="space-y-3 pt-1">
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-widest font-bold mb-2">Location</label>
+                                <select name="location" id="location-select" onchange="calculateTotal()"
+                                        class="w-full p-3 bg-stone-50 border border-stone-200 rounded-xl text-sm focus:ring-2 focus:ring-amber-900/30 outline-none transition">
+                                    <!-- Populated from inventory.js settings -->
+                                </select>
+                            </div>
+                            <textarea name="address" id="field-address" placeholder="Exact street address / Landmarks"
+                                      class="w-full p-3 bg-stone-50 border border-stone-200 rounded-xl text-sm outline-none h-20 resize-none focus:ring-2 focus:ring-amber-900/30 transition"></textarea>
+                            <p class="error-msg-address text-red-500 text-xs hidden">Please enter a delivery address.</p>
+                        </div>
                     </div>
 
+                    <!-- Payment -->
                     <div>
-                        <label class="block text-[10px] uppercase tracking-widest font-bold mb-2">Payment Method</label>
-                        <select name="payment" class="w-full p-3 bg-stone-50 border border-stone-200 rounded-xl text-sm outline-none">
+                        <label class="block text-[10px] uppercase tracking-widests font-bold mb-2">Payment Method</label>
+                        <select name="payment"
+                                class="w-full p-3 bg-stone-50 border border-stone-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-amber-900/30 transition">
                             <option>Bank Transfer (NCB)</option>
-                            <option>Cash on Delivery/Pickup</option>
+                            <option>Cash on Delivery / Pickup</option>
                         </select>
                     </div>
 
+                    <!-- Terms -->
                     <div class="flex items-start gap-3 py-2">
-                        <input type="checkbox" required id="terms" class="mt-1 accent-amber-900">
-                        <label for="terms" class="text-[10px] text-stone-500 leading-tight">
-                            I agree to the <a href="terms.html" class="underline font-bold">Terms</a> & the 50% deposit requirement.
+                        <input type="checkbox" id="terms" required class="mt-1 accent-amber-900 cursor-pointer">
+                        <label for="terms" class="text-[10px] text-stone-500 leading-tight cursor-pointer">
+                            I agree to the <a href="terms.html" class="underline font-bold hover:text-amber-900 transition">Terms of Service</a>
+                            and the 50% deposit requirement.
                         </label>
                     </div>
+                    <p class="error-msg-terms text-red-500 text-xs hidden">You must agree to the terms to continue.</p>
 
-                    <button type="submit" class="w-full bg-amber-900 text-white py-4 rounded-xl font-bold uppercase tracking-widest hover:bg-amber-800 transition shadow-lg shadow-amber-900/20">
+                    <button type="submit" id="submit-btn"
+                            class="w-full bg-amber-900 text-white py-4 rounded-xl font-bold uppercase tracking-widest hover:bg-amber-800 active:bg-amber-950 transition shadow-lg shadow-amber-900/20 cursor-pointer">
                         Place Order
                     </button>
                 </div>
@@ -108,84 +208,282 @@
         </div>
     </main>
 
+    <div id="toast"></div>
+
+    <!-- inventory.js for delivery fees from settings -->
+    <script src="inventory.js"></script>
     <script>
-        let cart = JSON.parse(localStorage.getItem('creme_cart')) || [];
+        // ─── STATE ────────────────────────────────────────────────────
+        let cart         = [];
+        let deliveryFees = {
+            "Spanish Town": 1000,
+            "Half Way Tree": 1200,
+            "Papine": 1500,
+            "May Pen": 2500
+        };
+        let isDelivery = false;
 
-        function parsePrice(priceVal) {
-            if (typeof priceVal === 'number') return priceVal;
-            return parseFloat(priceVal.replace(/[^0-9.]/g, '')) || 0;
-        }
+        // ─── BOOT ─────────────────────────────────────────────────────
+        function boot() {
+            cart = JSON.parse(localStorage.getItem('creme_cart')) || [];
 
-        function toggleDelivery(show) {
-            const div = document.getElementById('delivery-options');
-            if (show) div.classList.remove('hidden');
-            else div.classList.add('hidden');
-            calculateTotal();
-        }
-
-        function calculateTotal() {
-            const isDelivery = !document.getElementById('delivery-options').classList.contains('hidden');
-            const locationSelect = document.getElementById('location-select');
-            
-            let itemsTotal = 0;
-            cart.forEach(item => itemsTotal += parsePrice(item.price));
-            
-            let deliveryFee = 0;
-            if (isDelivery) {
-                deliveryFee = parseInt(locationSelect.options[locationSelect.selectedIndex].getAttribute('data-fee'));
+            // Load delivery fees from inventory.js if available
+            if (window.CremeSettings && window.CremeSettings.deliveryFees) {
+                deliveryFees = window.CremeSettings.deliveryFees;
             }
 
-            document.getElementById('subtotal-display').innerText = `$${itemsTotal.toLocaleString()}`;
-            document.getElementById('fee-display').innerText = `$${deliveryFee.toLocaleString()}`;
-            document.getElementById('grand-total').innerText = `$${(itemsTotal + deliveryFee).toLocaleString()}`;
-            
-            // Prepare the hidden summary for the email
-            let summary = `ORDER SUMMARY:\n`;
-            cart.forEach(item => summary += `- ${item.name} (${item.price})\n`);
-            summary += `\nSubtotal: $${itemsTotal.toLocaleString()}`;
-            summary += `\nDelivery: $${deliveryFee.toLocaleString()} (${isDelivery ? locationSelect.value : 'Pickup'})`;
-            summary += `\nGRAND TOTAL: $${(itemsTotal + deliveryFee).toLocaleString()}`;
-            document.getElementById('hidden-summary').value = summary;
+            populateLocationDropdown();
+            renderItems();
+            updateCartBadge();
         }
 
+        document.addEventListener('inventoryLoaded', boot);
+        window.addEventListener('DOMContentLoaded', () => {
+            if (window.CremeInventory) boot();
+            else if (!window._bootScheduled) {
+                // inventory.js not present — boot with localStorage cart only
+                window._bootScheduled = true;
+                setTimeout(boot, 200);
+            }
+        });
+
+        // ─── LOCATION DROPDOWN ────────────────────────────────────────
+        function populateLocationDropdown() {
+            const select = document.getElementById('location-select');
+            select.innerHTML = Object.entries(deliveryFees).map(([zone, fee]) =>
+                `<option value="${zone}" data-fee="${fee}">${zone} (J$${fee.toLocaleString()})</option>`
+            ).join('');
+        }
+
+        // ─── RENDER CART ITEMS ────────────────────────────────────────
         function renderItems() {
             const container = document.getElementById('cart-items');
-            if (cart.length === 0) {
-                container.innerHTML = `<div class="py-20 text-center border-2 border-dashed border-stone-200 rounded-3xl text-stone-400 italic">No sweets selected yet.</div>`;
+            const clearBtn  = document.getElementById('clear-btn');
+
+            if (!cart.length) {
+                clearBtn.classList.add('hidden');
+                container.innerHTML = `
+                    <div class="py-20 text-center border-2 border-dashed border-stone-200 rounded-3xl">
+                        <p class="text-4xl mb-4">🥐</p>
+                        <p class="text-stone-400 italic mb-6">No sweets selected yet.</p>
+                        <a href="menu.html" class="inline-block bg-amber-900 text-white px-8 py-3 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-amber-800 transition">
+                            Browse the Menu
+                        </a>
+                    </div>`;
+                calculateTotal();
                 return;
             }
 
-            container.innerHTML = cart.map((item, index) => `
-                <div class="flex justify-between items-center bg-white p-6 rounded-2xl border border-stone-100 group">
-                    <div>
-                        <h3 class="font-bold text-amber-950">${item.name}</h3>
-                        <p class="text-[10px] text-stone-400 uppercase tracking-widest">Handcrafted Item</p>
+            clearBtn.classList.remove('hidden');
+            container.innerHTML = cart.map(item => {
+                const qty      = item.qty || 1;
+                const price    = item.price || 0;
+                const lineTotal = price * qty;
+                return `
+                <div class="cart-item flex items-center gap-4 bg-white p-5 rounded-2xl border border-stone-100" data-id="${item.id}">
+                    <div class="flex-1 min-w-0">
+                        <h3 class="font-bold text-amber-950 truncate">${item.name}</h3>
+                        <p class="text-[10px] text-stone-400 uppercase tracking-widest mt-0.5">${item.category || 'Handcrafted Item'}</p>
                     </div>
-                    <div class="flex items-center gap-6">
-                        <span class="font-semibold text-stone-600">$${parsePrice(item.price).toLocaleString()}</span>
-                        <button onclick="removeItem(${index})" class="text-stone-300 hover:text-red-500 transition-colors text-xl">&times;</button>
+                    <!-- Qty controls -->
+                    <div class="flex items-center gap-2 flex-shrink-0">
+                        <button onclick="changeQty('${item.id}', -1)"
+                                class="qty-btn w-7 h-7 rounded-full border border-stone-200 text-sm font-bold flex items-center justify-center cursor-pointer">−</button>
+                        <span class="w-5 text-center text-sm font-bold">${qty}</span>
+                        <button onclick="changeQty('${item.id}', 1)"
+                                class="qty-btn w-7 h-7 rounded-full border border-stone-200 text-sm font-bold flex items-center justify-center cursor-pointer">+</button>
                     </div>
-                </div>
-            `).join('');
-            
+                    <span class="font-semibold text-stone-700 w-24 text-right flex-shrink-0">J$${lineTotal.toLocaleString()}</span>
+                    <button onclick="removeItem('${item.id}')"
+                            class="text-stone-300 hover:text-red-500 transition text-xl leading-none flex-shrink-0 cursor-pointer"
+                            aria-label="Remove">&times;</button>
+                </div>`;
+            }).join('');
+
             calculateTotal();
         }
 
-        function removeItem(index) {
-            cart.splice(index, 1);
-            localStorage.setItem('creme_cart', JSON.stringify(cart));
+        // ─── CART ACTIONS ─────────────────────────────────────────────
+        function changeQty(id, delta) {
+            const item = cart.find(i => i.id === id);
+            if (!item) return;
+            item.qty = Math.max(1, (item.qty || 1) + delta);
+            saveCart();
             renderItems();
         }
 
-        function clearCart() {
-            if(confirm("Empty your selection?")) {
-                cart = [];
-                localStorage.setItem('creme_cart', JSON.stringify(cart));
-                renderItems();
+        function removeItem(id) {
+            const el = document.querySelector(`[data-id="${id}"]`);
+            if (el) {
+                el.classList.add('removing');
+                setTimeout(() => {
+                    cart = cart.filter(i => i.id !== id);
+                    saveCart();
+                    renderItems();
+                }, 200);
             }
         }
 
-        window.onload = renderItems;
+        function clearCart() {
+            if (!confirm('Empty your entire selection?')) return;
+            cart = [];
+            saveCart();
+            renderItems();
+            showToast('🗑 Cart cleared');
+        }
+
+        function saveCart() {
+            localStorage.setItem('creme_cart', JSON.stringify(cart));
+            updateCartBadge();
+        }
+
+        function updateCartBadge() {
+            const total = cart.reduce((sum, i) => sum + (i.qty || 1), 0);
+            document.getElementById('cart-count').innerText = total;
+        }
+
+        // ─── DELIVERY TOGGLE ──────────────────────────────────────────
+        function toggleDelivery(show) {
+            isDelivery = show;
+            const panel = document.getElementById('delivery-options');
+            panel.classList.toggle('open', show);
+            calculateTotal();
+        }
+
+        // ─── CALCULATE TOTAL ──────────────────────────────────────────
+        function calculateTotal() {
+            const itemsTotal = cart.reduce((sum, item) => {
+                return sum + (item.price || 0) * (item.qty || 1);
+            }, 0);
+
+            const locationSelect = document.getElementById('location-select');
+            let deliveryFee = 0;
+            if (isDelivery && locationSelect.options.length) {
+                const selected = locationSelect.options[locationSelect.selectedIndex];
+                deliveryFee = parseInt(selected.getAttribute('data-fee')) || 0;
+            }
+
+            const grandTotal = itemsTotal + deliveryFee;
+
+            document.getElementById('subtotal-display').innerText = `J$${itemsTotal.toLocaleString()}`;
+            document.getElementById('fee-display').innerText      = `J$${deliveryFee.toLocaleString()}`;
+            document.getElementById('grand-total').innerText      = `J$${grandTotal.toLocaleString()}`;
+
+            // Build order summary for the email
+            let summary = `ORDER SUMMARY\n${'─'.repeat(30)}\n`;
+            cart.forEach(item => {
+                const qty  = item.qty || 1;
+                const line = (item.price || 0) * qty;
+                summary += `${item.name} x${qty}  —  J$${line.toLocaleString()}\n`;
+            });
+            summary += `\nSubtotal:  J$${itemsTotal.toLocaleString()}`;
+            summary += `\nDelivery:  J$${deliveryFee.toLocaleString()} (${isDelivery ? (locationSelect.value || 'TBD') : 'Pickup'})`;
+            summary += `\nGRAND TOTAL:  J$${grandTotal.toLocaleString()}`;
+            document.getElementById('hidden-summary').value = summary;
+        }
+
+        // ─── FORM VALIDATION ──────────────────────────────────────────
+        document.getElementById('checkout-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            let valid = true;
+
+            // Must have items
+            if (!cart.length) {
+                showToast('⚠️ Your cart is empty');
+                return;
+            }
+
+            // Name
+            const nameEl = document.getElementById('field-name');
+            const nameErr = nameEl.nextElementSibling;
+            if (nameEl.value.trim().length < 2) {
+                nameEl.classList.add('border-red-400');
+                nameErr.classList.remove('hidden');
+                valid = false;
+            } else {
+                nameEl.classList.remove('border-red-400');
+                nameErr.classList.add('hidden');
+            }
+
+            // Phone
+            const phoneEl  = document.getElementById('field-phone');
+            const phoneErr = phoneEl.nextElementSibling;
+            if (!/^[\d\s\-\+\(\)]{7,15}$/.test(phoneEl.value.trim())) {
+                phoneEl.classList.add('border-red-400');
+                phoneErr.classList.remove('hidden');
+                valid = false;
+            } else {
+                phoneEl.classList.remove('border-red-400');
+                phoneErr.classList.add('hidden');
+            }
+
+            // Address (only if delivery selected)
+            if (isDelivery) {
+                const addrEl  = document.getElementById('field-address');
+                const addrErr = document.querySelector('.error-msg-address');
+                if (addrEl.value.trim().length < 5) {
+                    addrEl.classList.add('border-red-400');
+                    addrErr.classList.remove('hidden');
+                    valid = false;
+                } else {
+                    addrEl.classList.remove('border-red-400');
+                    addrErr.classList.add('hidden');
+                }
+            }
+
+            // Terms
+            const termsEl  = document.getElementById('terms');
+            const termsErr = document.querySelector('.error-msg-terms');
+            if (!termsEl.checked) {
+                termsErr.classList.remove('hidden');
+                valid = false;
+            } else {
+                termsErr.classList.add('hidden');
+            }
+
+            if (!valid) {
+                showToast('⚠️ Please fix the errors above.');
+                const firstErr = document.querySelector('.border-red-400');
+                if (firstErr) firstErr.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return;
+            }
+
+            // All good — submit
+            const btn = document.getElementById('submit-btn');
+            btn.textContent = 'Placing Order…';
+            btn.disabled    = true;
+            btn.classList.add('opacity-70', 'cursor-not-allowed');
+            this.submit();
+        });
+
+        // Clear field errors on input
+        ['field-name', 'field-phone'].forEach(id => {
+            document.getElementById(id).addEventListener('input', function() {
+                this.classList.remove('border-red-400');
+                const err = this.nextElementSibling;
+                if (err && err.classList.contains('error-msg')) err.classList.add('hidden');
+            });
+        });
+
+        // ─── TOAST ────────────────────────────────────────────────────
+        let toastTimer;
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.classList.add('show');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => toast.classList.remove('show'), 2800);
+        }
+
+        // ─── MOBILE NAV ───────────────────────────────────────────────
+        document.getElementById('menu-toggle').addEventListener('click', () => {
+            const menu   = document.getElementById('mobile-menu');
+            const isOpen = menu.classList.toggle('open');
+            document.getElementById('bar1').style.transform = isOpen ? 'translateY(8px) rotate(45deg)' : '';
+            document.getElementById('bar2').style.opacity   = isOpen ? '0' : '1';
+            document.getElementById('bar3').style.transform = isOpen ? 'translateY(-8px) rotate(-45deg)' : '';
+            document.getElementById('bar3').style.width     = isOpen ? '24px' : '';
+        });
     </script>
 </body>
 </html>
